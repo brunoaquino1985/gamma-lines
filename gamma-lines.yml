@@ -1,0 +1,58 @@
+name: gamma-lines-daily
+
+on:
+  schedule:
+    # 08:45 UTC = 05:45 BRT, seg-sex (tentativa principal)
+    - cron: "45 8 * * 1-5"
+    # 10:30 UTC = 07:30 BRT, retentativa (caso a B3 atrase os arquivos)
+    - cron: "30 10 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gamma-lines
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instala dependências
+        run: pip install requests
+
+      - name: Verifica se já gerou hoje
+        id: check
+        run: |
+          TODAY=$(TZ=America/Sao_Paulo date +%F)
+          if [ -f output/levels.json ] && grep -q "\"session\": \"$TODAY\"" output/levels.json; then
+            echo "done=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "done=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Baixa dados da B3
+        if: steps.check.outputs.done == 'false'
+        run: |
+          SESSION=$(TZ=America/Sao_Paulo date +%F)
+          python fetch_data.py "$SESSION"
+
+      - name: Roda o modelo e gera o NTSL
+        if: steps.check.outputs.done == 'false'
+        run: python run_daily.py
+
+      - name: Commita o resultado
+        if: steps.check.outputs.done == 'false'
+        run: |
+          git config user.name "gamma-bot"
+          git config user.email "actions@github.com"
+          git add output/
+          git diff --cached --quiet || git commit -m "gamma lines $(TZ=America/Sao_Paulo date +%F)"
+          git push
