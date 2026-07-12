@@ -69,46 +69,58 @@ def fetch_pr(ref: dt.date) -> str:
     return out
 
 
-def fetch_ibov_close(ref: dt.date) -> float:
-    """IBOV de fechamento do pregão de referência."""
+def fetch_ibov_close(ref: dt.date):
+    """IBOV de fechamento do pregão de referência.
+    Retorna (valor, fonte) ou (None, erros)."""
     errors = []
-    # fonte 1: cotacao.b3.com.br (histórico intradiário/diário público)
+    # fonte 1: cotacao.b3.com.br — série intradiária do último pregão
     try:
         u = "https://cotacao.b3.com.br/mds/api/v1/DailyFluctuationHistory/IBOV"
         j = get(u, timeout=60).json()
-        for item in j.get("TradgFlr", {}).get("date", []):
-            d = item.get("ts", "")[:10]
-            if d == f"{ref:%Y-%m-%d}":
-                px = item.get("SctyQtn", {}).get("curPrc")
-                if px:
-                    return float(px)
-        errors.append("cotacao.b3: data não encontrada")
+        if isinstance(j, str):
+            j = json.loads(j)
+        tf = j.get("TradgFlr", {})
+        if tf.get("date") == f"{ref:%Y-%m-%d}":
+            qts = tf.get("scty", {}).get("lstQtn", [])
+            if qts:
+                return float(qts[-1]["closPric"]), "cotacao.b3"
+        errors.append(f"cotacao.b3: date={tf.get('date')} != {ref}")
     except Exception as e:
         errors.append(f"cotacao.b3: {e!r}")
-    # fonte 2: chart do TradingView público? Não. Usa sistemaswebb3 (b3 site)
-    try:
-        import base64
-        payload = base64.b64encode(json.dumps(
-            {"index": "IBOV", "language": "pt-br"}).encode()).decode()
-        u = ("https://sistemaswebb3-listados.b3.com.br/indexStatisticsProxy/"
-             f"IndexCall/GetPortfolioDay/{payload}")
-        j = get(u, timeout=60).json()
-        # estrutura varia; procura o dia
-        raise RuntimeError("layout não tratado")
-    except Exception as e:
-        errors.append(f"sistemaswebb3: {e!r}")
-    # fonte 3: stooq CSV (^BVP)
+    # fonte 2: stooq CSV (^BVP)
     try:
         u = "https://stooq.com/q/d/l/?s=%5Ebvp&i=d"
         txt = get(u, timeout=60).text
         for line in txt.splitlines()[1:]:
             parts = line.split(",")
             if parts and parts[0] == f"{ref:%Y-%m-%d}":
-                return float(parts[4])
+                return float(parts[4]), "stooq"
         errors.append("stooq: data não encontrada")
     except Exception as e:
         errors.append(f"stooq: {e!r}")
-    raise RuntimeError("IBOV close indisponível: " + " | ".join(errors))
+    return None, " | ".join(errors)
+
+
+def estimate_ibov_from_carry(pr_path: str, ref: dt.date, cdi: float):
+    """Último recurso: IBOV ≈ ajuste do INDFUT descontado pelo CDI até o
+    vencimento (IBOV reinveste dividendos, então fut ≈ spot*(1+cdi)^T)."""
+    from gamma_pipeline import parse_pr_oi
+    from ntsl_generator import ind_expiry
+    txt = open(pr_path, encoding="utf-8", errors="ignore").read()
+    _, futs = parse_pr_oi(txt)
+    ind = {k: v for k, v in futs.items()
+           if k.startswith("IND") and "AdjstdQt" in v}
+    tk = max(ind, key=lambda k: ind[k].get("OI", 0))
+    settle = ind[tk]["AdjstdQt"]
+    month_code = {"G": 2, "J": 4, "M": 6, "Q": 8, "V": 10, "Z": 12}[tk[3]]
+    year = 2000 + int(tk[4:6])
+    exp = ind_expiry(year, month_code)
+    d, bus = ref, 0
+    while d < exp:
+        d += dt.timedelta(days=1)
+        if d.weekday() < 5:
+            bus += 1
+    return settle / (1.0 + cdi) ** (bus / 252.0)
 
 
 def fetch_cdi() -> float:
@@ -156,13 +168,17 @@ def main():
         raise RuntimeError("nenhum pregão com arquivos disponíveis")
     print("ok COTAHIST:", cot)
     print("ok PR:", pr)
-    ibov = fetch_ibov_close(ref)
-    print("ok IBOV close:", ibov)
     cdi = fetch_cdi()
     print("ok CDI:", cdi)
+    ibov, src = fetch_ibov_close(ref)
+    if ibov is None:
+        print("fontes de IBOV falharam:", src)
+        ibov = estimate_ibov_from_carry(pr, ref, cdi)
+        src = "carry_estimate"
+    print(f"ok IBOV close: {ibov} (fonte: {src})")
 
     meta = dict(session=f"{session:%Y-%m-%d}", ref=f"{ref:%Y-%m-%d}",
-                ibov_close=ibov, cdi=cdi,
+                ibov_close=ibov, ibov_source=src, cdi=cdi,
                 cotahist=os.path.basename(cot), pr=os.path.basename(pr))
     json.dump(meta, open(os.path.join(WORK, "market.json"), "w"), indent=2)
     print(json.dumps(meta, indent=2))
@@ -170,3 +186,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
