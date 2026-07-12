@@ -136,8 +136,10 @@ def main():
     if len(sys.argv) > 1:
         session = dt.datetime.strptime(sys.argv[1], "%Y-%m-%d").date()
     if session.weekday() >= 5:
-        print("fim de semana — nada a fazer")
-        sys.exit(78)  # neutral
+        # fim de semana: gera o indicador da próxima sessão útil
+        while session.weekday() >= 5:
+            session += dt.timedelta(days=1)
+        print(f"fim de semana — gerando para a próxima sessão: {session}")
     # anda para trás até achar um pregão com arquivos publicados
     # (cobre feriados da B3 sem precisar de calendário)
     ref = previous_business_day(session)
