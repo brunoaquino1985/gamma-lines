@@ -281,6 +281,84 @@ def strike_gex(series, spot, mult):
     return m
 
 # ----------------------------------------------------------------------------
+# Distribuição implícita (Breeden-Litzenberger) e bandas de probabilidade
+# ----------------------------------------------------------------------------
+
+def _front_expiry_series(series, min_T_days=1.5 / 365.0, min_strikes=8):
+    """Escolhe o vencimento mais curto com liquidez suficiente."""
+    from collections import defaultdict as dd
+    by_exp = dd(list)
+    for s in series:
+        by_exp[s["expiry"]].append(s)
+    for exp in sorted(by_exp):
+        lst = by_exp[exp]
+        strikes = {s["strike"] for s in lst if s["trades"] > 0}
+        if lst[0]["T"] >= min_T_days and len(strikes) >= min_strikes:
+            return exp, lst
+    # fallback: o vencimento com mais séries
+    exp = max(by_exp, key=lambda e: len(by_exp[e]))
+    return exp, by_exp[exp]
+
+
+def prob_metrics(series, spot, trading_days_per_year=252):
+    """Extrai do vencimento curto: IV ATM, densidade implícita (BL),
+    P(fechar acima do spot no vencimento), percentis e sigma de 1 dia.
+    Retorna dict em NÍVEIS DO UNDERLYING (converter fora)."""
+    if not series:
+        return None
+    exp, lst = _front_expiry_series(series)
+    T = lst[0]["T"]
+    F = lst[0]["F"]
+    DF = lst[0]["DF"]
+    # smile: reajusta quadrática sobre as IVs já atribuídas (peso por OI)
+    pts = [(math.log(s["strike"] / F), s["iv"], max(s["oi"], 1)) for s in lst]
+    smile = fit_smile(pts)
+    iv_atm = smile(0.0)
+
+    # densidade de Breeden-Litzenberger: f(K) = e_{rT} d2C/dK2
+    lo, hi = F * 0.80, F * 1.20
+    n = 401
+    ks = [lo + (hi - lo) * i / (n - 1) for i in range(n)]
+    h = ks[1] - ks[0]
+    c = [black76(F, k, T, smile(math.log(k / F)), DF, "C") for k in ks]
+    dens = []
+    for i in range(1, n - 1):
+        d2 = (c[i - 1] - 2 * c[i] + c[i + 1]) / (h * h)
+        dens.append(max(d2 / DF, 0.0))
+    kmid = ks[1:-1]
+    tot = sum(dens) * h
+    if tot <= 0:
+        return None
+    dens = [d / tot for d in dens]
+
+    # CDF e percentis
+    cdf, acc = [], 0.0
+    for d in dens:
+        acc += d * h
+        cdf.append(min(acc, 1.0))
+
+    def percentile(p):
+        for i, cv in enumerate(cdf):
+            if cv >= p:
+                return kmid[i]
+        return kmid[-1]
+
+    p_up = 1.0 - min(1.0, sum(d * h for d, k in zip(dens, kmid) if k <= spot))
+
+    sigma_day = iv_atm / math.sqrt(trading_days_per_year)   # fração de 1 dia
+    return dict(
+        expiry=exp, T_years=T, iv_atm=iv_atm, forward=F,
+        p_up_expiry=p_up,
+        pct=dict(p10=percentile(0.10), p25=percentile(0.25),
+                 p50=percentile(0.50), p75=percentile(0.75),
+                 p90=percentile(0.90)),
+        sigma_day_frac=sigma_day,
+        band_up=spot * (1 + sigma_day),
+        band_down=spot * (1 - sigma_day),
+        density=(kmid[::8], dens[::8]),   # amostrado p/ gráfico
+    )
+
+# ----------------------------------------------------------------------------
 # Orquestração
 # ----------------------------------------------------------------------------
 
@@ -361,7 +439,25 @@ def run_model(cot_text, pr_text, ibov_close, r_annual, ref_date,
     imax = max(range(n), key=lambda i: curve[i])
     imin = min(range(n), key=lambda i: curve[i])
 
+    # --- probabilidades implícitas (book BOVA = vencimento curto líquido) ---
+    pm = prob_metrics(bova, bova_spot)
+    prob = None
+    if pm:
+        to_fut = lambda k_b: k_b / bova_spot * ibov_close * factor
+        prob = dict(
+            expiry=f"{pm['expiry']:%Y-%m-%d}",
+            iv_atm=pm["iv_atm"],
+            p_up_expiry=pm["p_up_expiry"],
+            sigma_day_frac=pm["sigma_day_frac"],
+            band_up_fut=to_fut(pm["band_up"]),
+            band_down_fut=to_fut(pm["band_down"]),
+            pct_fut={k: to_fut(v) for k, v in pm["pct"].items()},
+            density_fut=([to_fut(k) for k in pm["density"][0]],
+                         pm["density"][1]),
+        )
+
     res = dict(
+        prob=prob,
         ref_date=ref_date, fut_ticker=fut_tk, fut_settle=fut_settle,
         ibov_close=ibov_close, bova_spot=bova_spot, factor=factor,
         walls=[(w, width[w], w * factor) for w in walls],

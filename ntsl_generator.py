@@ -51,6 +51,11 @@ def generate_ntsl(res, session_date):
     lines.append((maxg, "clMaxGamma", 3, 0))
     lines.append((ming, "clMinGamma", 3, 0))
     lines.append((flip, "clFlip", 2, 0))
+    prob = res.get("prob")
+    if prob:
+        # bandas de 1 desvio-padrão do dia (IV ATM do vencimento curto)
+        lines.append((prob["band_up_fut"], "clBanda", 1, 2))
+        lines.append((prob["band_down_fut"], "clBanda", 1, 2))
     n = len(lines)
 
     out = []
@@ -60,6 +65,7 @@ def generate_ntsl(res, session_date):
     out.append("  clFlip : integer;")
     out.append("  clMaxGamma: integer;")
     out.append("  clMinGamma : integer;")
+    out.append("  clBanda : integer;")
     for i in range(1, n + 1):
         out.append(f"  line{i} : float;")
         out.append(f"  line{i}Color : integer;")
@@ -72,6 +78,7 @@ def generate_ntsl(res, session_date):
     out.append("  clFlip := clYellow;")
     out.append("  clMaxGamma:= clGreen;")
     out.append("  clMinGamma := clRed;")
+    out.append("  clBanda := clAqua;")
     for i, (val, color, w, st) in enumerate(lines, 1):
         out.append(f"  line{i} := {fmt(val)};")
         out.append(f"  line{i}Color := {color};")

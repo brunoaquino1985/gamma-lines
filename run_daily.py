@@ -19,6 +19,7 @@ sys.path.insert(0, HERE)
 
 from gamma_pipeline import run_model          # noqa: E402
 from ntsl_generator import generate_ntsl      # noqa: E402
+from report_html import build_report          # noqa: E402
 
 WORK = os.path.join(HERE, "work")
 OUT = os.path.join(HERE, "output")
@@ -55,6 +56,18 @@ def main():
         min_gamma=round(res["min_gamma"][1], 3),
         series=res["n_series"],
     )
+    if res.get("prob"):
+        p = res["prob"]
+        levels["prob"] = dict(
+            expiry=p["expiry"], iv_atm=round(p["iv_atm"], 4),
+            p_up_expiry=round(p["p_up_expiry"], 4),
+            sigma_day=round(p["sigma_day_frac"], 5),
+            band_up=round(p["band_up_fut"], 3),
+            band_down=round(p["band_down_fut"], 3),
+            pct={k: round(v, 1) for k, v in p["pct_fut"].items()},
+        )
+    html = build_report(res, meta, meta["session"])
+    open(os.path.join(OUT, "report.html"), "w", encoding="utf-8").write(html)
     json.dump(levels, open(os.path.join(OUT, "levels.json"), "w"),
               indent=2, ensure_ascii=False)
     print(json.dumps(levels, indent=2, ensure_ascii=False))
