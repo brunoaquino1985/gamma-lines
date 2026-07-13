@@ -4,6 +4,7 @@ var
   clFlip : integer;
   clMaxGamma: integer;
   clMinGamma : integer;
+  clBanda : integer;
   line1 : float;
   line1Color : integer;
   line1Width : integer;
@@ -76,6 +77,14 @@ var
   line18Color : integer;
   line18Width : integer;
   line18Style : integer;
+  line19 : float;
+  line19Color : integer;
+  line19Width : integer;
+  line19Style : integer;
+  line20 : float;
+  line20Color : integer;
+  line20Width : integer;
+  line20Style : integer;
 
 BEGIN
   clWall := clLime;
@@ -83,6 +92,7 @@ BEGIN
   clFlip := clYellow;
   clMaxGamma:= clGreen;
   clMinGamma := clRed;
+  clBanda := clAqua;
   line1 := 176222.250;
   line1Color := clWall;
   line1Width := 1;
@@ -155,6 +165,14 @@ BEGIN
   line18Color := clFlip;
   line18Width := 2;
   line18Style := 0;
+  line19 := 182601.451;
+  line19Color := clBanda;
+  line19Width := 1;
+  line19Style := 2;
+  line20 := 177674.549;
+  line20Color := clBanda;
+  line20Width := 1;
+  line20Style := 2;
 
  if (((Date = ELDate(2026, 07, 13)) and (Time >= 900)) and ((GetAsset() = "WINFUT") or (GetAsset() = "INDFUT") or (GetAsset() = "WINQ26") or (GetAsset() = "INDQ26"))) then
   begin
@@ -230,6 +248,14 @@ BEGIN
     SetPlotWidth(18, line18Width);
     SetPlotStyle(18, line18Style);
     Plot18(line18);
+    SetPlotColor(19, line19Color);
+    SetPlotWidth(19, line19Width);
+    SetPlotStyle(19, line19Style);
+    Plot19(line19);
+    SetPlotColor(20, line20Color);
+    SetPlotWidth(20, line20Width);
+    SetPlotStyle(20, line20Style);
+    Plot20(line20);
   end;
 
   if (Time > 1900) then
@@ -252,5 +278,7 @@ BEGIN
       NoPlot(16);
       NoPlot(17);
       NoPlot(18);
+      NoPlot(19);
+      NoPlot(20);
     end;
 END;
