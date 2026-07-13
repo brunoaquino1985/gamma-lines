@@ -6,7 +6,12 @@ on:
     - cron: "45 8 * * 1-5"
     # 10:30 UTC = 07:30 BRT, retentativa (caso a B3 atrase os arquivos)
     - cron: "30 10 * * 1-5"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Rodar mesmo que a sessao de hoje ja tenha sido gerada"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -32,7 +37,9 @@ jobs:
         id: check
         run: |
           TODAY=$(TZ=America/Sao_Paulo date +%F)
-          if [ -f output/levels.json ] && grep -q "\"session\": \"$TODAY\"" output/levels.json; then
+          if [ "${{ inputs.force }}" = "true" ]; then
+            echo "done=false" >> "$GITHUB_OUTPUT"
+          elif [ -f output/levels.json ] && grep -q "\"session\": \"$TODAY\"" output/levels.json; then
             echo "done=true" >> "$GITHUB_OUTPUT"
           else
             echo "done=false" >> "$GITHUB_OUTPUT"
