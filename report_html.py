@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Gera o painel HTML diário (autocontido) do GAMMA LINES."""
+"""Gera o painel HTML diário (autocontido) do GAMMA LINES.
+Tema: dark futurista. Tom: professor experiente de day trade ensinando."""
 import json
 
 
@@ -16,7 +17,8 @@ def _br_date(iso):
 
 
 def build_rationale(spot_fut, walls, mids, flip, maxg, ming, band_up, band_down):
-    """Gera cenários operacionais condicionais a partir do mapa de gamma.
+    """Cenários operacionais no tom de um professor de day trade
+    explicando para quem está começando.
     walls: [(strike, width, fut)] ordenado; mids: [fut]."""
     fmt = _fmt
     stars = {3: "★★★", 2: "★★", 1: "★"}
@@ -34,67 +36,107 @@ def build_rationale(spot_fut, walls, mids, flip, maxg, ming, band_up, band_down)
         return min(c) if c else None
 
     if pos:
-        out.append(("Contexto",
-                    f"Preço de referência ({fmt(spot_fut)}) ACIMA do gamma flip ({fmt(flip)}): "
-                    "os dealers estão long gamma e o hedge deles vai contra o movimento — "
-                    "compra em queda, venda em alta. Dia com viés de compressão: as walls "
-                    "tendem a segurar e o preço tende a rodar entre elas."))
+        out.append(("O regime de hoje: gamma POSITIVO",
+                    f"Pense assim: os grandes bancos venderam opções e precisam se proteger. "
+                    f"Com o preço de referência ({fmt(spot_fut)}) ACIMA do gamma flip ({fmt(flip)}), "
+                    "a proteção deles funciona CONTRA o movimento — quando o mercado cai, eles compram; "
+                    "quando sobe, eles vendem. Na prática, isso 'segura' o preço. É por isso que em dia "
+                    "de gamma positivo o mercado tende a andar de lado entre as linhas, devolvendo os "
+                    "exageros. Tradução para o iniciante: dia de comprar barato e vender caro perto das "
+                    "linhas, e NÃO de perseguir rompimento."))
         if acima:
             r1 = acima[0]
             alvo1 = mid_below(r1[2])
             alvo2 = abaixo[-1][2] if abaixo else None
-            txt = (f"Possível VENDA em rejeição na wall {fmt(r1[2])} {stars[r1[1]]}")
+            txt = (f"A primeira parede acima do preço é {fmt(r1[2])} {stars[r1[1]]} — ali há uma "
+                   "concentração grande de proteção dos bancos, que costuma agir como teto. A lição: "
+                   f"se o preço subir até {fmt(r1[2])} e MOSTRAR REJEIÇÃO (candles com pavio para cima, "
+                   "perda de força, velocidade caindo), arma-se a VENDA")
             if alvo1:
-                txt += f", buscando a mid wall {fmt(alvo1)}"
+                txt += f", com primeiro alvo na mid wall {fmt(alvo1)}"
             if alvo2:
-                txt += f" e, na extensão, a wall {fmt(alvo2)}"
-            txt += (f". Invalidação: aceitação consistente acima de {fmt(r1[2])} "
-                    f"(aí a próxima referência vira {fmt(acima[1][2]) if len(acima) > 1 else fmt(maxg)}).")
-            out.append(("Cenário de venda", txt))
+                txt += f" e alvo estendido na wall {fmt(alvo2)}"
+            txt += (f". E onde o professor manda sair se der errado? Se o preço ACEITAR acima de "
+                    f"{fmt(r1[2])} (fechar candles consistentes lá em cima), a tese morreu — não discuta "
+                    f"com o mercado; a próxima referência passa a ser "
+                    f"{fmt(acima[1][2]) if len(acima) > 1 else fmt(maxg)}.")
+            out.append(("Cenário de VENDA (o trade de rejeição no teto)", txt))
         if abaixo:
             s1 = abaixo[-1]
             alvo1 = mid_above(s1[2])
             alvo2 = acima[0][2] if acima else None
-            txt = (f"Possível COMPRA em defesa da wall {fmt(s1[2])} {stars[s1[1]]}")
+            txt = (f"A parede de sustentação mais próxima é {fmt(s1[2])} {stars[s1[1]]}. Quando o preço "
+                   "cai até uma wall e ela SEGURA (o mercado desacelera, aparecem compradores, candles "
+                   "deixam pavio para baixo), arma-se a COMPRA na defesa do nível")
             if alvo1:
-                txt += f", buscando a mid wall {fmt(alvo1)}"
+                txt += f", buscando primeiro a mid wall {fmt(alvo1)}"
             if alvo2:
-                txt += f" e, na extensão, a wall {fmt(alvo2)}"
-            txt += (f". Invalidação: perda consistente de {fmt(s1[2])} "
-                    f"(abaixo disso a referência vira {fmt(abaixo[-2][2]) if len(abaixo) > 1 else fmt(flip)}).")
-            out.append(("Cenário de compra", txt))
-        out.append(("Cenário de quebra de regime",
-                    f"Perda do gamma flip ({fmt(flip)}) muda o jogo: os dealers passam a "
-                    "short gamma e o hedge deles passa a EMPURRAR o movimento. Abaixo do flip, "
-                    f"quedas tendem a acelerar em direção às walls inferiores e ao min gamma ({fmt(ming)}). "
-                    "Evitar comprar 'porque caiu' nesse regime."))
+                txt += f" e, se o fluxo ajudar, a wall {fmt(alvo2)}"
+            txt += (f". Invalidação: perda consistente de {fmt(s1[2])} — abaixo disso quem comprou está "
+                    f"errado e a referência vira {fmt(abaixo[-2][2]) if len(abaixo) > 1 else fmt(flip)}. "
+                    "Regra de ouro: a wall é um PONTO DE DECISÃO, não uma promessa. Espere o preço "
+                    "REAGIR nela antes de entrar.")
+            out.append(("Cenário de COMPRA (o trade de defesa no suporte)", txt))
+        out.append(("O sinal de perigo: perder o gamma flip",
+                    f"O flip ({fmt(flip)}) é a linha onde o comportamento dos bancos INVERTE. Abaixo dele, "
+                    "a proteção deles passa a EMPURRAR o movimento: eles vendem na queda e compram na alta, "
+                    "jogando gasolina no fogo. Se o mercado perder o flip, esqueça a reversão à média — "
+                    f"quedas aceleram em direção às walls de baixo e, no extremo, ao min gamma ({fmt(ming)}). "
+                    "Erro clássico de iniciante nesse regime: comprar 'porque já caiu muito'. Não caia nessa."))
     else:
-        out.append(("Contexto",
-                    f"Preço de referência ({fmt(spot_fut)}) ABAIXO do gamma flip ({fmt(flip)}): "
-                    "dealers short gamma — o hedge deles amplifica o movimento (vende queda, "
-                    "compra alta). Dia com viés de aceleração: rompimentos tendem a estender "
-                    "e reversões exigem confirmação."))
+        out.append(("O regime de hoje: gamma NEGATIVO — atenção redobrada",
+                    f"O preço de referência ({fmt(spot_fut)}) está ABAIXO do gamma flip ({fmt(flip)}). "
+                    "Nesse regime a proteção dos bancos AMPLIFICA o movimento: eles vendem quando cai e "
+                    "compram quando sobe. É o dia da tendência e da aceleração — rompimentos tendem a "
+                    "andar, e tentar adivinhar fundo é receita de prejuízo. O iniciante sobrevive a esse "
+                    "dia operando A FAVOR do movimento e com stop curto."))
         if abaixo:
             s1 = abaixo[-1]
             prox = abaixo[-2][2] if len(abaixo) > 1 else ming
-            out.append(("Cenário de venda (continuação)",
-                        f"Perda da wall {fmt(s1[2])} {stars[s1[1]]} abre espaço até {fmt(prox)} "
-                        f"e, na extensão, o min gamma ({fmt(ming)}). Em gamma negativo o "
-                        "rompimento tende a andar — a invalidação é o retorno rápido para dentro do nível perdido."))
-        out.append(("Cenário de reversão",
-                    f"Recuperar o flip ({fmt(flip)}) devolve o mercado ao regime de compressão "
-                    "e favorece compra em recuo, com alvos nas walls/mid walls acima. "
-                    "Enquanto abaixo do flip, compras são contra-tendência."))
+            out.append(("Cenário de VENDA (continuação do movimento)",
+                        f"Se o mercado perder a wall {fmt(s1[2])} {stars[s1[1]]}, abre-se espaço até "
+                        f"{fmt(prox)} e, na extensão, até o min gamma ({fmt(ming)}). Em gamma negativo o "
+                        "rompimento tende a ter continuidade — a entrada é no rompimento confirmado ou no "
+                        "reteste por baixo. Invalidação: o preço voltar RÁPIDO para dentro do nível perdido "
+                        "(rompimento falso, o famoso 'violinada')."))
+        out.append(("Cenário de REVERSÃO (só com confirmação)",
+                    f"Recuperar o flip ({fmt(flip)}) devolve o mercado ao regime calmo e aí sim compra em "
+                    "recuo volta a fazer sentido, com alvos nas walls e mid walls acima. Enquanto o preço "
+                    "estiver abaixo do flip, toda compra é contra-tendência — tamanho reduzido e stop curto, "
+                    "ou simplesmente fique de fora. Não operar também é posição."))
 
-    out.append(("Bandas do dia",
-                f"O mercado de opções precifica o dia entre {fmt(band_down)} e {fmt(band_up)} (±1σ). "
-                "Toque na banda COM confluência de wall é o ponto de maior interesse para reversão; "
-                "preço rodando fora da banda sinaliza dia atípico — reduzir expectativa de reversão à média."))
-    out.append(("Extremos do mapa",
-                f"Max gamma ({fmt(maxg)}) e min gamma ({fmt(ming)}) funcionam como teto e piso "
-                "estatísticos do posicionamento atual: aproximações desses níveis historicamente "
-                "atraem realização/defesa forte dos books."))
+    out.append(("As bandas do dia: o 'campo de jogo' esperado",
+                f"O mercado de opções está precificando que o dia deve transcorrer entre {fmt(band_down)} e "
+                f"{fmt(band_up)} (1 desvio-padrão). Como usar: toque na banda JUNTO com uma wall é o ponto "
+                "de maior interesse do dia para reversão — dois motivos independentes apontando para o mesmo "
+                "lugar. Já preço rodando FORA da banda avisa que o dia é atípico (notícia, fluxo forte): "
+                "reduza a expectativa de reversão à média e respeite a tendência."))
+    out.append(("Teto e piso do mapa",
+                f"Max gamma ({fmt(maxg)}) e min gamma ({fmt(ming)}) são os extremos do posicionamento atual "
+                "— pense neles como as bordas do tabuleiro. Historicamente, aproximações desses níveis "
+                "atraem realização e defesa pesada dos grandes players. Não é nível de todo dia: quando o "
+                "preço chega lá, algo relevante está acontecendo."))
     return out
+
+
+GLOSSARY = [
+    ("WALL (parede)", "Strike onde os bancos concentram proteção de opções. Funciona como ímã e barreira: "
+     "o preço é atraído, mas tem dificuldade de atravessar. Mais estrelas = parede mais forte."),
+    ("GAMMA FLIP", "A linha divisória de comportamento. Acima dela o mercado tende a andar de lado "
+     "(regime calmo); abaixo, tende a acelerar (regime nervoso). É a linha mais importante do mapa."),
+    ("MID WALL", "Ponto médio entre duas walls — costuma ser o primeiro alvo de quem opera a rejeição "
+     "de uma parede."),
+    ("BANDAS ±1σ", "O tamanho de movimento que o mercado de opções espera para o dia. Dentro delas, "
+     "dia normal; fora delas, dia atípico."),
+    ("POC", "Point of Control: o preço onde MAIS contratos foram negociados na sessão anterior. É a "
+     "região de maior aceitação — o mercado 'gosta' desse preço e tende a revisitá-lo."),
+    ("VAH / VAL", "Topo e fundo da área de valor (70% do volume da sessão anterior). Abrir dentro dela "
+     "favorece dia de rotação; abrir fora favorece dia de tendência."),
+    ("FLUXO ESTRANGEIRO", "Saldo de compras e vendas dos investidores estrangeiros na bolsa (defasado 2 "
+     "pregões). Eles movem o índice: fluxo persistente numa direção dá sustentação ao movimento."),
+    ("MAX / MIN GAMMA", "Extremos do mapa de posicionamento — teto e piso estatísticos onde a defesa "
+     "dos grandes players costuma ser mais agressiva."),
+]
 
 
 def build_report(res, meta, session_str, flow=None, vp=None):
@@ -102,11 +144,9 @@ def build_report(res, meta, session_str, flow=None, vp=None):
     spot_fut = res["ibov_close"] * res["factor"]
     flip_fut = res["flip"][1]
     regime = "GAMMA POSITIVO" if spot_fut >= flip_fut else "GAMMA NEGATIVO"
-    regime_desc = ("mercado acima do flip: hedge das tesourarias comprime o preço "
-                   "(tendência de reversão à média entre as walls)"
+    regime_desc = ("regime calmo: as paredes tendem a segurar o preço"
                    if spot_fut >= flip_fut else
-                   "mercado abaixo do flip: hedge das tesourarias amplifica o "
-                   "movimento (tendência de aceleração)")
+                   "regime nervoso: movimentos tendem a acelerar")
 
     walls = [dict(strike=k, width=w, fut=round(f, 1)) for k, w, f in res["walls"]]
     s_grid, curve = res["curve"]
@@ -145,18 +185,18 @@ def build_report(res, meta, session_str, flow=None, vp=None):
     p_up = prob.get("p_up_expiry")
     sig = prob.get("sigma_day_frac") or 0
     tiles = f"""
-      <div class="tile"><div class="tl">P(fechar acima do spot)*</div>
-        <div class="tv">{(p_up*100):.0f}%</div>
-        <div class="ts">até {prob.get('expiry','-')} (opções BOVA11)</div></div>
-      <div class="tile"><div class="tl">Movimento esperado do dia (±1σ)</div>
-        <div class="tv">±{_fmt(spot_fut*sig)} pts</div>
-        <div class="ts">IV ATM {prob.get('iv_atm',0)*100:.1f}% a.a. → {sig*100:.2f}% no dia</div></div>
+      <div class="tile"><div class="tl">Probabilidade de alta*</div>
+        <div class="tv neon">{(p_up*100):.0f}%</div>
+        <div class="ts">chance de fechar acima do preço atual até {_br_date(prob.get('expiry','-'))}</div></div>
+      <div class="tile"><div class="tl">Movimento esperado hoje</div>
+        <div class="tv neon">±{_fmt(spot_fut*sig)} <span class="unit">pts</span></div>
+        <div class="ts">o "tamanho do dia" que as opções precificam (1σ)</div></div>
       <div class="tile"><div class="tl">Regime de gamma</div>
         <div class="tv {'pos' if spot_fut>=flip_fut else 'neg'}">{regime}</div>
-        <div class="ts">flip em {_fmt(flip_fut)} · ref. {_fmt(spot_fut)}</div></div>
-      <div class="tile"><div class="tl">Wall principal</div>
-        <div class="tv">{_fmt([w for w in walls if w['width']==3][0]['fut'] if any(w['width']==3 for w in walls) else 0)}</div>
-        <div class="ts">maior concentração de gamma do book</div></div>
+        <div class="ts">{regime_desc} · flip em {_fmt(flip_fut)}</div></div>
+      <div class="tile"><div class="tl">Parede principal</div>
+        <div class="tv neon">{_fmt([w for w in walls if w['width']==3][0]['fut'] if any(w['width']==3 for w in walls) else 0)}</div>
+        <div class="ts">a wall ★★★ — maior concentração de proteção dos bancos</div></div>
     """ if p_up is not None else "<div class='tile'><div class='tl'>Probabilidades indisponíveis</div></div>"
 
     tiles2 = ""
@@ -166,50 +206,50 @@ def build_report(res, meta, session_str, flow=None, vp=None):
         cls_d = "pos" if fx >= 0 else "neg"
         cls_5 = "pos" if fx5 >= 0 else "neg"
         tiles2 += f"""
-      <div class="tile"><div class="tl">Fluxo estrangeiro (sessão {_br_date(flow['last_session'])})</div>
-        <div class="tv {cls_d}">{'+' if fx >= 0 else '−'}R$ {_fmt(abs(fx))} mi</div>
-        <div class="ts">mercado à vista · {flow['lag_note']}</div></div>
-      <div class="tile"><div class="tl">Fluxo estrangeiro acumulado 5 sessões</div>
-        <div class="tv {cls_5}">{'+' if fx5 >= 0 else '−'}R$ {_fmt(abs(fx5))} mi</div>
+      <div class="tile"><div class="tl">Fluxo estrangeiro · {_br_date(flow['last_session'])}</div>
+        <div class="tv {cls_d}">{'+' if fx >= 0 else '−'}R$ {_fmt(abs(fx))} <span class="unit">mi</span></div>
+        <div class="ts">o dinheiro gringo {'entrou' if fx >= 0 else 'saiu'} nesse dia (dado com 2 pregões de atraso)</div></div>
+      <div class="tile"><div class="tl">Fluxo estrangeiro · 5 sessões</div>
+        <div class="tv {cls_5}">{'+' if fx5 >= 0 else '−'}R$ {_fmt(abs(fx5))} <span class="unit">mi</span></div>
         <div class="ts">21 sessões: {'+' if flow['estrangeiro_21d_mi'] >= 0 else '−'}R$ {_fmt(abs(flow['estrangeiro_21d_mi']))} mi</div></div>"""
     if vp and vp.get("d1"):
         d1 = vp["d1"]
         comp = vp.get("comp")
         tiles2 += f"""
-      <div class="tile"><div class="tl">POC da sessão anterior ({vp['ticker']})</div>
-        <div class="tv">{_fmt(d1['poc'])}</div>
-        <div class="ts">área de valor {_fmt(d1['val'])} – {_fmt(d1['vah'])}</div></div>"""
+      <div class="tile"><div class="tl">POC da sessão anterior · {vp['ticker']}</div>
+        <div class="tv neon">{_fmt(d1['poc'])}</div>
+        <div class="ts">área de valor {_fmt(d1['val'])} — {_fmt(d1['vah'])} (onde 70% do volume girou)</div></div>"""
         if comp:
             tiles2 += f"""
-      <div class="tile"><div class="tl">POC composto {comp['days']} sessões</div>
-        <div class="tv">{_fmt(comp['poc'])}</div>
-        <div class="ts">área de valor {_fmt(comp['val'])} – {_fmt(comp['vah'])}</div></div>"""
+      <div class="tile"><div class="tl">POC composto · {comp['days']} sessões</div>
+        <div class="tv neon">{_fmt(comp['poc'])}</div>
+        <div class="ts">área de valor {_fmt(comp['val'])} — {_fmt(comp['vah'])} (zona consolidada da semana)</div></div>"""
 
     rows = []
     for w in walls:
         tag = {3: "WALL ★★★", 2: "WALL ★★", 1: "WALL ★"}[w["width"]]
-        rows.append((w["fut"], tag, f"strike {w['strike']:,}".replace(",", ".")))
+        rows.append((w["fut"], tag, f"parede de proteção · strike {w['strike']:,}".replace(",", ".")))
     for m in data["mids"]:
-        rows.append((m, "mid wall", "ponto médio entre walls"))
-    rows.append((data["maxg"], "MAX GAMMA", "teto do perfil de gamma (±12%)"))
-    rows.append((data["ming"], "MIN GAMMA", "piso do perfil de gamma (±12%)"))
-    rows.append((data["flip"], "GAMMA FLIP", "troca de sinal do gamma líquido"))
+        rows.append((m, "mid wall", "primeiro alvo entre paredes"))
+    rows.append((data["maxg"], "MAX GAMMA", "teto estatístico do mapa"))
+    rows.append((data["ming"], "MIN GAMMA", "piso estatístico do mapa"))
+    rows.append((data["flip"], "GAMMA FLIP", "divisor de regime — a linha mais importante"))
     if prob.get("band_up_fut"):
-        rows.append((prob["band_up_fut"], "banda +1σ", "movimento esperado do dia"))
-        rows.append((prob["band_down_fut"], "banda −1σ", "movimento esperado do dia"))
+        rows.append((prob["band_up_fut"], "banda +1σ", "limite superior esperado do dia"))
+        rows.append((prob["band_down_fut"], "banda −1σ", "limite inferior esperado do dia"))
     if vp and vp.get("d1"):
         d1 = vp["d1"]
-        rows.append((d1["poc"], "POC (1 sessão)", "preço mais negociado da sessão anterior"))
-        rows.append((d1["vah"], "VAH (1 sessão)", "topo da área de valor (70% do volume)"))
-        rows.append((d1["val"], "VAL (1 sessão)", "base da área de valor (70% do volume)"))
+        rows.append((d1["poc"], "POC (1 sessão)", "preço mais negociado ontem — ímã de preço"))
+        rows.append((d1["vah"], "VAH (1 sessão)", "topo da área de valor de ontem"))
+        rows.append((d1["val"], "VAL (1 sessão)", "fundo da área de valor de ontem"))
         if vp.get("comp"):
             c = vp["comp"]
-            rows.append((c["poc"], f"POC ({c['days']} sessões)", "preço mais negociado do composto"))
-            rows.append((c["vah"], f"VAH ({c['days']} sessões)", "topo da área de valor composta"))
-            rows.append((c["val"], f"VAL ({c['days']} sessões)", "base da área de valor composta"))
+            rows.append((c["poc"], f"POC ({c['days']} sessões)", "preço mais negociado da semana"))
+            rows.append((c["vah"], f"VAH ({c['days']} sessões)", "topo da área de valor semanal"))
+            rows.append((c["val"], f"VAL ({c['days']} sessões)", "fundo da área de valor semanal"))
     rows.sort(key=lambda r: -r[0])
     table_rows = "\n".join(
-        f"<tr><td class='num'>{_fmt(v,1)}</td><td>{t}</td><td class='muted'>{d}</td></tr>"
+        f"<tr><td class='num'>{_fmt(v,1)}</td><td class='tag'>{t}</td><td class='muted'>{d}</td></tr>"
         for v, t, d in rows)
 
     rationale = build_rationale(
@@ -221,31 +261,37 @@ def build_report(res, meta, session_str, flow=None, vp=None):
         conf = [w for w in res["walls"]
                 if abs(w[2] - d1["poc"]) <= 200 or abs(w[2] - d1["vah"]) <= 200
                 or abs(w[2] - d1["val"]) <= 200]
-        txt = (f"POC da sessão anterior em {_fmt(d1['poc'])}, com área de valor entre "
-               f"{_fmt(d1['val'])} e {_fmt(d1['vah'])}. Abertura DENTRO da área de valor favorece "
-               "rotação (operar as extremidades VAL/VAH); abertura FORA favorece teste do POC "
-               "ou continuação (dia de tendência).")
+        txt = (f"Ontem o mercado negociou mais no POC {_fmt(d1['poc'])}, com a área de valor entre "
+               f"{_fmt(d1['val'])} e {_fmt(d1['vah'])}. A leitura que ensino sempre: se o dia ABRIR DENTRO "
+               "dessa faixa, o mercado está 'confortável' — espere rotação e opere as bordas (compra no VAL, "
+               "venda no VAH, alvo no POC). Se ABRIR FORA, o mercado rejeitou os preços de ontem — ou ele "
+               "volta para testar o POC (movimento de retorno) ou engata tendência para longe dele.")
         if conf:
-            txt += (" Confluência relevante: wall de gamma a menos de 200 pts de "
+            txt += (" Detalhe importante hoje: há wall de gamma a menos de 200 pontos de "
                     + ", ".join(_fmt(w[2]) for w in conf[:2])
-                    + " reforça esses níveis.")
-        rationale.append(("Volume profile", txt))
+                    + " — quando volume e gamma apontam para o mesmo lugar, o nível vale em dobro.")
+        rationale.append(("Volume profile: onde o mercado 'aceitou' negociar", txt))
     if flow:
         fx, fx5 = flow["estrangeiro_dia_mi"], flow["estrangeiro_5d_mi"]
         lado_d = "COMPRADOR" if fx >= 0 else "VENDEDOR"
-        lado_5 = "comprador" if fx5 >= 0 else "vendedor"
-        rationale.append(("Fluxo estrangeiro",
-                          f"Estrangeiro {lado_d} de R$ {_fmt(abs(fx))} mi na sessão de "
-                          f"{_br_date(flow['last_session'])} (dado mais recente, D-2) e {lado_5} de "
-                          f"R$ {_fmt(abs(fx5))} mi no acumulado de 5 sessões. Fluxo persistente na "
-                          "mesma direção dá suporte a rompimentos nessa direção; fluxo contra o "
-                          "movimento do preço sugere movimento menos sustentável."))
+        lado_5 = "comprando" if fx5 >= 0 else "vendendo"
+        rationale.append(("Fluxo estrangeiro: quem está pagando a conta",
+                          f"O estrangeiro — que é quem de fato move o nosso índice — apareceu {lado_d} em "
+                          f"R$ {_fmt(abs(fx))} mi na sessão de {_br_date(flow['last_session'])} (o dado sai "
+                          f"com 2 pregões de atraso) e vem {lado_5} R$ {_fmt(abs(fx5))} mi no acumulado de 5 "
+                          "sessões. Como usar: fluxo persistente na MESMA direção do movimento valida "
+                          "rompimentos; preço subindo com estrangeiro vendendo (ou o contrário) é movimento "
+                          "com perna curta — desconfie."))
     rat_html = "\n".join(
         f"<div class='rat'><div class='rt'>{t}</div><div class='rd'>{d}</div></div>"
         for t, d in rationale)
 
+    gloss_html = "\n".join(
+        f"<div class='gl'><span class='gt'>{t}</span><span class='gd'>{d}</span></div>"
+        for t, d in GLOSSARY)
+
     banner = (f"Mapa calculado com os dados do pregão de <b>{_br_date(res['ref_date'])}</b> "
-              f"(fechamento) — para uso na sessão de <b>{_br_date(session_str)}</b>.")
+              f"(fechamento) — preparado para a sessão de <b>{_br_date(session_str)}</b>.")
 
     tiles2_html = f'<div class="tiles">{tiles2}</div>' if tiles2 else ""
     return HTML_TMPL.replace("__DATA__", json.dumps(data)) \
@@ -253,6 +299,7 @@ def build_report(res, meta, session_str, flow=None, vp=None):
                     .replace("__TILES__", tiles) \
                     .replace("__ROWS__", table_rows) \
                     .replace("__RATIONALE__", rat_html) \
+                    .replace("__GLOSSARY__", gloss_html) \
                     .replace("__BANNER__", banner) \
                     .replace("__SESSION__", _br_date(session_str))
 
@@ -260,84 +307,123 @@ def build_report(res, meta, session_str, flow=None, vp=None):
 HTML_TMPL = r"""<!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gamma Lines — __SESSION__</title>
+<title>GAMMA LINES — __SESSION__</title>
 <style>
 :root{
-  --surface:#fcfcfb; --page:#f9f9f7; --ink:#0b0b0b; --ink2:#52514e;
-  --muted:#898781; --grid:#e1e0d9; --axis:#c3c2b7;
-  --pos:#2a78d6; --neg:#e34948; --mid:#f0efec; --accent:#1baf7a;
-  --border:rgba(11,11,11,.10);
+  --page:#05070c; --surface:#0b101c; --surface2:#0e1524;
+  --ink:#eaf2ff; --ink2:#9fb3d1; --muted:#5e7191;
+  --grid:#16203a; --axis:#243354;
+  --pos:#33b1ff; --neg:#ff5d5d; --mid:#1a2438; --accent:#00e5a0;
+  --gold:#ffd75e; --cyan:#37e0ff; --magenta:#ff5dc8;
+  --border:rgba(55,224,255,.14);
+  --glow:0 0 18px rgba(55,224,255,.18);
 }
-@media (prefers-color-scheme: dark){
-  :root{ --surface:#1a1a19; --page:#0d0d0d; --ink:#fff; --ink2:#c3c2b7;
-    --muted:#898781; --grid:#2c2c2a; --axis:#383835;
-    --pos:#3987e5; --neg:#e66767; --mid:#383835; --accent:#199e70;
-    --border:rgba(255,255,255,.10); }
-}
-*{box-sizing:border-box} body{margin:0;background:var(--page);color:var(--ink);
-  font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;padding:20px}
-h1{font-size:19px;margin:0} h2{font-size:14px;margin:0 0 8px;color:var(--ink2)}
-.sub{color:var(--muted);font-size:12px;margin:4px 0 16px}
-.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
-.tiles{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-bottom:14px}
-.tile{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
-.tl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-.tv{font-size:26px;font-weight:650;margin:2px 0}
-.tv.pos{color:var(--pos)} .tv.neg{color:var(--neg)}
-.ts{font-size:11px;color:var(--ink2)}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);padding:24px;
+  font:14px/1.55 "Segoe UI",system-ui,-apple-system,sans-serif;
+  background:
+    radial-gradient(1200px 500px at 70% -10%, rgba(55,224,255,.07), transparent 60%),
+    radial-gradient(900px 400px at 10% 110%, rgba(0,229,160,.05), transparent 60%),
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(55,224,255,.025) 39px 40px),
+    repeating-linear-gradient(90deg, transparent 0 39px, rgba(55,224,255,.02) 39px 40px),
+    var(--page);}
+.num,.tv,td.num{font-family:"Cascadia Code","Consolas",ui-monospace,monospace;
+  font-variant-numeric:tabular-nums}
+h1{font-size:24px;margin:0;letter-spacing:.12em;text-transform:uppercase;
+  background:linear-gradient(90deg,var(--cyan),var(--accent));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:12px;margin:0 0 12px;color:var(--cyan);text-transform:uppercase;
+  letter-spacing:.18em;font-weight:600}
+h2::before{content:"▸ ";color:var(--accent)}
+.sub{color:var(--muted);font-size:12px;margin:6px 0 18px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+.card{background:linear-gradient(180deg,var(--surface2),var(--surface));
+  border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--glow)}
+.tiles{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin-bottom:16px}
+.tile{background:linear-gradient(180deg,var(--surface2),var(--surface));
+  border:1px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--glow);
+  position:relative;overflow:hidden}
+.tile::after{content:"";position:absolute;inset:0 0 auto 0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.55}
+.tl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.16em}
+.tv{font-size:34px;font-weight:700;margin:6px 0 4px;line-height:1.1}
+.tv.neon{color:var(--cyan);text-shadow:0 0 22px rgba(55,224,255,.45)}
+.tv.pos{color:var(--pos);text-shadow:0 0 22px rgba(51,177,255,.4)}
+.tv.neg{color:var(--neg);text-shadow:0 0 22px rgba(255,93,93,.4)}
+.unit{font-size:15px;color:var(--ink2);font-weight:400}
+.ts{font-size:11.5px;color:var(--ink2)}
 svg{display:block;width:100%;height:auto}
 table{width:100%;border-collapse:collapse;font-size:13px}
-td,th{padding:5px 8px;border-bottom:1px solid var(--grid);text-align:left}
-td.num{font-variant-numeric:tabular-nums;font-weight:600}
-.muted{color:var(--muted)} .foot{color:var(--muted);font-size:11px;margin-top:16px}
-.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--page);
-  padding:4px 8px;border-radius:6px;font-size:12px;display:none;z-index:9}
-.legend{display:flex;gap:14px;font-size:11px;color:var(--ink2);margin-top:6px;flex-wrap:wrap}
+td,th{padding:7px 10px;border-bottom:1px solid var(--grid);text-align:left}
+th{color:var(--muted);text-transform:uppercase;font-size:10px;letter-spacing:.14em}
+td.num{font-weight:700;font-size:16px;color:var(--cyan)}
+td.tag{color:var(--ink);white-space:nowrap}
+.muted{color:var(--muted)}
+.foot{color:var(--muted);font-size:11px;margin-top:20px;border-top:1px solid var(--grid);padding-top:12px}
+.tip{position:fixed;pointer-events:none;background:#0e1524;color:var(--ink);
+  border:1px solid var(--border);padding:6px 10px;border-radius:8px;font-size:12px;
+  display:none;z-index:9;box-shadow:var(--glow)}
+.legend{display:flex;gap:16px;font-size:11px;color:var(--ink2);margin-top:8px;flex-wrap:wrap}
 .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;
-  margin-right:5px;vertical-align:-1px;background:var(--c)}
-.banner{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);
-  border-radius:10px;padding:10px 14px;margin:0 0 14px;font-size:13px;color:var(--ink2)}
-.banner b{color:var(--ink)}
-.rat{padding:8px 0;border-bottom:1px solid var(--grid)} .rat:last-child{border-bottom:0}
-.rt{font-weight:650;font-size:13px;margin-bottom:2px}
-.rd{font-size:13px;color:var(--ink2)}
+  margin-right:6px;vertical-align:-1px;background:var(--c);box-shadow:0 0 8px var(--c)}
+.banner{background:linear-gradient(90deg,rgba(0,229,160,.10),transparent 70%);
+  border:1px solid var(--border);border-left:3px solid var(--accent);
+  border-radius:12px;padding:12px 16px;margin:0 0 16px;font-size:13.5px;color:var(--ink2)}
+.banner b{color:var(--accent)}
+.prof{background:linear-gradient(90deg,rgba(55,224,255,.08),transparent 70%);
+  border:1px solid var(--border);border-left:3px solid var(--cyan);
+  border-radius:12px;padding:12px 16px;margin:0 0 16px;font-size:13.5px;color:var(--ink2)}
+.prof b{color:var(--cyan)}
+.rat{padding:12px 0;border-bottom:1px solid var(--grid)} .rat:last-child{border-bottom:0}
+.rt{font-weight:700;font-size:14px;margin-bottom:4px;color:var(--gold)}
+.rd{font-size:13.5px;color:var(--ink2)}
+.gl{padding:8px 0;border-bottom:1px dashed var(--grid);font-size:12.5px}
+.gl:last-child{border-bottom:0}
+.gt{color:var(--cyan);font-weight:700;margin-right:8px;letter-spacing:.04em}
+.gd{color:var(--ink2)}
 </style></head><body>
-<h1>GAMMA LINES — sessão __SESSION__</h1>
+<h1>Gamma Lines // __SESSION__</h1>
 <div class="sub" id="sub"></div>
 <div class="banner">__BANNER__</div>
+<div class="prof"><b>Aula rápida antes do pregão:</b> este painel é o seu mapa do território. As
+<b>walls</b> são as paredes onde os grandes players se defendem; o <b>flip</b> diz se o dia tende a ser
+calmo ou nervoso; as <b>bandas</b> mostram o tamanho esperado do dia; o <b>POC</b> mostra onde o mercado
+negociou ontem; e o <b>fluxo</b> mostra quem está colocando dinheiro. Nenhuma linha é sinal de entrada
+sozinha — elas marcam os pontos de decisão onde você deve OBSERVAR a reação do preço antes de agir.</div>
 <div class="tiles">__TILES__</div>
 __TILES2__
-<div class="card" style="margin-bottom:14px"><h2>Racional operacional do dia (cenários condicionais)</h2>
+<div class="card" style="margin-bottom:16px"><h2>A aula do dia — cenários e como operá-los</h2>
 __RATIONALE__</div>
 <div class="grid">
-  <div class="card"><h2>Gamma líquido dos dealers × nível do futuro</h2>
+  <div class="card"><h2>Gamma dos dealers × nível do futuro</h2>
     <svg id="curve" viewBox="0 0 560 260"></svg>
-    <div class="legend"><span style="--c:var(--pos)">gamma positivo</span>
-      <span style="--c:var(--neg)">gamma negativo</span>
-      <span style="--c:#eda100">flip</span><span style="--c:var(--muted)">preço ref.</span></div></div>
-  <div class="card"><h2>GEX líquido por strike (R$ mi)</h2>
+    <div class="legend"><span style="--c:var(--pos)">gamma positivo (segura)</span>
+      <span style="--c:var(--neg)">gamma negativo (acelera)</span>
+      <span style="--c:var(--gold)">flip</span><span style="--c:var(--muted)">preço ref.</span></div></div>
+  <div class="card"><h2>Concentração por strike (R$ mi)</h2>
     <svg id="bars" viewBox="0 0 560 260"></svg>
-    <div class="legend"><span style="--c:var(--pos)">dealers long gamma</span>
-      <span style="--c:var(--neg)">dealers short gamma</span><span style="--c:var(--muted)">★ = wall</span></div></div>
-  <div class="card"><h2>Distribuição implícita até o vencimento curto</h2>
+    <div class="legend"><span style="--c:var(--pos)">bancos long gamma</span>
+      <span style="--c:var(--neg)">bancos short gamma</span><span style="--c:var(--muted)">★ = wall</span></div></div>
+  <div class="card"><h2>Onde o mercado acha que fecha (distribuição)</h2>
     <svg id="dens" viewBox="0 0 560 240"></svg>
-    <div class="legend"><span style="--c:var(--accent)">densidade</span>
+    <div class="legend"><span style="--c:var(--accent)">probabilidade</span>
       <span style="--c:var(--muted)">P10–P90</span><span style="--c:var(--pos)">±1σ dia</span></div></div>
   <div class="card"><h2>Níveis do dia (pontos do futuro)</h2>
-    <div style="max-height:300px;overflow:auto"><table>
-      <tr><th>nível</th><th>tipo</th><th class="muted">descrição</th></tr>
+    <div style="max-height:320px;overflow:auto"><table>
+      <tr><th>nível</th><th>tipo</th><th>como usar</th></tr>
       __ROWS__</table></div></div>
   <div class="card" id="cardflow" style="display:none"><h2>Fluxo estrangeiro por sessão (R$ mi)</h2>
     <svg id="flow" viewBox="0 0 560 240"></svg>
-    <div class="legend"><span style="--c:var(--pos)">comprador</span>
-      <span style="--c:var(--neg)">vendedor</span>
-      <span style="--c:var(--muted)">mercado à vista · defasagem D-2</span></div></div>
-  <div class="card" id="cardvp" style="display:none"><h2>Volume profile do WIN (sessão anterior × composto)</h2>
+    <div class="legend"><span style="--c:var(--pos)">gringo comprando</span>
+      <span style="--c:var(--neg)">gringo vendendo</span>
+      <span style="--c:var(--muted)">à vista · defasagem D-2</span></div></div>
+  <div class="card" id="cardvp" style="display:none"><h2>Volume profile do WIN (ontem × semana)</h2>
     <svg id="vp" viewBox="0 0 560 300"></svg>
-    <div class="legend"><span style="--c:var(--pos)">volume sessão anterior</span>
-      <span style="--c:var(--mid)">volume composto</span>
-      <span style="--c:#e87ba4">POC</span><span style="--c:var(--muted)">VAH/VAL</span></div></div>
+    <div class="legend"><span style="--c:var(--pos)">volume de ontem</span>
+      <span style="--c:var(--mid)">volume da semana</span>
+      <span style="--c:var(--magenta)">POC</span><span style="--c:var(--muted)">VAH/VAL</span></div></div>
+  <div class="card"><h2>Glossário do professor</h2>
+__GLOSSARY__</div>
 </div>
 <div class="foot" id="foot"></div>
 <div class="tip" id="tip"></div>
@@ -346,9 +432,9 @@ const D = __DATA__;
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const fmt = (x,d=0)=>x.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
 document.getElementById('sub').textContent =
-  `gerado com dados de ${D.ref} · ${D.fut} ajuste ${fmt(D.fut_settle)} · IBOV ${fmt(D.ibov,2)} (${D.ibov_source}) · fator ${D.fator.toFixed(5)} · séries: ${D.n_series.bova} BOVA11 + ${D.n_series.ibov} IBOV`;
+  `dados de ${D.ref} · ${D.fut} ajuste ${fmt(D.fut_settle)} · IBOV ${fmt(D.ibov,2)} (${D.ibov_source}) · fator ${D.fator.toFixed(5)} · séries: ${D.n_series.bova} BOVA11 + ${D.n_series.ibov} IBOV`;
 document.getElementById('foot').textContent =
-  '*Probabilidade risk-neutral extraída da curva de opções (Breeden-Litzenberger); leitura de cenário, não recomendação de investimento. Gerado automaticamente a partir de dados públicos da B3.';
+  '*Probabilidade risk-neutral extraída da curva de opções (Breeden-Litzenberger). Este painel é material educacional gerado automaticamente a partir de dados públicos da B3 — leitura de cenário, não recomendação de investimento. Gerencie seu risco: nenhum mapa substitui o stop.';
 const tip = document.getElementById('tip');
 function showTip(ev,html){tip.innerHTML=html;tip.style.display='block';
   tip.style.left=(ev.clientX+12)+'px';tip.style.top=(ev.clientY-10)+'px';}
@@ -369,12 +455,11 @@ function el(p,t,a){const e=document.createElementNS(NS,t);
     el(svg,'line',{x1:m.l,x2:W-m.r,y1:Y(yv),y2:Y(yv),stroke:g===0?css('--axis'):css('--grid'),'stroke-width':1});
     el(svg,'text',{x:m.l-6,y:Y(yv)+4,'text-anchor':'end',fill:css('--muted'),'font-size':10}).textContent=fmt(yv/1000,1)+' bi';}
   const flipX=X(D.flip), spotX=X(D.spot_fut);
-  if(D.flip>=x0&&D.flip<=x1){el(svg,'line',{x1:flipX,x2:flipX,y1:m.t,y2:H-m.b,stroke:'#eda100','stroke-width':1.5,'stroke-dasharray':'4 3'});}
+  if(D.flip>=x0&&D.flip<=x1){el(svg,'line',{x1:flipX,x2:flipX,y1:m.t,y2:H-m.b,stroke:css('--gold'),'stroke-width':1.5,'stroke-dasharray':'4 3'});}
   if(D.spot_fut>=x0&&D.spot_fut<=x1){el(svg,'line',{x1:spotX,x2:spotX,y1:m.t,y2:H-m.b,stroke:css('--muted'),'stroke-width':1.5});}
-  let dPos='',dNeg='';
+  let dPos='';
   xs.forEach((xv,i)=>{const p=`${X(xv)},${Y(ys[i])}`;dPos+=(i?' L':'M')+p;});
   el(svg,'path',{d:dPos,fill:'none',stroke:css('--pos'),'stroke-width':2});
-  // pontos negativos realçados
   xs.forEach((xv,i)=>{ if(ys[i]<0) el(svg,'circle',{cx:X(xv),cy:Y(ys[i]),r:1.6,fill:css('--neg')}); });
   for(let i=0;i<=4;i++){const xv=x0+(x1-x0)*i/4;
     el(svg,'text',{x:X(xv),y:H-8,'text-anchor':'middle',fill:css('--muted'),'font-size':10}).textContent=fmt(xv/1000,0)+'k';}
@@ -399,12 +484,12 @@ function el(p,t,a){const e=document.createElementNS(NS,t);
     const x=m.l+i*bw+1,w=Math.max(bw-2,2);
     const y=b.net>=0?Y(b.net):Y(0),h=Math.abs(Y(b.net)-Y(0))||1;
     const r=el(svg,'rect',{x,y,width:w,height:h,rx:3,
-      fill:b.net>=0?css('--pos'):css('--neg'),opacity:b.wall?1:.45});
+      fill:b.net>=0?css('--pos'):css('--neg'),opacity:b.wall?1:.4});
     r.addEventListener('mousemove',ev=>showTip(ev,
       `<b>${fmt(b.fut)}</b>${b.wall?' · WALL'+'★'.repeat(b.wall):''}<br>net ${fmt(b.net)} · bruto ${fmt(b.absg)} R$ mi`));
     r.addEventListener('mouseleave',hideTip);
     if(b.wall)el(svg,'text',{x:x+w/2,y:m.t+10,'text-anchor':'middle','font-size':9,
-      fill:css('--ink2')}).textContent='★'.repeat(b.wall);
+      fill:css('--gold')}).textContent='★'.repeat(b.wall);
     if(i%2===0)el(svg,'text',{x:x+w/2,y:H-8,'text-anchor':'middle',fill:css('--muted'),
       'font-size':9}).textContent=fmt(b.fut/1000,0)+'k';});
   const sx=m.l+((D.spot_fut-bs[0].fut)/(bs[n-1].fut-bs[0].fut))*(W-m.l-m.r-bw)+bw/2;
@@ -422,7 +507,7 @@ function el(p,t,a){const e=document.createElementNS(NS,t);
   const band=(a,b,color,op)=>{if(a&&b)el(svg,'rect',{x:X(Math.max(a,x0)),y:m.t,
     width:Math.max(X(Math.min(b,x1))-X(Math.max(a,x0)),0),height:H-m.t-m.b,fill:color,opacity:op});};
   band(D.prob.pct.p10,D.prob.pct.p90,css('--mid'),.6);
-  band(D.prob.band_down,D.prob.band_up,css('--pos'),.15);
+  band(D.prob.band_down,D.prob.band_up,css('--pos'),.14);
   let d='';xs.forEach((xv,i)=>{d+=(i?' L':'M')+X(xv)+','+Y(ys[i]);});
   el(svg,'path',{d,fill:'none',stroke:css('--accent'),'stroke-width':2});
   const mark=(v,label,color)=>{if(!v||v<x0||v>x1)return;
@@ -470,20 +555,18 @@ function el(p,t,a){const e=document.createElementNS(NS,t);
   const vcmax=hc.length?Math.max(...hc.map(r=>r[1])):1;
   const Y=p=>m.t+(1-(p-p0)/(p1-p0||1))*(H-m.t-m.b);
   const bh=Math.max((H-m.t-m.b)/((p1-p0)/100+1)-1,2);
-  // composto (fundo, escala própria)
   hc.forEach(([p,v])=>{el(svg,'rect',{x:m.l,y:Y(p)-bh/2,width:(W-m.l-m.r)*v/vcmax,
-    height:bh,fill:css('--mid'),opacity:.9});});
-  // sessão anterior (frente)
+    height:bh,fill:css('--mid'),opacity:.95});});
   h1.forEach(([p,v])=>{const r=el(svg,'rect',{x:m.l,y:Y(p)-bh/2,width:(W-m.l-m.r)*v/v1max,
-    height:bh,rx:2,fill:css('--pos'),opacity:.75});
+    height:bh,rx:2,fill:css('--pos'),opacity:.7});
     r.addEventListener('mousemove',ev=>showTip(ev,`<b>${fmt(p)}</b><br>vol. sessão ${fmt(v)}`));
     r.addEventListener('mouseleave',hideTip);});
   const mark=(v,label,color,dash)=>{if(v==null||v<p0||v>p1)return;
     el(svg,'line',{x1:m.l,x2:W-m.r,y1:Y(v),y2:Y(v),stroke:color,'stroke-width':1.4,'stroke-dasharray':dash||''});
     el(svg,'text',{x:W-m.r,y:Y(v)-3,'text-anchor':'end','font-size':9,fill:color}).textContent=label+' '+fmt(v);};
   const d1=D.vp.d1||{};
-  mark(d1.poc,'POC','#e87ba4');mark(d1.vah,'VAH',css('--muted'),'4 3');mark(d1.val,'VAL',css('--muted'),'4 3');
-  if(D.vp.comp){mark(D.vp.comp.poc,'POC comp.','#d55181','2 3');}
+  mark(d1.poc,'POC',css('--magenta'));mark(d1.vah,'VAH',css('--muted'),'4 3');mark(d1.val,'VAL',css('--muted'),'4 3');
+  if(D.vp.comp){mark(D.vp.comp.poc,'POC sem.',css('--magenta'),'2 3');}
   mark(D.spot_fut,'ref',css('--ink2'),'1 3');
   for(let i=0;i<=4;i++){const pv=p0+(p1-p0)*i/4;
     el(svg,'text',{x:m.l-6,y:Y(pv)+4,'text-anchor':'end',fill:css('--muted'),'font-size':10}).textContent=fmt(pv/1000,1)+'k';}
