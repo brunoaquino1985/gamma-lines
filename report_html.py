@@ -97,7 +97,7 @@ def build_rationale(spot_fut, walls, mids, flip, maxg, ming, band_up, band_down)
     return out
 
 
-def build_report(res, meta, session_str):
+def build_report(res, meta, session_str, flow=None, vp=None):
     prob = res.get("prob") or {}
     spot_fut = res["ibov_close"] * res["factor"]
     flip_fut = res["flip"][1]
@@ -139,6 +139,7 @@ def build_report(res, meta, session_str):
         buckets=buckets,
         dens=dict(x=dens_x, y=dens_y),
         n_series=res["n_series"],
+        flow=flow, vp=vp,
     )
 
     p_up = prob.get("p_up_expiry")
@@ -158,6 +159,32 @@ def build_report(res, meta, session_str):
         <div class="ts">maior concentração de gamma do book</div></div>
     """ if p_up is not None else "<div class='tile'><div class='tl'>Probabilidades indisponíveis</div></div>"
 
+    tiles2 = ""
+    if flow:
+        fx = flow["estrangeiro_dia_mi"]
+        fx5 = flow["estrangeiro_5d_mi"]
+        cls_d = "pos" if fx >= 0 else "neg"
+        cls_5 = "pos" if fx5 >= 0 else "neg"
+        tiles2 += f"""
+      <div class="tile"><div class="tl">Fluxo estrangeiro (sessão {_br_date(flow['last_session'])})</div>
+        <div class="tv {cls_d}">{'+' if fx >= 0 else '−'}R$ {_fmt(abs(fx))} mi</div>
+        <div class="ts">mercado à vista · {flow['lag_note']}</div></div>
+      <div class="tile"><div class="tl">Fluxo estrangeiro acumulado 5 sessões</div>
+        <div class="tv {cls_5}">{'+' if fx5 >= 0 else '−'}R$ {_fmt(abs(fx5))} mi</div>
+        <div class="ts">21 sessões: {'+' if flow['estrangeiro_21d_mi'] >= 0 else '−'}R$ {_fmt(abs(flow['estrangeiro_21d_mi']))} mi</div></div>"""
+    if vp and vp.get("d1"):
+        d1 = vp["d1"]
+        comp = vp.get("comp")
+        tiles2 += f"""
+      <div class="tile"><div class="tl">POC da sessão anterior ({vp['ticker']})</div>
+        <div class="tv">{_fmt(d1['poc'])}</div>
+        <div class="ts">área de valor {_fmt(d1['val'])} – {_fmt(d1['vah'])}</div></div>"""
+        if comp:
+            tiles2 += f"""
+      <div class="tile"><div class="tl">POC composto {comp['days']} sessões</div>
+        <div class="tv">{_fmt(comp['poc'])}</div>
+        <div class="ts">área de valor {_fmt(comp['val'])} – {_fmt(comp['vah'])}</div></div>"""
+
     rows = []
     for w in walls:
         tag = {3: "WALL ★★★", 2: "WALL ★★", 1: "WALL ★"}[w["width"]]
@@ -170,6 +197,16 @@ def build_report(res, meta, session_str):
     if prob.get("band_up_fut"):
         rows.append((prob["band_up_fut"], "banda +1σ", "movimento esperado do dia"))
         rows.append((prob["band_down_fut"], "banda −1σ", "movimento esperado do dia"))
+    if vp and vp.get("d1"):
+        d1 = vp["d1"]
+        rows.append((d1["poc"], "POC (1 sessão)", "preço mais negociado da sessão anterior"))
+        rows.append((d1["vah"], "VAH (1 sessão)", "topo da área de valor (70% do volume)"))
+        rows.append((d1["val"], "VAL (1 sessão)", "base da área de valor (70% do volume)"))
+        if vp.get("comp"):
+            c = vp["comp"]
+            rows.append((c["poc"], f"POC ({c['days']} sessões)", "preço mais negociado do composto"))
+            rows.append((c["vah"], f"VAH ({c['days']} sessões)", "topo da área de valor composta"))
+            rows.append((c["val"], f"VAL ({c['days']} sessões)", "base da área de valor composta"))
     rows.sort(key=lambda r: -r[0])
     table_rows = "\n".join(
         f"<tr><td class='num'>{_fmt(v,1)}</td><td>{t}</td><td class='muted'>{d}</td></tr>"
@@ -179,6 +216,30 @@ def build_report(res, meta, session_str):
         spot_fut, res["walls"], [f for _, f in res["mids"]], flip_fut,
         res["max_gamma"][1], res["min_gamma"][1],
         prob.get("band_up_fut") or spot_fut, prob.get("band_down_fut") or spot_fut)
+    if vp and vp.get("d1"):
+        d1 = vp["d1"]
+        conf = [w for w in res["walls"]
+                if abs(w[2] - d1["poc"]) <= 200 or abs(w[2] - d1["vah"]) <= 200
+                or abs(w[2] - d1["val"]) <= 200]
+        txt = (f"POC da sessão anterior em {_fmt(d1['poc'])}, com área de valor entre "
+               f"{_fmt(d1['val'])} e {_fmt(d1['vah'])}. Abertura DENTRO da área de valor favorece "
+               "rotação (operar as extremidades VAL/VAH); abertura FORA favorece teste do POC "
+               "ou continuação (dia de tendência).")
+        if conf:
+            txt += (" Confluência relevante: wall de gamma a menos de 200 pts de "
+                    + ", ".join(_fmt(w[2]) for w in conf[:2])
+                    + " reforça esses níveis.")
+        rationale.append(("Volume profile", txt))
+    if flow:
+        fx, fx5 = flow["estrangeiro_dia_mi"], flow["estrangeiro_5d_mi"]
+        lado_d = "COMPRADOR" if fx >= 0 else "VENDEDOR"
+        lado_5 = "comprador" if fx5 >= 0 else "vendedor"
+        rationale.append(("Fluxo estrangeiro",
+                          f"Estrangeiro {lado_d} de R$ {_fmt(abs(fx))} mi na sessão de "
+                          f"{_br_date(flow['last_session'])} (dado mais recente, D-2) e {lado_5} de "
+                          f"R$ {_fmt(abs(fx5))} mi no acumulado de 5 sessões. Fluxo persistente na "
+                          "mesma direção dá suporte a rompimentos nessa direção; fluxo contra o "
+                          "movimento do preço sugere movimento menos sustentável."))
     rat_html = "\n".join(
         f"<div class='rat'><div class='rt'>{t}</div><div class='rd'>{d}</div></div>"
         for t, d in rationale)
@@ -186,7 +247,9 @@ def build_report(res, meta, session_str):
     banner = (f"Mapa calculado com os dados do pregão de <b>{_br_date(res['ref_date'])}</b> "
               f"(fechamento) — para uso na sessão de <b>{_br_date(session_str)}</b>.")
 
+    tiles2_html = f'<div class="tiles">{tiles2}</div>' if tiles2 else ""
     return HTML_TMPL.replace("__DATA__", json.dumps(data)) \
+                    .replace("__TILES2__", tiles2_html) \
                     .replace("__TILES__", tiles) \
                     .replace("__ROWS__", table_rows) \
                     .replace("__RATIONALE__", rat_html) \
@@ -244,6 +307,7 @@ td.num{font-variant-numeric:tabular-nums;font-weight:600}
 <div class="sub" id="sub"></div>
 <div class="banner">__BANNER__</div>
 <div class="tiles">__TILES__</div>
+__TILES2__
 <div class="card" style="margin-bottom:14px"><h2>Racional operacional do dia (cenários condicionais)</h2>
 __RATIONALE__</div>
 <div class="grid">
@@ -264,6 +328,16 @@ __RATIONALE__</div>
     <div style="max-height:300px;overflow:auto"><table>
       <tr><th>nível</th><th>tipo</th><th class="muted">descrição</th></tr>
       __ROWS__</table></div></div>
+  <div class="card" id="cardflow" style="display:none"><h2>Fluxo estrangeiro por sessão (R$ mi)</h2>
+    <svg id="flow" viewBox="0 0 560 240"></svg>
+    <div class="legend"><span style="--c:var(--pos)">comprador</span>
+      <span style="--c:var(--neg)">vendedor</span>
+      <span style="--c:var(--muted)">mercado à vista · defasagem D-2</span></div></div>
+  <div class="card" id="cardvp" style="display:none"><h2>Volume profile do WIN (sessão anterior × composto)</h2>
+    <svg id="vp" viewBox="0 0 560 300"></svg>
+    <div class="legend"><span style="--c:var(--pos)">volume sessão anterior</span>
+      <span style="--c:var(--mid)">volume composto</span>
+      <span style="--c:#e87ba4">POC</span><span style="--c:var(--muted)">VAH/VAL</span></div></div>
 </div>
 <div class="foot" id="foot"></div>
 <div class="tip" id="tip"></div>
@@ -358,6 +432,61 @@ function el(p,t,a){const e=document.createElementNS(NS,t);
   mark(D.prob.pct.p10,'P10',css('--muted'));mark(D.prob.pct.p90,'P90',css('--muted'));
   for(let i=0;i<=4;i++){const xv=x0+(x1-x0)*i/4;
     el(svg,'text',{x:X(xv),y:H-8,'text-anchor':'middle',fill:css('--muted'),'font-size':10}).textContent=fmt(xv/1000,0)+'k';}
+})();
+
+// ---- fluxo estrangeiro por sessão
+(function(){
+  if(!D.flow||!D.flow.series||!D.flow.series.length)return;
+  document.getElementById('cardflow').style.display='';
+  const svg=document.getElementById('flow'),W=560,H=240,m={l:52,r:10,t:12,b:30};
+  const s=D.flow.series;
+  const vmax=Math.max(...s.map(r=>Math.abs(r.estrangeiro)))*1.15||1;
+  const n=s.length,bw=(W-m.l-m.r)/n;
+  const Y=v=>m.t+(1-(v+vmax)/(2*vmax))*(H-m.t-m.b);
+  for(let g=-2;g<=2;g++){const yv=vmax/2*g;
+    el(svg,'line',{x1:m.l,x2:W-m.r,y1:Y(yv),y2:Y(yv),stroke:g===0?css('--axis'):css('--grid'),'stroke-width':1});
+    el(svg,'text',{x:m.l-6,y:Y(yv)+4,'text-anchor':'end',fill:css('--muted'),'font-size':10}).textContent=fmt(yv,0);}
+  s.forEach((r,i)=>{
+    const x=m.l+i*bw+2,w=Math.max(bw-4,2);
+    const y=r.estrangeiro>=0?Y(r.estrangeiro):Y(0),h=Math.abs(Y(r.estrangeiro)-Y(0))||1;
+    const rect=el(svg,'rect',{x,y,width:w,height:h,rx:3,
+      fill:r.estrangeiro>=0?css('--pos'):css('--neg')});
+    rect.addEventListener('mousemove',ev=>showTip(ev,
+      `<b>${r.session.split('-').reverse().join('/')}</b><br>estrangeiro ${fmt(r.estrangeiro,1)} mi<br>institucional ${fmt(r.institucional,1)} mi · PF ${fmt(r.pessoa_fisica,1)} mi`));
+    rect.addEventListener('mouseleave',hideTip);
+    if(i%3===0)el(svg,'text',{x:x+w/2,y:H-8,'text-anchor':'middle',fill:css('--muted'),
+      'font-size':9}).textContent=r.session.slice(8)+'/'+r.session.slice(5,7);});
+})();
+
+// ---- volume profile (horizontal: preço no eixo Y)
+(function(){
+  if(!D.vp||!D.vp.hist1d||!D.vp.hist1d.length)return;
+  document.getElementById('cardvp').style.display='';
+  const svg=document.getElementById('vp'),W=560,H=300,m={l:60,r:10,t:12,b:24};
+  const h1=D.vp.hist1d,hc=D.vp.histcomp||[];
+  const all=h1.concat(hc);
+  const p0=Math.min(...all.map(r=>r[0])),p1=Math.max(...all.map(r=>r[0]));
+  const v1max=Math.max(...h1.map(r=>r[1]))||1;
+  const vcmax=hc.length?Math.max(...hc.map(r=>r[1])):1;
+  const Y=p=>m.t+(1-(p-p0)/(p1-p0||1))*(H-m.t-m.b);
+  const bh=Math.max((H-m.t-m.b)/((p1-p0)/100+1)-1,2);
+  // composto (fundo, escala própria)
+  hc.forEach(([p,v])=>{el(svg,'rect',{x:m.l,y:Y(p)-bh/2,width:(W-m.l-m.r)*v/vcmax,
+    height:bh,fill:css('--mid'),opacity:.9});});
+  // sessão anterior (frente)
+  h1.forEach(([p,v])=>{const r=el(svg,'rect',{x:m.l,y:Y(p)-bh/2,width:(W-m.l-m.r)*v/v1max,
+    height:bh,rx:2,fill:css('--pos'),opacity:.75});
+    r.addEventListener('mousemove',ev=>showTip(ev,`<b>${fmt(p)}</b><br>vol. sessão ${fmt(v)}`));
+    r.addEventListener('mouseleave',hideTip);});
+  const mark=(v,label,color,dash)=>{if(v==null||v<p0||v>p1)return;
+    el(svg,'line',{x1:m.l,x2:W-m.r,y1:Y(v),y2:Y(v),stroke:color,'stroke-width':1.4,'stroke-dasharray':dash||''});
+    el(svg,'text',{x:W-m.r,y:Y(v)-3,'text-anchor':'end','font-size':9,fill:color}).textContent=label+' '+fmt(v);};
+  const d1=D.vp.d1||{};
+  mark(d1.poc,'POC','#e87ba4');mark(d1.vah,'VAH',css('--muted'),'4 3');mark(d1.val,'VAL',css('--muted'),'4 3');
+  if(D.vp.comp){mark(D.vp.comp.poc,'POC comp.','#d55181','2 3');}
+  mark(D.spot_fut,'ref',css('--ink2'),'1 3');
+  for(let i=0;i<=4;i++){const pv=p0+(p1-p0)*i/4;
+    el(svg,'text',{x:m.l-6,y:Y(pv)+4,'text-anchor':'end',fill:css('--muted'),'font-size':10}).textContent=fmt(pv/1000,1)+'k';}
 })();
 </script></body></html>
 """

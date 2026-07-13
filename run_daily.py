@@ -18,8 +18,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
 from gamma_pipeline import run_model          # noqa: E402
-from ntsl_generator import generate_ntsl      # noqa: E402
+from ntsl_generator import generate_ntsl, current_contract  # noqa: E402
 from report_html import build_report          # noqa: E402
+from flow_participants import build_flow_history, flow_block  # noqa: E402
+from volume_profile import build_vp_block     # noqa: E402
 
 WORK = os.path.join(HERE, "work")
 OUT = os.path.join(HERE, "output")
@@ -36,6 +38,26 @@ def main():
 
     res = run_model(cot, pr, ibov_close=meta["ibov_close"],
                     r_annual=meta["cdi"], ref_date=ref)
+
+    # --- Onda 2: fluxo por investidor + volume profile (falhas não travam) ---
+    flow = vp = None
+    try:
+        hist = build_flow_history(os.path.join(OUT, "flow_history.csv"),
+                                  session)
+        flow = flow_block(hist)
+    except Exception as e:
+        print(f"[warn] fluxo indisponível: {e}", file=sys.stderr)
+    try:
+        for tk in {f"WIN{current_contract(session)}",
+                   f"WIN{current_contract(ref)}"}:
+            vp = build_vp_block(ref, tk, OUT, WORK)
+            if vp and vp.get("d1"):
+                break
+    except Exception as e:
+        print(f"[warn] volume profile indisponível: {e}", file=sys.stderr)
+        vp = None
+    res["vp"] = vp
+
     code = generate_ntsl(res, session)
 
     os.makedirs(OUT, exist_ok=True)
@@ -66,7 +88,12 @@ def main():
             band_down=round(p["band_down_fut"], 3),
             pct={k: round(v, 1) for k, v in p["pct_fut"].items()},
         )
-    html = build_report(res, meta, meta["session"])
+    if flow:
+        levels["flow"] = {k: v for k, v in flow.items() if k != "series"}
+    if vp and vp.get("d1"):
+        levels["vp"] = dict(ticker=vp["ticker"], d1=vp["d1"],
+                            comp=vp.get("comp"))
+    html = build_report(res, meta, meta["session"], flow=flow, vp=vp)
     open(os.path.join(OUT, "report.html"), "w", encoding="utf-8").write(html)
     json.dump(levels, open(os.path.join(OUT, "levels.json"), "w"),
               indent=2, ensure_ascii=False)
