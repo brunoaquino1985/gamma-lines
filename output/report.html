@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gamma Lines — 2026-07-13</title>
+<title>Gamma Lines — 13/07/2026</title>
 <style>
 :root{
   --surface:#fcfcfb; --page:#f9f9f7; --ink:#0b0b0b; --ink2:#52514e;
@@ -37,9 +37,16 @@ td.num{font-variant-numeric:tabular-nums;font-weight:600}
 .legend{display:flex;gap:14px;font-size:11px;color:var(--ink2);margin-top:6px;flex-wrap:wrap}
 .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;
   margin-right:5px;vertical-align:-1px;background:var(--c)}
+.banner{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);
+  border-radius:10px;padding:10px 14px;margin:0 0 14px;font-size:13px;color:var(--ink2)}
+.banner b{color:var(--ink)}
+.rat{padding:8px 0;border-bottom:1px solid var(--grid)} .rat:last-child{border-bottom:0}
+.rt{font-weight:650;font-size:13px;margin-bottom:2px}
+.rd{font-size:13px;color:var(--ink2)}
 </style></head><body>
-<h1>GAMMA LINES — sessão 2026-07-13</h1>
+<h1>GAMMA LINES — sessão 13/07/2026</h1>
 <div class="sub" id="sub"></div>
+<div class="banner">Mapa calculado com os dados do pregão de <b>10/07/2026</b> (fechamento) — para uso na sessão de <b>13/07/2026</b>.</div>
 <div class="tiles">
       <div class="tile"><div class="tl">P(fechar acima do spot)*</div>
         <div class="tv">50%</div>
@@ -49,11 +56,33 @@ td.num{font-variant-numeric:tabular-nums;font-weight:600}
         <div class="ts">IV ATM 21.7% a.a. → 1.37% no dia</div></div>
       <div class="tile"><div class="tl">Regime de gamma</div>
         <div class="tv pos">GAMMA POSITIVO</div>
-        <div class="ts">flip em 172.070 · ref. 180.138</div></div>
+        <div class="ts">flip em 172.130 · ref. 180.138</div></div>
       <div class="tile"><div class="tl">Wall principal</div>
-        <div class="tv">177.235</div>
+        <div class="tv">177.105</div>
         <div class="ts">maior concentração de gamma do book</div></div>
     </div>
+<div class="tiles">
+      <div class="tile"><div class="tl">Fluxo estrangeiro (sessão 09/07/2026)</div>
+        <div class="tv pos">+R$ 206 mi</div>
+        <div class="ts">mercado à vista · defasagem de 2 pregões (dado público mais recente da B3)</div></div>
+      <div class="tile"><div class="tl">Fluxo estrangeiro acumulado 5 sessões</div>
+        <div class="tv neg">−R$ 191 mi</div>
+        <div class="ts">21 sessões: −R$ 3.682 mi</div></div>
+      <div class="tile"><div class="tl">POC da sessão anterior (WINQ26)</div>
+        <div class="tv">178.380</div>
+        <div class="ts">área de valor 177.230 – 179.330</div></div>
+      <div class="tile"><div class="tl">POC composto 5 sessões</div>
+        <div class="tv">174.700</div>
+        <div class="ts">área de valor 172.695 – 175.600</div></div></div>
+<div class="card" style="margin-bottom:14px"><h2>Racional operacional do dia (cenários condicionais)</h2>
+<div class='rat'><div class='rt'>Contexto</div><div class='rd'>Preço de referência (180.138) ACIMA do gamma flip (172.130): os dealers estão long gamma e o hedge deles vai contra o movimento — compra em queda, venda em alta. Dia com viés de compressão: as walls tendem a segurar e o preço tende a rodar entre elas.</div></div>
+<div class='rat'><div class='rt'>Cenário de venda</div><div class='rd'>Possível VENDA em rejeição na wall 180.141 ★★, buscando a mid wall 179.635 e, na extensão, a wall 179.129. Invalidação: aceitação consistente acima de 180.141 (aí a próxima referência vira 181.153).</div></div>
+<div class='rat'><div class='rt'>Cenário de compra</div><div class='rd'>Possível COMPRA em defesa da wall 179.129 ★, buscando a mid wall 179.635 e, na extensão, a wall 180.141. Invalidação: perda consistente de 179.129 (abaixo disso a referência vira 178.117).</div></div>
+<div class='rat'><div class='rt'>Cenário de quebra de regime</div><div class='rd'>Perda do gamma flip (172.130) muda o jogo: os dealers passam a short gamma e o hedge deles passa a EMPURRAR o movimento. Abaixo do flip, quedas tendem a acelerar em direção às walls inferiores e ao min gamma (164.106). Evitar comprar 'porque caiu' nesse regime.</div></div>
+<div class='rat'><div class='rt'>Bandas do dia</div><div class='rd'>O mercado de opções precifica o dia entre 177.675 e 182.601 (±1σ). Toque na banda COM confluência de wall é o ponto de maior interesse para reversão; preço rodando fora da banda sinaliza dia atípico — reduzir expectativa de reversão à média.</div></div>
+<div class='rat'><div class='rt'>Extremos do mapa</div><div class='rd'>Max gamma (182.300) e min gamma (164.106) funcionam como teto e piso estatísticos do posicionamento atual: aproximações desses níveis historicamente atraem realização/defesa forte dos books.</div></div>
+<div class='rat'><div class='rt'>Volume profile</div><div class='rd'>POC da sessão anterior em 178.380, com área de valor entre 177.230 e 179.330. Abertura DENTRO da área de valor favorece rotação (operar as extremidades VAL/VAH); abertura FORA favorece teste do POC ou continuação (dia de tendência). Confluência relevante: wall de gamma a menos de 200 pts de 177.105 reforça esses níveis.</div></div>
+<div class='rat'><div class='rt'>Fluxo estrangeiro</div><div class='rd'>Estrangeiro COMPRADOR de R$ 206 mi na sessão de 09/07/2026 (dado mais recente, D-2) e vendedor de R$ 191 mi no acumulado de 5 sessões. Fluxo persistente na mesma direção dá suporte a rompimentos nessa direção; fluxo contra o movimento do preço sugere movimento menos sustentável.</div></div></div>
 <div class="grid">
   <div class="card"><h2>Gamma líquido dos dealers × nível do futuro</h2>
     <svg id="curve" viewBox="0 0 560 260"></svg>
@@ -71,31 +100,47 @@ td.num{font-variant-numeric:tabular-nums;font-weight:600}
   <div class="card"><h2>Níveis do dia (pontos do futuro)</h2>
     <div style="max-height:300px;overflow:auto"><table>
       <tr><th>nível</th><th>tipo</th><th class="muted">descrição</th></tr>
-      <tr><td class='num'>183.311,7</td><td>WALL ★</td><td class='muted'>strike 181.000</td></tr>
-<tr><td class='num'>182.805,3</td><td>mid wall</td><td class='muted'>ponto médio entre walls</td></tr>
+      <tr><td class='num'>183.177,6</td><td>WALL ★</td><td class='muted'>strike 181.000</td></tr>
+<tr><td class='num'>182.671,5</td><td>mid wall</td><td class='muted'>ponto médio entre walls</td></tr>
 <tr><td class='num'>182.601,5</td><td>banda +1σ</td><td class='muted'>movimento esperado do dia</td></tr>
-<tr><td class='num'>182.298,9</td><td>WALL ★★</td><td class='muted'>strike 180.000</td></tr>
-<tr><td class='num'>181.792,5</td><td>mid wall</td><td class='muted'>ponto médio entre walls</td></tr>
-<tr><td class='num'>181.286,1</td><td>WALL ★</td><td class='muted'>strike 179.000</td></tr>
-<tr><td class='num'>180.779,7</td><td>mid wall</td><td class='muted'>ponto médio entre walls</td></tr>
-<tr><td class='num'>180.273,3</td><td>WALL ★★</td><td class='muted'>strike 178.000</td></tr>
-<tr><td class='num'>179.767,0</td><td>mid wall</td><td class='muted'>ponto médio entre walls</td></tr>
-<tr><td class='num'>179.417,4</td><td>MAX GAMMA</td><td class='muted'>teto do perfil de gamma (±12%)</td></tr>
-<tr><td class='num'>179.260,6</td><td>WALL ★</td><td class='muted'>strike 177.000</td></tr>
-<tr><td class='num'>178.754,2</td><td>mid wall</td><td class='muted'>ponto médio entre walls</td></tr>
-<tr><td class='num'>178.247,8</td><td>WALL ★</td><td class='muted'>strike 176.000</td></tr>
-<tr><td class='num'>177.741,4</td><td>mid wall</td><td class='muted'>ponto médio entre walls</td></tr>
+<tr><td class='num'>182.299,7</td><td>MAX GAMMA</td><td class='muted'>teto do perfil de gamma (±12%)</td></tr>
+<tr><td class='num'>182.165,5</td><td>WALL ★★</td><td class='muted'>strike 180.000</td></tr>
+<tr><td class='num'>181.659,5</td><td>mid wall</td><td class='muted'>ponto médio entre walls</td></tr>
+<tr><td class='num'>181.153,5</td><td>WALL ★</td><td class='muted'>strike 179.000</td></tr>
+<tr><td class='num'>180.647,5</td><td>mid wall</td><td class='muted'>ponto médio entre walls</td></tr>
+<tr><td class='num'>180.141,5</td><td>WALL ★★</td><td class='muted'>strike 178.000</td></tr>
+<tr><td class='num'>179.635,5</td><td>mid wall</td><td class='muted'>ponto médio entre walls</td></tr>
+<tr><td class='num'>179.330,0</td><td>VAH (1 sessão)</td><td class='muted'>topo da área de valor (70% do volume)</td></tr>
+<tr><td class='num'>179.129,4</td><td>WALL ★</td><td class='muted'>strike 177.000</td></tr>
+<tr><td class='num'>178.623,4</td><td>mid wall</td><td class='muted'>ponto médio entre walls</td></tr>
+<tr><td class='num'>178.380,0</td><td>POC (1 sessão)</td><td class='muted'>preço mais negociado da sessão anterior</td></tr>
+<tr><td class='num'>178.117,4</td><td>WALL ★</td><td class='muted'>strike 176.000</td></tr>
 <tr><td class='num'>177.674,5</td><td>banda −1σ</td><td class='muted'>movimento esperado do dia</td></tr>
-<tr><td class='num'>177.235,0</td><td>WALL ★★★</td><td class='muted'>strike 175.000</td></tr>
-<tr><td class='num'>176.728,6</td><td>mid wall</td><td class='muted'>ponto médio entre walls</td></tr>
-<tr><td class='num'>176.222,3</td><td>WALL ★</td><td class='muted'>strike 174.000</td></tr>
-<tr><td class='num'>172.069,9</td><td>GAMMA FLIP</td><td class='muted'>troca de sinal do gamma líquido</td></tr>
-<tr><td class='num'>163.925,6</td><td>MIN GAMMA</td><td class='muted'>piso do perfil de gamma (±12%)</td></tr></table></div></div>
+<tr><td class='num'>177.611,4</td><td>mid wall</td><td class='muted'>ponto médio entre walls</td></tr>
+<tr><td class='num'>177.230,0</td><td>VAL (1 sessão)</td><td class='muted'>base da área de valor (70% do volume)</td></tr>
+<tr><td class='num'>177.105,4</td><td>WALL ★★★</td><td class='muted'>strike 175.000</td></tr>
+<tr><td class='num'>176.599,4</td><td>mid wall</td><td class='muted'>ponto médio entre walls</td></tr>
+<tr><td class='num'>176.093,3</td><td>WALL ★</td><td class='muted'>strike 174.000</td></tr>
+<tr><td class='num'>175.600,0</td><td>VAH (5 sessões)</td><td class='muted'>topo da área de valor composta</td></tr>
+<tr><td class='num'>174.700,0</td><td>POC (5 sessões)</td><td class='muted'>preço mais negociado do composto</td></tr>
+<tr><td class='num'>172.695,0</td><td>VAL (5 sessões)</td><td class='muted'>base da área de valor composta</td></tr>
+<tr><td class='num'>172.130,3</td><td>GAMMA FLIP</td><td class='muted'>troca de sinal do gamma líquido</td></tr>
+<tr><td class='num'>164.105,7</td><td>MIN GAMMA</td><td class='muted'>piso do perfil de gamma (±12%)</td></tr></table></div></div>
+  <div class="card" id="cardflow" style="display:none"><h2>Fluxo estrangeiro por sessão (R$ mi)</h2>
+    <svg id="flow" viewBox="0 0 560 240"></svg>
+    <div class="legend"><span style="--c:var(--pos)">comprador</span>
+      <span style="--c:var(--neg)">vendedor</span>
+      <span style="--c:var(--muted)">mercado à vista · defasagem D-2</span></div></div>
+  <div class="card" id="cardvp" style="display:none"><h2>Volume profile do WIN (sessão anterior × composto)</h2>
+    <svg id="vp" viewBox="0 0 560 300"></svg>
+    <div class="legend"><span style="--c:var(--pos)">volume sessão anterior</span>
+      <span style="--c:var(--mid)">volume composto</span>
+      <span style="--c:#e87ba4">POC</span><span style="--c:var(--muted)">VAH/VAL</span></div></div>
 </div>
 <div class="foot" id="foot"></div>
 <div class="tip" id="tip"></div>
 <script>
-const D = {"session": "2026-07-13", "ref": "2026-07-10", "fut": "INDQ26", "fator": 1.0127715542853886, "spot_fut": 180138.0, "ibov": 177866.37, "bova": 175.01, "fut_settle": 180138.0, "ibov_source": "cotacao.b3", "cdi": 0.14, "regime": "GAMMA POSITIVO", "regime_desc": "mercado acima do flip: hedge das tesourarias comprime o pre\u00e7o (tend\u00eancia de revers\u00e3o \u00e0 m\u00e9dia entre as walls)", "flip": 172069.89889843436, "maxg": 179417.44800000003, "ming": 163925.58000000002, "walls": [{"strike": 174000, "width": 1, "fut": 176222.3}, {"strike": 175000, "width": 3, "fut": 177235.0}, {"strike": 176000, "width": 1, "fut": 178247.8}, {"strike": 177000, "width": 1, "fut": 179260.6}, {"strike": 178000, "width": 2, "fut": 180273.3}, {"strike": 179000, "width": 1, "fut": 181286.1}, {"strike": 180000, "width": 2, "fut": 182298.9}, {"strike": 181000, "width": 1, "fut": 183311.7}], "mids": [176728.6, 177741.4, 178754.2, 179767.0, 180779.7, 181792.5, 182805.3], "prob": {"p_up": 0.5035855254915912, "iv_atm": 0.21708952196744524, "sigma_day": 0.013675354461041749, "band_up": 182601.45100190316, "band_down": 177674.54899809687, "expiry": "2026-07-17", "pct": {"p10": 173351.26495506885, "p25": 176775.04253734153, "p50": 180198.8201196142, "p75": 183622.59770188687, "p90": 187046.37528415956}}, "curve": {"x": [158521.44, 159241.99200000003, 159962.544, 160683.09600000002, 161403.64800000002, 162124.2, 162844.752, 163565.304, 164285.856, 165006.40800000002, 165726.96000000002, 166447.51200000002, 167168.064, 167888.616, 168609.16800000003, 169329.72, 170050.27200000003, 170770.824, 171491.37600000002, 172211.928, 172932.48, 173653.03200000004, 174373.584, 175094.13600000003, 175814.68800000002, 176535.24000000002, 177255.79200000002, 177976.344, 178696.89600000004, 179417.44800000003, 180138.0, 180858.55200000003, 181579.10400000002, 182299.65600000002, 183020.20800000004, 183740.76, 184461.31200000003, 185181.864, 185902.41600000003, 186622.96800000002, 187343.52000000002, 188064.07200000004, 188784.624, 189505.17600000004, 190225.72800000003, 190946.28000000003, 191666.83200000002, 192387.38400000002, 193107.93600000002, 193828.48800000004, 194549.04000000004, 195269.59200000003, 195990.144, 196710.69600000003, 197431.24800000005, 198151.80000000002, 198872.35200000004, 199592.904, 200313.45600000003, 201034.00800000003, 201754.56000000003], "y": [-41816.48720056519, -42952.13578858843, -43980.99736204756, -44891.36883341899, -45669.488195055936, -46297.2801787022, -46749.39240632988, -46989.690867128906, -46967.60681977887, -46614.97520077276, -45844.165814704786, -44548.193466695135, -42602.904699627026, -39870.269902787375, -36200.72956388575, -31432.540896959723, -25388.4489099695, -17875.084873803917, -8696.125909496528, 2308.480284472084, 15193.327930939737, 29824.759569033806, 45835.68140505233, 62735.291522357846, 80344.09246574594, 99356.02115300721, 120687.56503366804, 142575.84360851996, 158996.89051264673, 164526.82872030596, 160779.93903337413, 154548.01654457813, 150604.98147061415, 149222.46655745624, 148829.74916577927, 148343.82725495994, 147474.84772094112, 146310.93886570103, 145032.6791942472, 143801.51824959487, 142717.1163806695, 141800.94092773407, 140997.8992302261, 140192.65780319937, 139235.4978995113, 137971.39027177473, 136266.35660119253, 134026.75493805358, 131209.29541875908, 127821.76849531647, 123916.17875382681, 119576.96174621611, 114907.19006618192, 110015.30069546717, 105004.1423583664, 99963.29647958238, 94964.86010852894, 90062.3071059969, 85291.70416615714, 80674.43492456964, 76220.63006178629]}, "buckets": [{"fut": 166094.53490280372, "net": -535.0191972331775, "absg": 542.7374702799291, "wall": 0}, {"fut": 167107.30645708911, "net": -3744.7676227371066, "absg": 3751.4600765238692, "wall": 0}, {"fut": 168120.0780113745, "net": -2709.5997424250936, "absg": 2713.0059772105137, "wall": 0}, {"fut": 169132.84956565988, "net": -849.8595412621901, "absg": 859.9156916938063, "wall": 0}, {"fut": 170145.62111994528, "net": -2332.761776268489, "absg": 2391.3924790549086, "wall": 0}, {"fut": 171158.39267423068, "net": -2087.7614991565674, "absg": 2296.9868940145493, "wall": 0}, {"fut": 172171.16422851605, "net": -9019.623613132568, "absg": 15782.312476412113, "wall": 0}, {"fut": 173183.93578280145, "net": -7410.895803673635, "absg": 14114.952661397765, "wall": 0}, {"fut": 174196.70733708685, "net": -1201.6536049020583, "absg": 11139.592040506275, "wall": 0}, {"fut": 175209.47889137222, "net": 4883.1983136818, "absg": 8441.625870949269, "wall": 0}, {"fut": 176222.2504456576, "net": -2028.9148415975012, "absg": 2356.495371814818, "wall": 1}, {"fut": 177235.021999943, "net": 4053.8450352186464, "absg": 38623.70020865048, "wall": 3}, {"fut": 178247.79355422838, "net": 9390.025472157826, "absg": 17642.650790045627, "wall": 1}, {"fut": 179260.56510851378, "net": 17637.042063967885, "absg": 25856.081506799732, "wall": 1}, {"fut": 180273.33666279918, "net": 25749.703891940884, "absg": 27700.472310566358, "wall": 2}, {"fut": 181286.10821708455, "net": 8966.332688080587, "absg": 18861.5585215641, "wall": 1}, {"fut": 182298.87977136995, "net": 18897.231264310285, "absg": 32326.47393333002, "wall": 2}, {"fut": 183311.65132565534, "net": 15817.559848688978, "absg": 15876.655968881172, "wall": 1}, {"fut": 184324.4228799407, "net": 17340.37587501598, "absg": 23317.88140266319, "wall": 0}, {"fut": 185337.1944342261, "net": 9736.014337082013, "absg": 9852.240154181685, "wall": 0}, {"fut": 186349.96598851148, "net": 4172.721199657762, "absg": 4183.866110823411, "wall": 0}, {"fut": 187362.73754279688, "net": 9247.435189259746, "absg": 9281.23406060274, "wall": 0}, {"fut": 188375.50909708228, "net": 3754.4154859713512, "absg": 3763.9548587830354, "wall": 0}, {"fut": 189388.28065136765, "net": 2959.747608975486, "absg": 2968.69608468158, "wall": 0}, {"fut": 190401.05220565305, "net": 2192.7383809932717, "absg": 2219.3004455010114, "wall": 0}, {"fut": 191413.82375993844, "net": 5834.968740919443, "absg": 6057.7514179474, "wall": 0}, {"fut": 192426.5953142238, "net": 18504.205390103874, "absg": 18662.699703383136, "wall": 0}, {"fut": 193439.3668685092, "net": 8164.15601810112, "absg": 13253.399764648497, "wall": 0}, {"fut": 194452.1384227946, "net": 77.7006328507132, "absg": 80.60748351037016, "wall": 0}], "dens": {"x": [144339.25491581098, 145780.8454767679, 147222.4360377248, 148664.0265986817, 150105.6171596386, 151547.20772059553, 152988.79828155242, 154430.3888425094, 155871.9794034663, 157313.56996442322, 158755.1605253801, 160196.75108633703, 161638.34164729397, 163079.93220825086, 164521.52276920778, 165963.1133301647, 167404.70389112158, 168846.2944520785, 170287.8850130354, 171729.47557399236, 173171.06613494927, 174612.6566959062, 176054.24725686308, 177495.83781782, 178937.42837877694, 180379.0189397338, 181820.6095006907, 183262.20006164763, 184703.79062260452, 186145.38118356143, 187586.9717445184, 189028.56230547532, 190470.1528664322, 191911.74342738913, 193353.33398834604, 194794.92454930293, 196236.51511025985, 197678.1056712168, 199119.69623217368, 200561.2867931306, 202002.8773540875, 203444.4679150444, 204886.05847600132, 206327.6490369583, 207769.23959791518, 209210.8301588721, 210652.420719829, 212094.0112807859, 213535.6018417428, 214977.19240269976], "y": [0.0003991033368490364, 0.0003388191034038636, 0.00028893178988943097, 0.0002490359405251037, 0.0002189863016058956, 0.00019907139141365465, 0.00019028355543463968, 0.00019475650142998283, 0.0002164963558415731, 0.0002626298426766278, 0.00034556279937211163, 0.0004867277541834334, 0.0007230508000231371, 0.0011178937976740822, 0.0017788515666836285, 0.002884687436675784, 0.004720981124140191, 0.007715075380684523, 0.012441290452604557, 0.019538583485360344, 0.02946673021789707, 0.042077029049739166, 0.05614098546030222, 0.06920483048175623, 0.07816256086072709, 0.08051309896389268, 0.07560096903725243, 0.06494532280534895, 0.05141469899516719, 0.03789386191482981, 0.02631870583906476, 0.017452404041952026, 0.011195011830773302, 0.007032802912226543, 0.004374893302573065, 0.0027206284031417167, 0.0017048151117590668, 0.0010835130831687878, 0.0007023313334494315, 0.0004666378436485135, 0.0003194070130182199, 0.0002264934255529793, 0.0001674291086644509, 0.0001298682199079638, 0.00010629285141302456, 9.207280768238467e-05, 8.432191483356405e-05, 8.121971940509228e-05, 8.160522076045106e-05, 8.473047861028909e-05]}, "n_series": {"bova": 700, "ibov": 174}};
+const D = {"session": "2026-07-13", "ref": "2026-07-10", "fut": "INDQ26", "fator": 1.0120307226069125, "spot_fut": 180138.0, "ibov": 177996.57260994855, "bova": 175.01, "fut_settle": 180138.0, "ibov_source": "carry_estimate", "cdi": 0.14, "regime": "GAMMA POSITIVO", "regime_desc": "mercado acima do flip: hedge das tesourarias comprime o pre\u00e7o (tend\u00eancia de revers\u00e3o \u00e0 m\u00e9dia entre as walls)", "flip": 172130.30542480593, "maxg": 182299.65600000002, "ming": 164105.718, "walls": [{"strike": 174000, "width": 1, "fut": 176093.3}, {"strike": 175000, "width": 3, "fut": 177105.4}, {"strike": 176000, "width": 1, "fut": 178117.4}, {"strike": 177000, "width": 1, "fut": 179129.4}, {"strike": 178000, "width": 2, "fut": 180141.5}, {"strike": 179000, "width": 1, "fut": 181153.5}, {"strike": 180000, "width": 2, "fut": 182165.5}, {"strike": 181000, "width": 1, "fut": 183177.6}], "mids": [176599.4, 177611.4, 178623.4, 179635.5, 180647.5, 181659.5, 182671.5], "prob": {"p_up": 0.5035855254915912, "iv_atm": 0.21708952196744524, "sigma_day": 0.013675354461041749, "band_up": 182601.45100190313, "band_down": 177674.54899809687, "expiry": "2026-07-17", "pct": {"p10": 173351.26495506885, "p25": 176775.04253734153, "p50": 180198.8201196142, "p75": 183622.5977018869, "p90": 187046.37528415953}}, "curve": {"x": [158521.44, 159241.992, 159962.54399999997, 160683.096, 161403.648, 162124.19999999998, 162844.75199999998, 163565.30399999997, 164285.856, 165006.408, 165726.96, 166447.512, 167168.06399999998, 167888.616, 168609.168, 169329.72, 170050.272, 170770.824, 171491.37600000002, 172211.928, 172932.48, 173653.03199999998, 174373.58399999997, 175094.136, 175814.688, 176535.24, 177255.792, 177976.34399999998, 178696.896, 179417.448, 180138.0, 180858.552, 181579.104, 182299.65600000002, 183020.208, 183740.76, 184461.312, 185181.864, 185902.41600000003, 186622.96800000002, 187343.52, 188064.072, 188784.62399999998, 189505.176, 190225.728, 190946.28, 191666.832, 192387.384, 193107.936, 193828.488, 194549.04, 195269.592, 195990.14400000003, 196710.69600000003, 197431.24800000002, 198151.80000000002, 198872.352, 199592.904, 200313.456, 201034.00800000003, 201754.56], "y": [-41885.962230562676, -43040.843410850895, -44100.32693691924, -45054.72665818956, -45891.51366978864, -46592.21626306568, -47128.37295291353, -47456.88037581205, -47515.48327578609, -47219.609260661615, -46462.109039262396, -45117.483077339966, -43051.53910385632, -40135.75876137635, -36262.528069915556, -31352.392767197314, -25338.10039910217, -18106.90087651698, -9395.854167611873, 1316.2423579542926, 14797.10797759631, 31770.272559625242, 52319.63572203769, 75283.8897440687, 98183.6923894836, 118016.79461977896, 132582.6589311138, 141449.79557285877, 145881.704010429, 147862.1538330774, 149003.86083287734, 150027.41500360725, 150907.10361424554, 151323.9641845459, 151041.2397777788, 150049.95421065995, 148534.90314881224, 146770.63864501, 145023.35273619602, 143486.73344092333, 142252.59824597894, 141308.62249921964, 140554.97799882008, 139832.65470645335, 138956.8835037353, 137749.65240413215, 136066.33241521992, 133813.09207703843, 130953.86439158172, 127507.6723960575, 123538.656740109, 119141.9146779637, 114428.25050029243, 109510.34931164885, 104492.00086031319, 99461.07998918336, 94486.21888035888, 89616.575404462, 84883.82663836627, 80305.46124655908, 75888.54755322417]}, "buckets": [{"fut": 165973.03850753364, "net": -535.0191972331778, "absg": 542.7374702799294, "wall": 0}, {"fut": 166985.06923014057, "net": -3735.4282335942676, "absg": 3742.1206873810297, "wall": 0}, {"fut": 167997.09995274746, "net": -2699.311967470737, "absg": 2702.718202256157, "wall": 0}, {"fut": 169009.1306753544, "net": -849.8595412621904, "absg": 859.9156916938066, "wall": 0}, {"fut": 170021.1613979613, "net": -2317.8969759282922, "absg": 2376.5276787147122, "wall": 0}, {"fut": 171033.19212056822, "net": -2086.865445841014, "absg": 2296.0908406989956, "wall": 0}, {"fut": 172045.2228431751, "net": -8950.332383500681, "absg": 15701.747048045734, "wall": 0}, {"fut": 173057.25356578204, "net": -7334.515379660364, "absg": 14004.562631989393, "wall": 0}, {"fut": 174069.28428838894, "net": -1892.750064723381, "absg": 10349.850811707172, "wall": 0}, {"fut": 175081.31501099587, "net": 4731.613287319591, "absg": 8283.907264238203, "wall": 0}, {"fut": 176093.34573360276, "net": -2001.2249203690608, "absg": 2328.8762490433264, "wall": 1}, {"fut": 177105.3764562097, "net": -789.7898700362782, "absg": 33476.8656696145, "wall": 3}, {"fut": 178117.4071788166, "net": 9591.71084571266, "absg": 17586.181942198247, "wall": 1}, {"fut": 179129.43790142352, "net": 7858.604283898379, "absg": 15952.844777397295, "wall": 1}, {"fut": 180141.4686240304, "net": 27066.748399770804, "absg": 28989.035911805222, "wall": 2}, {"fut": 181153.49934663734, "net": 9631.165153445105, "absg": 19464.259728655226, "wall": 1}, {"fut": 182165.53006924424, "net": 19312.76023551929, "absg": 32740.033438375725, "wall": 2}, {"fut": 183177.56079185117, "net": 15933.9385144342, "absg": 15992.801933704775, "wall": 1}, {"fut": 184189.59151445806, "net": 17829.219274771447, "absg": 23724.14563691067, "wall": 0}, {"fut": 185201.622237065, "net": 9763.940900060888, "absg": 9880.017845085176, "wall": 0}, {"fut": 186213.6529596719, "net": 4175.7023801111745, "absg": 4186.847291276823, "wall": 0}, {"fut": 187225.68368227882, "net": 9273.318838205641, "absg": 9307.117709548633, "wall": 0}, {"fut": 188237.71440488572, "net": 3756.6232852879875, "absg": 3766.1626580996717, "wall": 0}, {"fut": 189249.74512749264, "net": 2967.2791936833123, "absg": 2976.227669389407, "wall": 0}, {"fut": 190261.77585009954, "net": 2205.5827165585106, "absg": 2232.1447810662503, "wall": 0}, {"fut": 191273.80657270647, "net": 5898.5910595200485, "absg": 6121.011281811592, "wall": 0}, {"fut": 192285.83729531337, "net": 18534.307027355982, "absg": 18692.112883881393, "wall": 0}, {"fut": 193297.8680179203, "net": 8199.116861690805, "absg": 13267.884655987753, "wall": 0}, {"fut": 194309.8987405272, "net": 78.32100096028586, "absg": 81.22785161994281, "wall": 0}], "dens": {"x": [144339.254915811, 145780.84547676792, 147222.43603772484, 148664.02659868172, 150105.61715963864, 151547.20772059553, 152988.79828155242, 154430.38884250936, 155871.97940346628, 157313.5699644232, 158755.1605253801, 160196.751086337, 161638.34164729394, 163079.93220825086, 164521.52276920778, 165963.1133301647, 167404.70389112158, 168846.2944520785, 170287.8850130354, 171729.47557399236, 173171.06613494924, 174612.65669590616, 176054.24725686308, 177495.83781782, 178937.42837877694, 180379.01893973383, 181820.6095006907, 183262.20006164763, 184703.79062260455, 186145.38118356143, 187586.9717445184, 189028.5623054753, 190470.1528664322, 191911.74342738913, 193353.333988346, 194794.92454930293, 196236.51511025985, 197678.1056712168, 199119.6962321737, 200561.2867931306, 202002.8773540875, 203444.46791504443, 204886.05847600132, 206327.64903695826, 207769.23959791518, 209210.8301588721, 210652.420719829, 212094.0112807859, 213535.60184174278, 214977.19240269973], "y": [0.0003991033368490364, 0.0003388191034038636, 0.00028893178988943097, 0.0002490359405251037, 0.0002189863016058956, 0.00019907139141365465, 0.00019028355543463968, 0.00019475650142998283, 0.0002164963558415731, 0.0002626298426766278, 0.00034556279937211163, 0.0004867277541834334, 0.0007230508000231371, 0.0011178937976740822, 0.0017788515666836285, 0.002884687436675784, 0.004720981124140191, 0.007715075380684523, 0.012441290452604557, 0.019538583485360344, 0.02946673021789707, 0.042077029049739166, 0.05614098546030222, 0.06920483048175623, 0.07816256086072709, 0.08051309896389268, 0.07560096903725243, 0.06494532280534895, 0.05141469899516719, 0.03789386191482981, 0.02631870583906476, 0.017452404041952026, 0.011195011830773302, 0.007032802912226543, 0.004374893302573065, 0.0027206284031417167, 0.0017048151117590668, 0.0010835130831687878, 0.0007023313334494315, 0.0004666378436485135, 0.0003194070130182199, 0.0002264934255529793, 0.0001674291086644509, 0.0001298682199079638, 0.00010629285141302456, 9.207280768238467e-05, 8.432191483356405e-05, 8.121971940509228e-05, 8.160522076045106e-05, 8.473047861028909e-05]}, "n_series": {"bova": 700, "ibov": 174}, "flow": {"last_session": "2026-07-09", "estrangeiro_dia_mi": 206.4, "estrangeiro_5d_mi": -191.2, "estrangeiro_21d_mi": -3682.0, "institucional_dia_mi": -281.5, "pessoa_fisica_dia_mi": -247.9, "series": [{"session": "2026-06-19", "estrangeiro": -1.7, "institucional": -2732.8, "pessoa_fisica": 556.5}, {"session": "2026-06-22", "estrangeiro": -2086.2, "institucional": 1520.6, "pessoa_fisica": 19.2}, {"session": "2026-06-23", "estrangeiro": -1063.3, "institucional": 786.3, "pessoa_fisica": 138.1}, {"session": "2026-06-24", "estrangeiro": -855.5, "institucional": 339.7, "pessoa_fisica": 262.4}, {"session": "2026-06-25", "estrangeiro": -410.8, "institucional": 237.2, "pessoa_fisica": -70.0}, {"session": "2026-06-26", "estrangeiro": 34.7, "institucional": 408.3, "pessoa_fisica": -99.3}, {"session": "2026-06-29", "estrangeiro": 666.5, "institucional": -767.0, "pessoa_fisica": 8.0}, {"session": "2026-06-30", "estrangeiro": 302.1, "institucional": -851.0, "pessoa_fisica": 319.3}, {"session": "2026-07-01", "estrangeiro": -589.8, "institucional": 199.0, "pessoa_fisica": 186.7}, {"session": "2026-07-02", "estrangeiro": 567.6, "institucional": -119.2, "pessoa_fisica": 76.9}, {"session": "2026-07-03", "estrangeiro": 698.1, "institucional": -679.6, "pessoa_fisica": -213.2}, {"session": "2026-07-06", "estrangeiro": -500.3, "institucional": -391.9, "pessoa_fisica": 464.7}, {"session": "2026-07-07", "estrangeiro": 12.2, "institucional": -577.1, "pessoa_fisica": 302.5}, {"session": "2026-07-08", "estrangeiro": -607.6, "institucional": 172.4, "pessoa_fisica": 220.4}, {"session": "2026-07-09", "estrangeiro": 206.4, "institucional": -281.5, "pessoa_fisica": -247.9}], "lag_note": "defasagem de 2 preg\u00f5es (dado p\u00fablico mais recente da B3)"}, "vp": {"ticker": "WINQ26", "session": "2026-07-10", "d1": {"poc": 178380.0, "vah": 179330.0, "val": 177230.0, "volume": 18088663}, "comp": {"days": 5, "poc": 174700.0, "vah": 175600.0, "val": 172695.0, "volume": 83617430}, "hist1d": [[175900.0, 43601], [176000.0, 15122], [176100.0, 35805], [176200.0, 93273], [176300.0, 85462], [176400.0, 81557], [176500.0, 60045], [176600.0, 39605], [176700.0, 108209], [176800.0, 168039], [176900.0, 158894], [177000.0, 68236], [177100.0, 83134], [177200.0, 90719], [177300.0, 232160], [177400.0, 292445], [177500.0, 321222], [177600.0, 411670], [177700.0, 611688], [177800.0, 608578], [177900.0, 649006], [178000.0, 654654], [178100.0, 629003], [178200.0, 727862], [178300.0, 1151639], [178400.0, 1386724], [178500.0, 942032], [178600.0, 986631], [178700.0, 647133], [178800.0, 814595], [178900.0, 469021], [179000.0, 232085], [179100.0, 198013], [179200.0, 246541], [179300.0, 592654], [179400.0, 896221], [179500.0, 429364], [179600.0, 612920], [179700.0, 558605], [179800.0, 463658], [179900.0, 203600], [180000.0, 155178], [180100.0, 118116], [180200.0, 49578], [180300.0, 175696], [180400.0, 213414], [180500.0, 176403], [180600.0, 96747], [180700.0, 2106]], "histcomp": [[172000.0, 28113], [172100.0, 227371], [172200.0, 538516], [172300.0, 1109808], [172400.0, 894781], [172500.0, 1063583], [172600.0, 1368065], [172700.0, 1579010], [172800.0, 1859655], [172900.0, 2077200], [173000.0, 1773898], [173100.0, 1103677], [173200.0, 1165135], [173300.0, 1133335], [173400.0, 1745792], [173500.0, 1477651], [173600.0, 2204601], [173700.0, 2712437], [173800.0, 1869248], [173900.0, 1821449], [174000.0, 2384708], [174100.0, 2289165], [174200.0, 3333340], [174300.0, 2389564], [174400.0, 2098705], [174500.0, 1603477], [174600.0, 2659699], [174700.0, 3125237], [174800.0, 2906414], [174900.0, 2362374], [175000.0, 2194215], [175100.0, 2160530], [175200.0, 2062251], [175300.0, 1584522], [175400.0, 1530462], [175500.0, 1379575], [175600.0, 935822], [175700.0, 374808], [175800.0, 152306], [175900.0, 67367], [176000.0, 50231], [176100.0, 66020], [176200.0, 109507], [176300.0, 104465], [176400.0, 106110], [176500.0, 77803], [176600.0, 99592], [176700.0, 127162], [176800.0, 170729], [176900.0, 158894], [177000.0, 68236], [177100.0, 83134], [177200.0, 90719], [177300.0, 232160], [177400.0, 292445], [177500.0, 321222], [177600.0, 411670], [177700.0, 611688], [177800.0, 608578], [177900.0, 649006], [178000.0, 654654], [178100.0, 629003], [178200.0, 727862], [178300.0, 1151639], [178400.0, 1386724], [178500.0, 942032], [178600.0, 986631], [178700.0, 647133], [178800.0, 814595], [178900.0, 469021], [179000.0, 232085], [179100.0, 198013], [179200.0, 246541], [179300.0, 592654], [179400.0, 896221], [179500.0, 429364], [179600.0, 612920], [179700.0, 558605], [179800.0, 463658], [179900.0, 203600], [180000.0, 155178], [180100.0, 118116], [180200.0, 49578], [180300.0, 175696], [180400.0, 213414], [180500.0, 176403], [180600.0, 96747], [180700.0, 2106]]}};
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const fmt = (x,d=0)=>x.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
 document.getElementById('sub').textContent =
@@ -185,5 +230,60 @@ function el(p,t,a){const e=document.createElementNS(NS,t);
   mark(D.prob.pct.p10,'P10',css('--muted'));mark(D.prob.pct.p90,'P90',css('--muted'));
   for(let i=0;i<=4;i++){const xv=x0+(x1-x0)*i/4;
     el(svg,'text',{x:X(xv),y:H-8,'text-anchor':'middle',fill:css('--muted'),'font-size':10}).textContent=fmt(xv/1000,0)+'k';}
+})();
+
+// ---- fluxo estrangeiro por sessão
+(function(){
+  if(!D.flow||!D.flow.series||!D.flow.series.length)return;
+  document.getElementById('cardflow').style.display='';
+  const svg=document.getElementById('flow'),W=560,H=240,m={l:52,r:10,t:12,b:30};
+  const s=D.flow.series;
+  const vmax=Math.max(...s.map(r=>Math.abs(r.estrangeiro)))*1.15||1;
+  const n=s.length,bw=(W-m.l-m.r)/n;
+  const Y=v=>m.t+(1-(v+vmax)/(2*vmax))*(H-m.t-m.b);
+  for(let g=-2;g<=2;g++){const yv=vmax/2*g;
+    el(svg,'line',{x1:m.l,x2:W-m.r,y1:Y(yv),y2:Y(yv),stroke:g===0?css('--axis'):css('--grid'),'stroke-width':1});
+    el(svg,'text',{x:m.l-6,y:Y(yv)+4,'text-anchor':'end',fill:css('--muted'),'font-size':10}).textContent=fmt(yv,0);}
+  s.forEach((r,i)=>{
+    const x=m.l+i*bw+2,w=Math.max(bw-4,2);
+    const y=r.estrangeiro>=0?Y(r.estrangeiro):Y(0),h=Math.abs(Y(r.estrangeiro)-Y(0))||1;
+    const rect=el(svg,'rect',{x,y,width:w,height:h,rx:3,
+      fill:r.estrangeiro>=0?css('--pos'):css('--neg')});
+    rect.addEventListener('mousemove',ev=>showTip(ev,
+      `<b>${r.session.split('-').reverse().join('/')}</b><br>estrangeiro ${fmt(r.estrangeiro,1)} mi<br>institucional ${fmt(r.institucional,1)} mi · PF ${fmt(r.pessoa_fisica,1)} mi`));
+    rect.addEventListener('mouseleave',hideTip);
+    if(i%3===0)el(svg,'text',{x:x+w/2,y:H-8,'text-anchor':'middle',fill:css('--muted'),
+      'font-size':9}).textContent=r.session.slice(8)+'/'+r.session.slice(5,7);});
+})();
+
+// ---- volume profile (horizontal: preço no eixo Y)
+(function(){
+  if(!D.vp||!D.vp.hist1d||!D.vp.hist1d.length)return;
+  document.getElementById('cardvp').style.display='';
+  const svg=document.getElementById('vp'),W=560,H=300,m={l:60,r:10,t:12,b:24};
+  const h1=D.vp.hist1d,hc=D.vp.histcomp||[];
+  const all=h1.concat(hc);
+  const p0=Math.min(...all.map(r=>r[0])),p1=Math.max(...all.map(r=>r[0]));
+  const v1max=Math.max(...h1.map(r=>r[1]))||1;
+  const vcmax=hc.length?Math.max(...hc.map(r=>r[1])):1;
+  const Y=p=>m.t+(1-(p-p0)/(p1-p0||1))*(H-m.t-m.b);
+  const bh=Math.max((H-m.t-m.b)/((p1-p0)/100+1)-1,2);
+  // composto (fundo, escala própria)
+  hc.forEach(([p,v])=>{el(svg,'rect',{x:m.l,y:Y(p)-bh/2,width:(W-m.l-m.r)*v/vcmax,
+    height:bh,fill:css('--mid'),opacity:.9});});
+  // sessão anterior (frente)
+  h1.forEach(([p,v])=>{const r=el(svg,'rect',{x:m.l,y:Y(p)-bh/2,width:(W-m.l-m.r)*v/v1max,
+    height:bh,rx:2,fill:css('--pos'),opacity:.75});
+    r.addEventListener('mousemove',ev=>showTip(ev,`<b>${fmt(p)}</b><br>vol. sessão ${fmt(v)}`));
+    r.addEventListener('mouseleave',hideTip);});
+  const mark=(v,label,color,dash)=>{if(v==null||v<p0||v>p1)return;
+    el(svg,'line',{x1:m.l,x2:W-m.r,y1:Y(v),y2:Y(v),stroke:color,'stroke-width':1.4,'stroke-dasharray':dash||''});
+    el(svg,'text',{x:W-m.r,y:Y(v)-3,'text-anchor':'end','font-size':9,fill:color}).textContent=label+' '+fmt(v);};
+  const d1=D.vp.d1||{};
+  mark(d1.poc,'POC','#e87ba4');mark(d1.vah,'VAH',css('--muted'),'4 3');mark(d1.val,'VAL',css('--muted'),'4 3');
+  if(D.vp.comp){mark(D.vp.comp.poc,'POC comp.','#d55181','2 3');}
+  mark(D.spot_fut,'ref',css('--ink2'),'1 3');
+  for(let i=0;i<=4;i++){const pv=p0+(p1-p0)*i/4;
+    el(svg,'text',{x:m.l-6,y:Y(pv)+4,'text-anchor':'end',fill:css('--muted'),'font-size':10}).textContent=fmt(pv/1000,1)+'k';}
 })();
 </script></body></html>
