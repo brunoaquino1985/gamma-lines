@@ -9,6 +9,94 @@ def _fmt(x, dec=0):
     return s.replace(",", "X").replace(".", ",").replace("X", ".")
 
 
+def _br_date(iso):
+    """2026-07-13 -> 13/07/2026"""
+    p = str(iso).split("-")
+    return f"{p[2]}/{p[1]}/{p[0]}" if len(p) == 3 else str(iso)
+
+
+def build_rationale(spot_fut, walls, mids, flip, maxg, ming, band_up, band_down):
+    """Gera cenários operacionais condicionais a partir do mapa de gamma.
+    walls: [(strike, width, fut)] ordenado; mids: [fut]."""
+    fmt = _fmt
+    stars = {3: "★★★", 2: "★★", 1: "★"}
+    acima = [w for w in walls if w[2] > spot_fut]
+    abaixo = [w for w in walls if w[2] <= spot_fut]
+    pos = spot_fut >= flip
+    out = []
+
+    def mid_below(level):
+        c = [m for m in mids if m < level]
+        return max(c) if c else None
+
+    def mid_above(level):
+        c = [m for m in mids if m > level]
+        return min(c) if c else None
+
+    if pos:
+        out.append(("Contexto",
+                    f"Preço de referência ({fmt(spot_fut)}) ACIMA do gamma flip ({fmt(flip)}): "
+                    "os dealers estão long gamma e o hedge deles vai contra o movimento — "
+                    "compra em queda, venda em alta. Dia com viés de compressão: as walls "
+                    "tendem a segurar e o preço tende a rodar entre elas."))
+        if acima:
+            r1 = acima[0]
+            alvo1 = mid_below(r1[2])
+            alvo2 = abaixo[-1][2] if abaixo else None
+            txt = (f"Possível VENDA em rejeição na wall {fmt(r1[2])} {stars[r1[1]]}")
+            if alvo1:
+                txt += f", buscando a mid wall {fmt(alvo1)}"
+            if alvo2:
+                txt += f" e, na extensão, a wall {fmt(alvo2)}"
+            txt += (f". Invalidação: aceitação consistente acima de {fmt(r1[2])} "
+                    f"(aí a próxima referência vira {fmt(acima[1][2]) if len(acima) > 1 else fmt(maxg)}).")
+            out.append(("Cenário de venda", txt))
+        if abaixo:
+            s1 = abaixo[-1]
+            alvo1 = mid_above(s1[2])
+            alvo2 = acima[0][2] if acima else None
+            txt = (f"Possível COMPRA em defesa da wall {fmt(s1[2])} {stars[s1[1]]}")
+            if alvo1:
+                txt += f", buscando a mid wall {fmt(alvo1)}"
+            if alvo2:
+                txt += f" e, na extensão, a wall {fmt(alvo2)}"
+            txt += (f". Invalidação: perda consistente de {fmt(s1[2])} "
+                    f"(abaixo disso a referência vira {fmt(abaixo[-2][2]) if len(abaixo) > 1 else fmt(flip)}).")
+            out.append(("Cenário de compra", txt))
+        out.append(("Cenário de quebra de regime",
+                    f"Perda do gamma flip ({fmt(flip)}) muda o jogo: os dealers passam a "
+                    "short gamma e o hedge deles passa a EMPURRAR o movimento. Abaixo do flip, "
+                    f"quedas tendem a acelerar em direção às walls inferiores e ao min gamma ({fmt(ming)}). "
+                    "Evitar comprar 'porque caiu' nesse regime."))
+    else:
+        out.append(("Contexto",
+                    f"Preço de referência ({fmt(spot_fut)}) ABAIXO do gamma flip ({fmt(flip)}): "
+                    "dealers short gamma — o hedge deles amplifica o movimento (vende queda, "
+                    "compra alta). Dia com viés de aceleração: rompimentos tendem a estender "
+                    "e reversões exigem confirmação."))
+        if abaixo:
+            s1 = abaixo[-1]
+            prox = abaixo[-2][2] if len(abaixo) > 1 else ming
+            out.append(("Cenário de venda (continuação)",
+                        f"Perda da wall {fmt(s1[2])} {stars[s1[1]]} abre espaço até {fmt(prox)} "
+                        f"e, na extensão, o min gamma ({fmt(ming)}). Em gamma negativo o "
+                        "rompimento tende a andar — a invalidação é o retorno rápido para dentro do nível perdido."))
+        out.append(("Cenário de reversão",
+                    f"Recuperar o flip ({fmt(flip)}) devolve o mercado ao regime de compressão "
+                    "e favorece compra em recuo, com alvos nas walls/mid walls acima. "
+                    "Enquanto abaixo do flip, compras são contra-tendência."))
+
+    out.append(("Bandas do dia",
+                f"O mercado de opções precifica o dia entre {fmt(band_down)} e {fmt(band_up)} (±1σ). "
+                "Toque na banda COM confluência de wall é o ponto de maior interesse para reversão; "
+                "preço rodando fora da banda sinaliza dia atípico — reduzir expectativa de reversão à média."))
+    out.append(("Extremos do mapa",
+                f"Max gamma ({fmt(maxg)}) e min gamma ({fmt(ming)}) funcionam como teto e piso "
+                "estatísticos do posicionamento atual: aproximações desses níveis historicamente "
+                "atraem realização/defesa forte dos books."))
+    return out
+
+
 def build_report(res, meta, session_str):
     prob = res.get("prob") or {}
     spot_fut = res["ibov_close"] * res["factor"]
@@ -87,10 +175,23 @@ def build_report(res, meta, session_str):
         f"<tr><td class='num'>{_fmt(v,1)}</td><td>{t}</td><td class='muted'>{d}</td></tr>"
         for v, t, d in rows)
 
+    rationale = build_rationale(
+        spot_fut, res["walls"], [f for _, f in res["mids"]], flip_fut,
+        res["max_gamma"][1], res["min_gamma"][1],
+        prob.get("band_up_fut") or spot_fut, prob.get("band_down_fut") or spot_fut)
+    rat_html = "\n".join(
+        f"<div class='rat'><div class='rt'>{t}</div><div class='rd'>{d}</div></div>"
+        for t, d in rationale)
+
+    banner = (f"Mapa calculado com os dados do pregão de <b>{_br_date(res['ref_date'])}</b> "
+              f"(fechamento) — para uso na sessão de <b>{_br_date(session_str)}</b>.")
+
     return HTML_TMPL.replace("__DATA__", json.dumps(data)) \
                     .replace("__TILES__", tiles) \
                     .replace("__ROWS__", table_rows) \
-                    .replace("__SESSION__", session_str)
+                    .replace("__RATIONALE__", rat_html) \
+                    .replace("__BANNER__", banner) \
+                    .replace("__SESSION__", _br_date(session_str))
 
 
 HTML_TMPL = r"""<!DOCTYPE html>
@@ -132,10 +233,19 @@ td.num{font-variant-numeric:tabular-nums;font-weight:600}
 .legend{display:flex;gap:14px;font-size:11px;color:var(--ink2);margin-top:6px;flex-wrap:wrap}
 .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;
   margin-right:5px;vertical-align:-1px;background:var(--c)}
+.banner{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);
+  border-radius:10px;padding:10px 14px;margin:0 0 14px;font-size:13px;color:var(--ink2)}
+.banner b{color:var(--ink)}
+.rat{padding:8px 0;border-bottom:1px solid var(--grid)} .rat:last-child{border-bottom:0}
+.rt{font-weight:650;font-size:13px;margin-bottom:2px}
+.rd{font-size:13px;color:var(--ink2)}
 </style></head><body>
 <h1>GAMMA LINES — sessão __SESSION__</h1>
 <div class="sub" id="sub"></div>
+<div class="banner">__BANNER__</div>
 <div class="tiles">__TILES__</div>
+<div class="card" style="margin-bottom:14px"><h2>Racional operacional do dia (cenários condicionais)</h2>
+__RATIONALE__</div>
 <div class="grid">
   <div class="card"><h2>Gamma líquido dos dealers × nível do futuro</h2>
     <svg id="curve" viewBox="0 0 560 260"></svg>
