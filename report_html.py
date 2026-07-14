@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Gera o painel HTML diário (autocontido) do GAMMA LINES.
-Tema: dark futurista. Tom: professor experiente de day trade ensinando."""
+Tema: dark futurista com sidebar de navegação. Tom: professor de day trade."""
 import json
 
 
@@ -143,9 +143,10 @@ def build_report(res, meta, session_str, flow=None, vp=None, bt=None):
     prob = res.get("prob") or {}
     spot_fut = res["ibov_close"] * res["factor"]
     flip_fut = res["flip"][1]
-    regime = "GAMMA POSITIVO" if spot_fut >= flip_fut else "GAMMA NEGATIVO"
+    pos = spot_fut >= flip_fut
+    regime = "GAMMA POSITIVO" if pos else "GAMMA NEGATIVO"
     regime_desc = ("regime calmo: as paredes tendem a segurar o preço"
-                   if spot_fut >= flip_fut else
+                   if pos else
                    "regime nervoso: movimentos tendem a acelerar")
 
     walls = [dict(strike=k, width=w, fut=round(f, 1)) for k, w, f in res["walls"]]
@@ -192,35 +193,37 @@ def build_report(res, meta, session_str, flow=None, vp=None, bt=None):
         <div class="tv neon">±{_fmt(spot_fut*sig)} <span class="unit">pts</span></div>
         <div class="ts">o "tamanho do dia" que as opções precificam (1σ)</div></div>
       <div class="tile"><div class="tl">Regime de gamma</div>
-        <div class="tv {'pos' if spot_fut>=flip_fut else 'neg'}">{regime}</div>
+        <div class="tv {'pos' if pos else 'neg'}">{regime}</div>
         <div class="ts">{regime_desc} · flip em {_fmt(flip_fut)}</div></div>
       <div class="tile"><div class="tl">Parede principal</div>
         <div class="tv neon">{_fmt([w for w in walls if w['width']==3][0]['fut'] if any(w['width']==3 for w in walls) else 0)}</div>
         <div class="ts">a wall ★★★ — maior concentração de proteção dos bancos</div></div>
     """ if p_up is not None else "<div class='tile'><div class='tl'>Probabilidades indisponíveis</div></div>"
 
-    tiles2 = ""
+    flow_tiles = ""
     if flow:
         fx = flow["estrangeiro_dia_mi"]
         fx5 = flow["estrangeiro_5d_mi"]
         cls_d = "pos" if fx >= 0 else "neg"
         cls_5 = "pos" if fx5 >= 0 else "neg"
-        tiles2 += f"""
+        flow_tiles = f"""
       <div class="tile"><div class="tl">Fluxo estrangeiro · {_br_date(flow['last_session'])}</div>
         <div class="tv {cls_d}">{'+' if fx >= 0 else '−'}R$ {_fmt(abs(fx))} <span class="unit">mi</span></div>
         <div class="ts">o dinheiro gringo {'entrou' if fx >= 0 else 'saiu'} nesse dia (dado com 2 pregões de atraso)</div></div>
       <div class="tile"><div class="tl">Fluxo estrangeiro · 5 sessões</div>
         <div class="tv {cls_5}">{'+' if fx5 >= 0 else '−'}R$ {_fmt(abs(fx5))} <span class="unit">mi</span></div>
         <div class="ts">21 sessões: {'+' if flow['estrangeiro_21d_mi'] >= 0 else '−'}R$ {_fmt(abs(flow['estrangeiro_21d_mi']))} mi</div></div>"""
+
+    vp_tiles = ""
     if vp and vp.get("d1"):
         d1 = vp["d1"]
         comp = vp.get("comp")
-        tiles2 += f"""
+        vp_tiles = f"""
       <div class="tile"><div class="tl">POC da sessão anterior · {vp['ticker']}</div>
         <div class="tv neon">{_fmt(d1['poc'])}</div>
         <div class="ts">área de valor {_fmt(d1['val'])} — {_fmt(d1['vah'])} (onde 70% do volume girou)</div></div>"""
         if comp:
-            tiles2 += f"""
+            vp_tiles += f"""
       <div class="tile"><div class="tl">POC composto · {comp['days']} sessões</div>
         <div class="tv neon">{_fmt(comp['poc'])}</div>
         <div class="ts">área de valor {_fmt(comp['val'])} — {_fmt(comp['vah'])} (zona consolidada da semana)</div></div>"""
@@ -287,11 +290,33 @@ def build_report(res, meta, session_str, flow=None, vp=None, bt=None):
         for t, d in rationale)
 
     gloss_html = "\n".join(
-        f"<div class='gl'><span class='gt'>{t}</span><span class='gd'>{d}</span></div>"
+        f"<div class='rat'><div class='rt' style='color:var(--cyan)'>{t}</div><div class='rd'>{d}</div></div>"
         for t, d in GLOSSARY)
 
     banner = (f"Mapa calculado com os dados do pregão de <b>{_br_date(res['ref_date'])}</b> "
               f"(fechamento) — preparado para a sessão de <b>{_br_date(session_str)}</b>.")
+
+    # --- resumo do professor (visão geral) ---
+    acima = [w for w in res["walls"] if w[2] > spot_fut]
+    abaixo = [w for w in res["walls"] if w[2] <= spot_fut]
+    r_teto = _fmt(acima[0][2]) if acima else _fmt(res["max_gamma"][1])
+    r_piso = _fmt(abaixo[-1][2]) if abaixo else _fmt(res["min_gamma"][1])
+    if flow:
+        fx5 = flow["estrangeiro_5d_mi"]
+        r_flow = ("com o gringo comprador na semana" if fx5 >= 0
+                  else "com o gringo vendedor na semana")
+    else:
+        r_flow = "sem leitura de fluxo disponível"
+    if pos:
+        resumo = (f"Dia de gamma positivo {r_flow}: o mapa favorece <b>operar as bordas</b> — "
+                  f"compra na defesa de {r_piso}, venda na rejeição de {r_teto}, sem perseguir "
+                  "rompimento. Abra <b>A aula do dia</b> no menu para os cenários completos com "
+                  "alvo e invalidação.")
+    else:
+        resumo = (f"Dia de gamma negativo {r_flow}: regime nervoso, movimentos tendem a "
+                  f"<b>acelerar</b>. Opere a favor do movimento com stop curto; referências em "
+                  f"{r_piso} (baixo) e {r_teto} (cima). Abra <b>A aula do dia</b> no menu para os "
+                  "cenários completos.")
 
     bt_html = ""
     if bt and bt.get("n_days"):
@@ -331,8 +356,8 @@ def build_report(res, meta, session_str, flow=None, vp=None, bt=None):
                           f"{_fmt(fl['queda_media_extra']) if fl.get('queda_media_extra') else '—'} pts.")
         extras_html = "".join(f"<div class='rd' style='margin-top:6px'>{e}</div>"
                               for e in extras)
-        bt_html = f"""<div class="card" style="margin-bottom:16px">
-<h2>Estatísticas das zonas — auditoria dos últimos {bt['n_days']} pregões</h2>
+        bt_html = f"""<div class="card">
+<h2>Auditoria dos últimos {bt['n_days']} pregões</h2>
 <div class="rd" style="margin-bottom:10px">Aula de honestidade: todo dia o mapa
 da véspera é comparado com o que o mercado REALMENTE fez ({_br_date(bt.get('desde'))}
 a {_br_date(bt.get('ate'))}). Toque = preço chegou a 100 pts da linha; rejeição =
@@ -341,17 +366,34 @@ ainda merece desconfiança — os números amadurecem a cada sessão.</div>
 <table><tr><th>linha</th><th>toques</th><th>rejeitou</th><th>rompeu</th><th>taxa de rejeição</th></tr>
 {wrows}</table>
 {extras_html}</div>"""
+    else:
+        bt_html = ("<div class='card'><h2>Auditoria dos pregões</h2>"
+                   "<div class='rd'>As primeiras estatísticas aparecem aqui após a "
+                   "próxima sessão auditada — todo dia o mapa da véspera é comparado "
+                   "com o que o mercado realmente fez.</div></div>")
 
-    tiles2_html = f'<div class="tiles">{tiles2}</div>' if tiles2 else ""
-    return HTML_TMPL.replace("__DATA__", json.dumps(data)) \
-                    .replace("__TILES2__", tiles2_html) \
-                    .replace("__TILES__", tiles) \
-                    .replace("__ROWS__", table_rows) \
-                    .replace("__RATIONALE__", rat_html) \
-                    .replace("__BTCARD__", bt_html) \
-                    .replace("__GLOSSARY__", gloss_html) \
-                    .replace("__BANNER__", banner) \
-                    .replace("__SESSION__", _br_date(session_str))
+    regime_pill_cls = "pill-pos" if pos else "pill-neg"
+    tiles_all = tiles + flow_tiles + vp_tiles
+
+    return (HTML_TMPL
+            .replace("__DATA__", json.dumps(data))
+            .replace("__TILES__", tiles_all)
+            .replace("__FLOWTILES__", flow_tiles or
+                     "<div class='tile'><div class='tl'>Fluxo indisponível</div>"
+                     "<div class='ts'>a B3 não publicou o dado desta janela</div></div>")
+            .replace("__VPTILES__", vp_tiles or
+                     "<div class='tile'><div class='tl'>Volume profile indisponível</div>"
+                     "<div class='ts'>sem tick data para a sessão anterior</div></div>")
+            .replace("__ROWS__", table_rows)
+            .replace("__RATIONALE__", rat_html)
+            .replace("__BTCARD__", bt_html)
+            .replace("__GLOSSARY__", gloss_html)
+            .replace("__BANNER__", banner)
+            .replace("__RESUMO__", resumo)
+            .replace("__REGIME__", regime)
+            .replace("__REGIMECLS__", regime_pill_cls)
+            .replace("__FLIP__", _fmt(flip_fut))
+            .replace("__SESSION__", _br_date(session_str)))
 
 
 HTML_TMPL = r"""<!DOCTYPE html>
@@ -367,9 +409,10 @@ HTML_TMPL = r"""<!DOCTYPE html>
   --gold:#ffd75e; --cyan:#37e0ff; --magenta:#ff5dc8;
   --border:rgba(55,224,255,.14);
   --glow:0 0 18px rgba(55,224,255,.18);
+  --sbw:236px;
 }
 *{box-sizing:border-box}
-body{margin:0;color:var(--ink);padding:24px;
+body{margin:0;color:var(--ink);
   font:14px/1.55 "Segoe UI",system-ui,-apple-system,sans-serif;
   background:
     radial-gradient(1200px 500px at 70% -10%, rgba(55,224,255,.07), transparent 60%),
@@ -379,29 +422,71 @@ body{margin:0;color:var(--ink);padding:24px;
     var(--page);}
 .num,.tv,td.num{font-family:"Cascadia Code","Consolas",ui-monospace,monospace;
   font-variant-numeric:tabular-nums}
-h1{font-size:24px;margin:0;letter-spacing:.12em;text-transform:uppercase;
-  background:linear-gradient(90deg,var(--cyan),var(--accent));
-  -webkit-background-clip:text;background-clip:text;color:transparent}
 h2{font-size:12px;margin:0 0 12px;color:var(--cyan);text-transform:uppercase;
   letter-spacing:.18em;font-weight:600}
 h2::before{content:"▸ ";color:var(--accent)}
-.sub{color:var(--muted);font-size:12px;margin:6px 0 18px}
-.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
-.card{background:linear-gradient(180deg,var(--surface2),var(--surface));
-  border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--glow)}
-.tiles{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin-bottom:16px}
+
+/* ===== sidebar ===== */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sbw);z-index:20;
+  background:linear-gradient(180deg,#0c1322,#080d18);
+  border-right:1px solid var(--border);display:flex;flex-direction:column;padding:18px 0}
+.logo{padding:0 20px 14px;border-bottom:1px solid var(--grid)}
+.logo h1{font-size:17px;margin:0;letter-spacing:.14em;text-transform:uppercase;
+  background:linear-gradient(90deg,var(--cyan),var(--accent));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.logo .d{color:var(--muted);font-size:11px;margin-top:2px}
+.nav{flex:1;overflow:auto;padding:12px 10px}
+.nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:2px 0;
+  border-radius:10px;color:var(--ink2);text-decoration:none;font-size:13px;cursor:pointer;
+  border:1px solid transparent;transition:all .15s}
+.nav a .ic{width:20px;text-align:center;color:var(--muted)}
+.nav a:hover{background:rgba(55,224,255,.06);color:var(--ink)}
+.nav a.on{background:linear-gradient(90deg,rgba(55,224,255,.12),rgba(0,229,160,.05));
+  color:var(--cyan);border-color:var(--border);box-shadow:var(--glow)}
+.nav a.on .ic{color:var(--accent)}
+.nav .sec{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.2em;
+  padding:14px 12px 4px}
+.side-foot{padding:12px 20px 0;border-top:1px solid var(--grid);font-size:10.5px;color:var(--muted)}
+.pill{display:block;text-align:center;margin-bottom:8px;padding:7px 10px;border-radius:9px;
+  font-weight:700;font-size:12px;letter-spacing:.08em}
+.pill-pos{color:var(--pos);background:rgba(51,177,255,.08);border:1px solid rgba(51,177,255,.3)}
+.pill-neg{color:var(--neg);background:rgba(255,93,93,.08);border:1px solid rgba(255,93,93,.3)}
+
+/* ===== conteúdo ===== */
+.main{margin-left:var(--sbw);padding:24px 26px;max-width:1200px}
+.pagehead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.pagehead h3{font-size:20px;margin:0;color:var(--ink);letter-spacing:.06em;font-weight:600}
+.pagehead .crumb{color:var(--muted);font-size:12px}
+.sub{color:var(--muted);font-size:12px;margin:2px 0 16px}
+.view{display:none;animation:fade .25s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.banner{background:linear-gradient(90deg,rgba(0,229,160,.10),transparent 70%);
+  border:1px solid var(--border);border-left:3px solid var(--accent);
+  border-radius:12px;padding:12px 16px;margin:0 0 16px;font-size:13.5px;color:var(--ink2)}
+.banner b{color:var(--accent)}
+.prof{background:linear-gradient(90deg,rgba(55,224,255,.08),transparent 70%);
+  border:1px solid var(--border);border-left:3px solid var(--cyan);
+  border-radius:12px;padding:12px 16px;margin:0 0 16px;font-size:13.5px;color:var(--ink2)}
+.prof b{color:var(--cyan)}
+.tiles{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:16px}
 .tile{background:linear-gradient(180deg,var(--surface2),var(--surface));
   border:1px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--glow);
   position:relative;overflow:hidden}
 .tile::after{content:"";position:absolute;inset:0 0 auto 0;height:2px;
   background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.55}
 .tl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.16em}
-.tv{font-size:34px;font-weight:700;margin:6px 0 4px;line-height:1.1}
+.tv{font-size:32px;font-weight:700;margin:6px 0 4px;line-height:1.1}
 .tv.neon{color:var(--cyan);text-shadow:0 0 22px rgba(55,224,255,.45)}
 .tv.pos{color:var(--pos);text-shadow:0 0 22px rgba(51,177,255,.4)}
 .tv.neg{color:var(--neg);text-shadow:0 0 22px rgba(255,93,93,.4)}
 .unit{font-size:15px;color:var(--ink2);font-weight:400}
 .ts{font-size:11.5px;color:var(--ink2)}
+.card{background:linear-gradient(180deg,var(--surface2),var(--surface));
+  border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--glow);
+  margin-bottom:16px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+.grid .card{margin-bottom:0}
 svg{display:block;width:100%;height:auto}
 table{width:100%;border-collapse:collapse;font-size:13px}
 td,th{padding:7px 10px;border-bottom:1px solid var(--grid);text-align:left}
@@ -416,67 +501,134 @@ td.tag{color:var(--ink);white-space:nowrap}
 .legend{display:flex;gap:16px;font-size:11px;color:var(--ink2);margin-top:8px;flex-wrap:wrap}
 .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;
   margin-right:6px;vertical-align:-1px;background:var(--c);box-shadow:0 0 8px var(--c)}
-.banner{background:linear-gradient(90deg,rgba(0,229,160,.10),transparent 70%);
-  border:1px solid var(--border);border-left:3px solid var(--accent);
-  border-radius:12px;padding:12px 16px;margin:0 0 16px;font-size:13.5px;color:var(--ink2)}
-.banner b{color:var(--accent)}
-.prof{background:linear-gradient(90deg,rgba(55,224,255,.08),transparent 70%);
-  border:1px solid var(--border);border-left:3px solid var(--cyan);
-  border-radius:12px;padding:12px 16px;margin:0 0 16px;font-size:13.5px;color:var(--ink2)}
-.prof b{color:var(--cyan)}
 .rat{padding:12px 0;border-bottom:1px solid var(--grid)} .rat:last-child{border-bottom:0}
 .rt{font-weight:700;font-size:14px;margin-bottom:4px;color:var(--gold)}
 .rd{font-size:13.5px;color:var(--ink2)}
-.gl{padding:8px 0;border-bottom:1px dashed var(--grid);font-size:12.5px}
-.gl:last-child{border-bottom:0}
-.gt{color:var(--cyan);font-weight:700;margin-right:8px;letter-spacing:.04em}
-.gd{color:var(--ink2)}
+.tvimg{width:100%;height:auto;border-radius:10px;border:1px solid var(--border);display:block}
+
+/* ===== mobile ===== */
+.burger{display:none}
+@media (max-width:860px){
+  .sidebar{transform:translateX(-100%);transition:transform .2s}
+  .sidebar.open{transform:none;box-shadow:20px 0 60px rgba(0,0,0,.6)}
+  .main{margin-left:0;padding:18px 14px}
+  .burger{display:flex;position:fixed;left:12px;top:10px;z-index:30;width:40px;height:40px;
+    align-items:center;justify-content:center;border-radius:10px;cursor:pointer;
+    background:var(--surface2);border:1px solid var(--border);color:var(--cyan);font-size:18px}
+  .pagehead{margin-top:44px}
+}
 </style></head><body>
-<h1>Gamma Lines // __SESSION__</h1>
-<div class="sub" id="sub"></div>
-<div class="banner">__BANNER__</div>
-<div class="prof"><b>Aula rápida antes do pregão:</b> este painel é o seu mapa do território. As
+<div class="burger" id="burger">&#9776;</div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="logo"><h1>Gamma Lines</h1><div class="d">sessão de __SESSION__</div></div>
+  <nav class="nav" id="nav">
+    <div class="sec">Painel</div>
+    <a data-v="overview" class="on"><span class="ic">&#9673;</span> Visão geral</a>
+    <a data-v="aula"><span class="ic">&#127891;</span> A aula do dia</a>
+    <a data-v="niveis"><span class="ic">&#8801;</span> Níveis do dia</a>
+    <div class="sec">Análises</div>
+    <a data-v="stats"><span class="ic">&#10003;</span> Estatísticas das zonas</a>
+    <a data-v="graficos"><span class="ic">&#8767;</span> Gráficos de gamma</a>
+    <a data-v="fluxo"><span class="ic">$</span> Fluxo estrangeiro</a>
+    <a data-v="vp"><span class="ic">&#9636;</span> Volume profile</a>
+    <div class="sec">Extras</div>
+    <a data-v="tv"><span class="ic">&#128200;</span> Mapa no TradingView</a>
+    <a data-v="gloss"><span class="ic">?</span> Glossário</a>
+  </nav>
+  <div class="side-foot">
+    <span class="pill __REGIMECLS__">__REGIME__</span>
+    flip __FLIP__ · material educacional, não é recomendação
+  </div>
+</aside>
+
+<main class="main">
+
+<section class="view on" id="v-overview">
+  <div class="pagehead"><h3>Visão geral</h3><span class="crumb">o essencial antes do pregão</span></div>
+  <div class="sub" id="sub"></div>
+  <div class="banner">__BANNER__</div>
+  <div class="prof"><b>Aula rápida antes do pregão:</b> este painel é o seu mapa do território. As
 <b>walls</b> são as paredes onde os grandes players se defendem; o <b>flip</b> diz se o dia tende a ser
 calmo ou nervoso; as <b>bandas</b> mostram o tamanho esperado do dia; o <b>POC</b> mostra onde o mercado
 negociou ontem; e o <b>fluxo</b> mostra quem está colocando dinheiro. Nenhuma linha é sinal de entrada
 sozinha — elas marcam os pontos de decisão onde você deve OBSERVAR a reação do preço antes de agir.</div>
-<div class="tiles">__TILES__</div>
-__TILES2__
-<div class="card" style="margin-bottom:16px"><h2>A aula do dia — cenários e como operá-los</h2>
-__RATIONALE__</div>
-__BTCARD__
-<div class="grid">
-  <div class="card"><h2>Gamma dos dealers × nível do futuro</h2>
-    <svg id="curve" viewBox="0 0 560 260"></svg>
-    <div class="legend"><span style="--c:var(--pos)">gamma positivo (segura)</span>
-      <span style="--c:var(--neg)">gamma negativo (acelera)</span>
-      <span style="--c:var(--gold)">flip</span><span style="--c:var(--muted)">preço ref.</span></div></div>
-  <div class="card"><h2>Concentração por strike (R$ mi)</h2>
-    <svg id="bars" viewBox="0 0 560 260"></svg>
-    <div class="legend"><span style="--c:var(--pos)">bancos long gamma</span>
-      <span style="--c:var(--neg)">bancos short gamma</span><span style="--c:var(--muted)">★ = wall</span></div></div>
-  <div class="card"><h2>Onde o mercado acha que fecha (distribuição)</h2>
-    <svg id="dens" viewBox="0 0 560 240"></svg>
-    <div class="legend"><span style="--c:var(--accent)">probabilidade</span>
-      <span style="--c:var(--muted)">P10–P90</span><span style="--c:var(--pos)">±1σ dia</span></div></div>
-  <div class="card"><h2>Níveis do dia (pontos do futuro)</h2>
-    <div style="max-height:320px;overflow:auto"><table>
-      <tr><th>nível</th><th>tipo</th><th>como usar</th></tr>
-      __ROWS__</table></div></div>
+  <div class="tiles">__TILES__</div>
+  <div class="card"><h2>Resumo do professor</h2><div class="rd">__RESUMO__</div></div>
+</section>
+
+<section class="view" id="v-aula">
+  <div class="pagehead"><h3>A aula do dia</h3><span class="crumb">cenários e como operá-los</span></div>
+  <div class="card">__RATIONALE__</div>
+</section>
+
+<section class="view" id="v-niveis">
+  <div class="pagehead"><h3>Níveis do dia</h3><span class="crumb">pontos do futuro, do maior para o menor</span></div>
+  <div class="card"><table>
+    <tr><th>nível</th><th>tipo</th><th>como usar</th></tr>
+    __ROWS__</table></div>
+</section>
+
+<section class="view" id="v-stats">
+  <div class="pagehead"><h3>Estatísticas das zonas</h3><span class="crumb">o mapa auditado contra o mercado real</span></div>
+  __BTCARD__
+</section>
+
+<section class="view" id="v-graficos">
+  <div class="pagehead"><h3>Gráficos de gamma</h3><span class="crumb">posicionamento dos dealers e distribuição</span></div>
+  <div class="grid">
+    <div class="card"><h2>Gamma dos dealers × nível do futuro</h2>
+      <svg id="curve" viewBox="0 0 560 260"></svg>
+      <div class="legend"><span style="--c:var(--pos)">gamma positivo (segura)</span>
+        <span style="--c:var(--neg)">gamma negativo (acelera)</span>
+        <span style="--c:var(--gold)">flip</span><span style="--c:var(--muted)">preço ref.</span></div></div>
+    <div class="card"><h2>Concentração por strike (R$ mi)</h2>
+      <svg id="bars" viewBox="0 0 560 260"></svg>
+      <div class="legend"><span style="--c:var(--pos)">bancos long gamma</span>
+        <span style="--c:var(--neg)">bancos short gamma</span><span style="--c:var(--muted)">★ = wall</span></div></div>
+    <div class="card"><h2>Onde o mercado acha que fecha (distribuição)</h2>
+      <svg id="dens" viewBox="0 0 560 240"></svg>
+      <div class="legend"><span style="--c:var(--accent)">probabilidade</span>
+        <span style="--c:var(--muted)">P10–P90</span><span style="--c:var(--pos)">±1σ dia</span></div></div>
+  </div>
+</section>
+
+<section class="view" id="v-fluxo">
+  <div class="pagehead"><h3>Fluxo estrangeiro</h3><span class="crumb">quem está pagando a conta</span></div>
+  <div class="tiles">__FLOWTILES__</div>
   <div class="card" id="cardflow" style="display:none"><h2>Fluxo estrangeiro por sessão (R$ mi)</h2>
     <svg id="flow" viewBox="0 0 560 240"></svg>
     <div class="legend"><span style="--c:var(--pos)">gringo comprando</span>
       <span style="--c:var(--neg)">gringo vendendo</span>
       <span style="--c:var(--muted)">à vista · defasagem D-2</span></div></div>
+</section>
+
+<section class="view" id="v-vp">
+  <div class="pagehead"><h3>Volume profile</h3><span class="crumb">onde o mercado 'aceitou' negociar</span></div>
+  <div class="tiles">__VPTILES__</div>
   <div class="card" id="cardvp" style="display:none"><h2>Volume profile do WIN (ontem × semana)</h2>
     <svg id="vp" viewBox="0 0 560 300"></svg>
     <div class="legend"><span style="--c:var(--pos)">volume de ontem</span>
       <span style="--c:var(--mid)">volume da semana</span>
       <span style="--c:var(--magenta)">POC</span><span style="--c:var(--muted)">VAH/VAL</span></div></div>
-  <div class="card"><h2>Glossário do professor</h2>
-__GLOSSARY__</div>
-</div>
+</section>
+
+<section class="view" id="v-tv">
+  <div class="pagehead"><h3>Mapa no TradingView</h3><span class="crumb">WIN 15 min com as linhas desenhadas</span></div>
+  <div class="card"><h2>Print do dia</h2>
+    <!--TVSLOT-->
+    <div class="rd" id="tvnote">O print do TradingView não está disponível nesta edição do painel —
+    ele é gerado na entrega da manhã quando o computador com o TradingView está conectado.</div>
+  </div>
+</section>
+
+<section class="view" id="v-gloss">
+  <div class="pagehead"><h3>Glossário do professor</h3><span class="crumb">os termos do mapa, explicados</span></div>
+  <div class="card">__GLOSSARY__</div>
+</section>
+
 <div class="foot" id="foot"></div>
+</main>
 <div class="tip" id="tip"></div>
 <script>
 const D = __DATA__;
@@ -486,6 +638,21 @@ document.getElementById('sub').textContent =
   `dados de ${D.ref} · ${D.fut} ajuste ${fmt(D.fut_settle)} · IBOV ${fmt(D.ibov,2)} (${D.ibov_source}) · fator ${D.fator.toFixed(5)} · séries: ${D.n_series.bova} BOVA11 + ${D.n_series.ibov} IBOV`;
 document.getElementById('foot').textContent =
   '*Probabilidade risk-neutral extraída da curva de opções (Breeden-Litzenberger). Este painel é material educacional gerado automaticamente a partir de dados públicos da B3 — leitura de cenário, não recomendação de investimento. Gerencie seu risco: nenhum mapa substitui o stop.';
+
+// ---- navegação da sidebar
+const nav = document.getElementById('nav');
+const sidebar = document.getElementById('sidebar');
+document.getElementById('burger').addEventListener('click',()=>sidebar.classList.toggle('open'));
+nav.addEventListener('click', e => {
+  const a = e.target.closest('a[data-v]'); if (!a) return;
+  nav.querySelectorAll('a').forEach(x => x.classList.remove('on'));
+  a.classList.add('on');
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  document.getElementById('v-' + a.dataset.v).classList.add('on');
+  sidebar.classList.remove('open');
+  window.scrollTo({top:0});
+});
+
 const tip = document.getElementById('tip');
 function showTip(ev,html){tip.innerHTML=html;tip.style.display='block';
   tip.style.left=(ev.clientX+12)+'px';tip.style.top=(ev.clientY-10)+'px';}
