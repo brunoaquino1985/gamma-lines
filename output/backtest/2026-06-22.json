@@ -1,0 +1,53 @@
+{
+ "session": "2026-06-22",
+ "open": 171400.0,
+ "high": 173890.0,
+ "low": 170210.0,
+ "close": 173560.0,
+ "walls": [
+  {
+   "outcome": "rejeitou",
+   "side": "acima",
+   "mfe": 467.6,
+   "width": 1,
+   "level": 170332.438
+  },
+  {
+   "outcome": "rompeu",
+   "side": "acima",
+   "mfe": 252.6,
+   "width": 1,
+   "level": 171352.392
+  },
+  {
+   "outcome": "rejeitou",
+   "side": "abaixo",
+   "mfe": 402.3,
+   "width": 2,
+   "level": 172372.347
+  },
+  {
+   "outcome": "rejeitou",
+   "side": "abaixo",
+   "mfe": 432.3,
+   "width": 3,
+   "level": 173392.302
+  }
+ ],
+ "bands": {
+  "inside": false,
+  "broke_up": true,
+  "broke_down": false
+ },
+ "flip": {
+  "crossed_down": true,
+  "extra_drop": 3127.0
+ },
+ "poc": {
+  "touched": true
+ },
+ "va": {
+  "open_inside": true,
+  "close_inside": false
+ }
+}

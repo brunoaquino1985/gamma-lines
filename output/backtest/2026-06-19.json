@@ -1,0 +1,32 @@
+{
+ "session": "2026-06-19",
+ "open": 171410.0,
+ "high": 171945.0,
+ "low": 170730.0,
+ "close": 171645.0,
+ "walls": [
+  {
+   "outcome": "rejeitou",
+   "side": "abaixo",
+   "mfe": 416.5,
+   "width": 1,
+   "level": 171441.511
+  }
+ ],
+ "bands": {
+  "inside": true,
+  "broke_up": false,
+  "broke_down": false
+ },
+ "flip": {
+  "crossed_down": false,
+  "extra_drop": null
+ },
+ "poc": {
+  "touched": true
+ },
+ "va": {
+  "open_inside": true,
+  "close_inside": true
+ }
+}

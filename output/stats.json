@@ -1,48 +1,48 @@
 {
-  "n_days": 1,
+  "n_days": 20,
   "walls": {
     "1": {
-      "toques": 2,
-      "rejeitou": 1,
-      "rompeu": 1,
+      "toques": 29,
+      "rejeitou": 16,
+      "rompeu": 13,
       "neutro": 0,
-      "taxa_rejeicao": 0.5
+      "taxa_rejeicao": 0.552
     },
     "2": {
-      "toques": 1,
-      "rejeitou": 1,
-      "rompeu": 0,
+      "toques": 19,
+      "rejeitou": 12,
+      "rompeu": 7,
       "neutro": 0,
-      "taxa_rejeicao": 1.0
+      "taxa_rejeicao": 0.632
     },
     "3": {
-      "toques": 1,
-      "rejeitou": 0,
-      "rompeu": 0,
+      "toques": 7,
+      "rejeitou": 2,
+      "rompeu": 4,
       "neutro": 1,
-      "taxa_rejeicao": null
+      "taxa_rejeicao": 0.333
     }
   },
   "bands": {
-    "days": 1,
-    "inside": 0,
-    "taxa_dentro": 0.0
+    "days": 20,
+    "inside": 9,
+    "taxa_dentro": 0.45
   },
   "poc": {
-    "days": 1,
-    "touched": 1,
-    "taxa_ima": 1.0
+    "days": 19,
+    "touched": 13,
+    "taxa_ima": 0.684
   },
   "va": {
-    "open_inside": 0,
-    "taxa_rotacao": null,
-    "open_outside": 1,
-    "taxa_tendencia": 0.0
+    "open_inside": 10,
+    "taxa_rotacao": 0.3,
+    "open_outside": 9,
+    "taxa_tendencia": 0.778
   },
   "flip": {
-    "crosses": 0,
-    "queda_media_extra": null
+    "crosses": 4,
+    "queda_media_extra": 1450.3
   },
-  "desde": "2026-07-13",
+  "desde": "2026-06-16",
   "ate": "2026-07-13"
 }
