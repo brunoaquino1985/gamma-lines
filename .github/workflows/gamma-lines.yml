@@ -12,6 +12,10 @@ on:
         description: "Rodar mesmo que a sessao de hoje ja tenha sido gerada"
         type: boolean
         default: false
+      backfill:
+        description: "Backfill do backtest (~20 pregoes passados)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -55,8 +59,12 @@ jobs:
         if: steps.check.outputs.done == 'false'
         run: python run_daily.py
 
+      - name: Backfill do backtest
+        if: inputs.backfill == true
+        run: python backfill.py 20
+
       - name: Commita o resultado
-        if: steps.check.outputs.done == 'false'
+        if: steps.check.outputs.done == 'false' || inputs.backfill == true
         run: |
           git config user.name "gamma-bot"
           git config user.email "actions@github.com"
