@@ -22,6 +22,7 @@ from ntsl_generator import generate_ntsl, current_contract  # noqa: E402
 from report_html import build_report          # noqa: E402
 from flow_participants import build_flow_history, flow_block  # noqa: E402
 from volume_profile import build_vp_block     # noqa: E402
+import backtest as btm                        # noqa: E402
 
 WORK = os.path.join(HERE, "work")
 OUT = os.path.join(HERE, "output")
@@ -58,6 +59,28 @@ def main():
         vp = None
     res["vp"] = vp
 
+    # --- Onda 3: avalia o mapa de ONTEM contra os ticks de ontem ---
+    bt_stats = None
+    try:
+        prev_path = os.path.join(OUT, "levels.json")
+        tick_zip = os.path.join(WORK, f"ticks_{meta['ref']}.zip")
+        if os.path.exists(prev_path) and os.path.exists(tick_zip):
+            prev = json.load(open(prev_path))
+            rec_path = os.path.join(OUT, "backtest", f"{meta['ref']}.json")
+            if prev.get("session") == meta["ref"] and \
+                    not os.path.exists(rec_path):
+                tk = (prev.get("vp") or {}).get("ticker") or \
+                    f"WIN{current_contract(ref)}"
+                r = btm.eval_and_store(OUT, prev, tick_zip, tk)
+                if r:
+                    print(f"[bt] sessão {meta['ref']} avaliada: "
+                          f"{len(r['walls'])} toques de wall")
+        bt_stats = btm.rebuild_stats(OUT)
+        if not bt_stats.get("n_days"):
+            bt_stats = None
+    except Exception as e:
+        print(f"[warn] backtest indisponível: {e}", file=sys.stderr)
+
     code = generate_ntsl(res, session)
 
     os.makedirs(OUT, exist_ok=True)
@@ -93,7 +116,10 @@ def main():
     if vp and vp.get("d1"):
         levels["vp"] = dict(ticker=vp["ticker"], d1=vp["d1"],
                             comp=vp.get("comp"))
-    html = build_report(res, meta, meta["session"], flow=flow, vp=vp)
+    if bt_stats:
+        levels["bt"] = bt_stats
+    html = build_report(res, meta, meta["session"], flow=flow, vp=vp,
+                        bt=bt_stats)
     open(os.path.join(OUT, "report.html"), "w", encoding="utf-8").write(html)
     json.dump(levels, open(os.path.join(OUT, "levels.json"), "w"),
               indent=2, ensure_ascii=False)

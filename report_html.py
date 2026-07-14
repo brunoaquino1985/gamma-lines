@@ -139,7 +139,7 @@ GLOSSARY = [
 ]
 
 
-def build_report(res, meta, session_str, flow=None, vp=None):
+def build_report(res, meta, session_str, flow=None, vp=None, bt=None):
     prob = res.get("prob") or {}
     spot_fut = res["ibov_close"] * res["factor"]
     flip_fut = res["flip"][1]
@@ -293,12 +293,62 @@ def build_report(res, meta, session_str, flow=None, vp=None):
     banner = (f"Mapa calculado com os dados do pregão de <b>{_br_date(res['ref_date'])}</b> "
               f"(fechamento) — preparado para a sessão de <b>{_br_date(session_str)}</b>.")
 
+    bt_html = ""
+    if bt and bt.get("n_days"):
+        def pct(x):
+            return f"{x*100:.0f}%" if x is not None else "—"
+        wrows = ""
+        for k, label in (("3", "WALL ★★★"), ("2", "WALL ★★"), ("1", "WALL ★")):
+            g = (bt.get("walls") or {}).get(k) or {}
+            wrows += (f"<tr><td class='tag'>{label}</td>"
+                      f"<td class='num'>{g.get('toques', 0)}</td>"
+                      f"<td class='num'>{g.get('rejeitou', 0)}</td>"
+                      f"<td class='num'>{g.get('rompeu', 0)}</td>"
+                      f"<td class='num'>{pct(g.get('taxa_rejeicao'))}</td></tr>")
+        bd = bt.get("bands") or {}
+        pc = bt.get("poc") or {}
+        va = bt.get("va") or {}
+        fl = bt.get("flip") or {}
+        extras = []
+        if bd.get("days"):
+            extras.append(f"<b>Bandas ±1σ:</b> o dia ficou inteiro dentro do "
+                          f"esperado em {pct(bd.get('taxa_dentro'))} das sessões "
+                          f"({bd['inside']}/{bd['days']}).")
+        if pc.get("days"):
+            extras.append(f"<b>POC como ímã:</b> o preço voltou a negociar no "
+                          f"POC da véspera em {pct(pc.get('taxa_ima'))} dos dias.")
+        if va.get("open_inside"):
+            extras.append(f"<b>Abertura dentro da área de valor:</b> virou dia "
+                          f"de rotação em {pct(va.get('taxa_rotacao'))} das vezes "
+                          f"({va['open_inside']} amostras).")
+        if va.get("open_outside"):
+            extras.append(f"<b>Abertura fora da área de valor:</b> virou dia de "
+                          f"tendência em {pct(va.get('taxa_tendencia'))} das vezes "
+                          f"({va['open_outside']} amostras).")
+        if fl.get("crosses"):
+            extras.append(f"<b>Perda do flip:</b> aconteceu {fl['crosses']}x; "
+                          f"queda adicional média de "
+                          f"{_fmt(fl['queda_media_extra']) if fl.get('queda_media_extra') else '—'} pts.")
+        extras_html = "".join(f"<div class='rd' style='margin-top:6px'>{e}</div>"
+                              for e in extras)
+        bt_html = f"""<div class="card" style="margin-bottom:16px">
+<h2>Estatísticas das zonas — auditoria dos últimos {bt['n_days']} pregões</h2>
+<div class="rd" style="margin-bottom:10px">Aula de honestidade: todo dia o mapa
+da véspera é comparado com o que o mercado REALMENTE fez ({_br_date(bt.get('desde'))}
+a {_br_date(bt.get('ate'))}). Toque = preço chegou a 100 pts da linha; rejeição =
+afastou 400 pts sem romper; rompimento = atravessou 200 pts. Amostra pequena
+ainda merece desconfiança — os números amadurecem a cada sessão.</div>
+<table><tr><th>linha</th><th>toques</th><th>rejeitou</th><th>rompeu</th><th>taxa de rejeição</th></tr>
+{wrows}</table>
+{extras_html}</div>"""
+
     tiles2_html = f'<div class="tiles">{tiles2}</div>' if tiles2 else ""
     return HTML_TMPL.replace("__DATA__", json.dumps(data)) \
                     .replace("__TILES2__", tiles2_html) \
                     .replace("__TILES__", tiles) \
                     .replace("__ROWS__", table_rows) \
                     .replace("__RATIONALE__", rat_html) \
+                    .replace("__BTCARD__", bt_html) \
                     .replace("__GLOSSARY__", gloss_html) \
                     .replace("__BANNER__", banner) \
                     .replace("__SESSION__", _br_date(session_str))
@@ -394,6 +444,7 @@ sozinha — elas marcam os pontos de decisão onde você deve OBSERVAR a reaçã
 __TILES2__
 <div class="card" style="margin-bottom:16px"><h2>A aula do dia — cenários e como operá-los</h2>
 __RATIONALE__</div>
+__BTCARD__
 <div class="grid">
   <div class="card"><h2>Gamma dos dealers × nível do futuro</h2>
     <svg id="curve" viewBox="0 0 560 260"></svg>
