@@ -1,0 +1,48 @@
+{
+  "n_days": 1,
+  "walls": {
+    "1": {
+      "toques": 2,
+      "rejeitou": 1,
+      "rompeu": 1,
+      "neutro": 0,
+      "taxa_rejeicao": 0.5
+    },
+    "2": {
+      "toques": 1,
+      "rejeitou": 1,
+      "rompeu": 0,
+      "neutro": 0,
+      "taxa_rejeicao": 1.0
+    },
+    "3": {
+      "toques": 1,
+      "rejeitou": 0,
+      "rompeu": 0,
+      "neutro": 1,
+      "taxa_rejeicao": null
+    }
+  },
+  "bands": {
+    "days": 1,
+    "inside": 0,
+    "taxa_dentro": 0.0
+  },
+  "poc": {
+    "days": 1,
+    "touched": 1,
+    "taxa_ima": 1.0
+  },
+  "va": {
+    "open_inside": 0,
+    "taxa_rotacao": null,
+    "open_outside": 1,
+    "taxa_tendencia": 0.0
+  },
+  "flip": {
+    "crosses": 0,
+    "queda_media_extra": null
+  },
+  "desde": "2026-07-13",
+  "ate": "2026-07-13"
+}
