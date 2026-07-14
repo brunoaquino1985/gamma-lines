@@ -3,61 +3,61 @@
   "ref": "2026-07-13",
   "fut": "INDQ26",
   "fut_settle": 177537.0,
-  "ibov_close": 175739.08,
+  "ibov_close": 175517.72985313003,
   "bova11": 172.25,
-  "fator": 1.010230621441742,
+  "fator": 1.0115046505476093,
   "walls": [
     {
       "strike": 172000,
       "width": 1,
-      "fut": 173759.667
+      "fut": 173978.8
     },
     {
       "strike": 173000,
       "width": 1,
-      "fut": 174769.898
+      "fut": 174990.305
     },
     {
       "strike": 174000,
       "width": 1,
-      "fut": 175780.128
+      "fut": 176001.809
     },
     {
       "strike": 175000,
       "width": 3,
-      "fut": 176790.359
+      "fut": 177013.314
     },
     {
       "strike": 176000,
       "width": 1,
-      "fut": 177800.589
+      "fut": 178024.818
     },
     {
       "strike": 177000,
       "width": 2,
-      "fut": 178810.82
+      "fut": 179036.323
     },
     {
       "strike": 178000,
       "width": 2,
-      "fut": 179821.051
+      "fut": 180047.828
     },
     {
       "strike": 179000,
       "width": 1,
-      "fut": 180831.281
+      "fut": 181059.332
     }
   ],
   "midwalls": [
-    174264.782,
-    175275.013,
-    176285.243,
-    177295.474,
-    178305.705,
-    179315.935,
-    180326.166
+    174484.552,
+    175496.057,
+    176507.562,
+    177519.066,
+    178530.571,
+    179542.075,
+    180553.58
   ],
-  "gamma_flip": 173941.168,
+  "gamma_flip": 173960.766,
   "max_gamma": 182330.499,
   "min_gamma": 170257.983,
   "series": {
@@ -105,51 +105,51 @@
     }
   },
   "bt": {
-    "n_days": 1,
+    "n_days": 20,
     "walls": {
       "1": {
-        "toques": 2,
-        "rejeitou": 1,
-        "rompeu": 1,
+        "toques": 29,
+        "rejeitou": 16,
+        "rompeu": 13,
         "neutro": 0,
-        "taxa_rejeicao": 0.5
+        "taxa_rejeicao": 0.552
       },
       "2": {
-        "toques": 1,
-        "rejeitou": 1,
-        "rompeu": 0,
+        "toques": 19,
+        "rejeitou": 12,
+        "rompeu": 7,
         "neutro": 0,
-        "taxa_rejeicao": 1.0
+        "taxa_rejeicao": 0.632
       },
       "3": {
-        "toques": 1,
-        "rejeitou": 0,
-        "rompeu": 0,
+        "toques": 7,
+        "rejeitou": 2,
+        "rompeu": 4,
         "neutro": 1,
-        "taxa_rejeicao": null
+        "taxa_rejeicao": 0.333
       }
     },
     "bands": {
-      "days": 1,
-      "inside": 0,
-      "taxa_dentro": 0.0
+      "days": 20,
+      "inside": 9,
+      "taxa_dentro": 0.45
     },
     "poc": {
-      "days": 1,
-      "touched": 1,
-      "taxa_ima": 1.0
+      "days": 19,
+      "touched": 13,
+      "taxa_ima": 0.684
     },
     "va": {
-      "open_inside": 0,
-      "taxa_rotacao": null,
-      "open_outside": 1,
-      "taxa_tendencia": 0.0
+      "open_inside": 10,
+      "taxa_rotacao": 0.3,
+      "open_outside": 9,
+      "taxa_tendencia": 0.778
     },
     "flip": {
-      "crosses": 0,
-      "queda_media_extra": null
+      "crosses": 4,
+      "queda_media_extra": 1450.3
     },
-    "desde": "2026-07-13",
+    "desde": "2026-06-16",
     "ate": "2026-07-13"
   }
 }

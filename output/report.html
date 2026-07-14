@@ -11,9 +11,10 @@
   --gold:#ffd75e; --cyan:#37e0ff; --magenta:#ff5dc8;
   --border:rgba(55,224,255,.14);
   --glow:0 0 18px rgba(55,224,255,.18);
+  --sbw:236px;
 }
 *{box-sizing:border-box}
-body{margin:0;color:var(--ink);padding:24px;
+body{margin:0;color:var(--ink);
   font:14px/1.55 "Segoe UI",system-ui,-apple-system,sans-serif;
   background:
     radial-gradient(1200px 500px at 70% -10%, rgba(55,224,255,.07), transparent 60%),
@@ -23,29 +24,71 @@ body{margin:0;color:var(--ink);padding:24px;
     var(--page);}
 .num,.tv,td.num{font-family:"Cascadia Code","Consolas",ui-monospace,monospace;
   font-variant-numeric:tabular-nums}
-h1{font-size:24px;margin:0;letter-spacing:.12em;text-transform:uppercase;
-  background:linear-gradient(90deg,var(--cyan),var(--accent));
-  -webkit-background-clip:text;background-clip:text;color:transparent}
 h2{font-size:12px;margin:0 0 12px;color:var(--cyan);text-transform:uppercase;
   letter-spacing:.18em;font-weight:600}
 h2::before{content:"▸ ";color:var(--accent)}
-.sub{color:var(--muted);font-size:12px;margin:6px 0 18px}
-.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
-.card{background:linear-gradient(180deg,var(--surface2),var(--surface));
-  border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--glow)}
-.tiles{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin-bottom:16px}
+
+/* ===== sidebar ===== */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sbw);z-index:20;
+  background:linear-gradient(180deg,#0c1322,#080d18);
+  border-right:1px solid var(--border);display:flex;flex-direction:column;padding:18px 0}
+.logo{padding:0 20px 14px;border-bottom:1px solid var(--grid)}
+.logo h1{font-size:17px;margin:0;letter-spacing:.14em;text-transform:uppercase;
+  background:linear-gradient(90deg,var(--cyan),var(--accent));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.logo .d{color:var(--muted);font-size:11px;margin-top:2px}
+.nav{flex:1;overflow:auto;padding:12px 10px}
+.nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;margin:2px 0;
+  border-radius:10px;color:var(--ink2);text-decoration:none;font-size:13px;cursor:pointer;
+  border:1px solid transparent;transition:all .15s}
+.nav a .ic{width:20px;text-align:center;color:var(--muted)}
+.nav a:hover{background:rgba(55,224,255,.06);color:var(--ink)}
+.nav a.on{background:linear-gradient(90deg,rgba(55,224,255,.12),rgba(0,229,160,.05));
+  color:var(--cyan);border-color:var(--border);box-shadow:var(--glow)}
+.nav a.on .ic{color:var(--accent)}
+.nav .sec{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.2em;
+  padding:14px 12px 4px}
+.side-foot{padding:12px 20px 0;border-top:1px solid var(--grid);font-size:10.5px;color:var(--muted)}
+.pill{display:block;text-align:center;margin-bottom:8px;padding:7px 10px;border-radius:9px;
+  font-weight:700;font-size:12px;letter-spacing:.08em}
+.pill-pos{color:var(--pos);background:rgba(51,177,255,.08);border:1px solid rgba(51,177,255,.3)}
+.pill-neg{color:var(--neg);background:rgba(255,93,93,.08);border:1px solid rgba(255,93,93,.3)}
+
+/* ===== conteúdo ===== */
+.main{margin-left:var(--sbw);padding:24px 26px;max-width:1200px}
+.pagehead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.pagehead h3{font-size:20px;margin:0;color:var(--ink);letter-spacing:.06em;font-weight:600}
+.pagehead .crumb{color:var(--muted);font-size:12px}
+.sub{color:var(--muted);font-size:12px;margin:2px 0 16px}
+.view{display:none;animation:fade .25s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.banner{background:linear-gradient(90deg,rgba(0,229,160,.10),transparent 70%);
+  border:1px solid var(--border);border-left:3px solid var(--accent);
+  border-radius:12px;padding:12px 16px;margin:0 0 16px;font-size:13.5px;color:var(--ink2)}
+.banner b{color:var(--accent)}
+.prof{background:linear-gradient(90deg,rgba(55,224,255,.08),transparent 70%);
+  border:1px solid var(--border);border-left:3px solid var(--cyan);
+  border-radius:12px;padding:12px 16px;margin:0 0 16px;font-size:13.5px;color:var(--ink2)}
+.prof b{color:var(--cyan)}
+.tiles{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:16px}
 .tile{background:linear-gradient(180deg,var(--surface2),var(--surface));
   border:1px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--glow);
   position:relative;overflow:hidden}
 .tile::after{content:"";position:absolute;inset:0 0 auto 0;height:2px;
   background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.55}
 .tl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.16em}
-.tv{font-size:34px;font-weight:700;margin:6px 0 4px;line-height:1.1}
+.tv{font-size:32px;font-weight:700;margin:6px 0 4px;line-height:1.1}
 .tv.neon{color:var(--cyan);text-shadow:0 0 22px rgba(55,224,255,.45)}
 .tv.pos{color:var(--pos);text-shadow:0 0 22px rgba(51,177,255,.4)}
 .tv.neg{color:var(--neg);text-shadow:0 0 22px rgba(255,93,93,.4)}
 .unit{font-size:15px;color:var(--ink2);font-weight:400}
 .ts{font-size:11.5px;color:var(--ink2)}
+.card{background:linear-gradient(180deg,var(--surface2),var(--surface));
+  border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--glow);
+  margin-bottom:16px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+.grid .card{margin-bottom:0}
 svg{display:block;width:100%;height:auto}
 table{width:100%;border-collapse:collapse;font-size:13px}
 td,th{padding:7px 10px;border-bottom:1px solid var(--grid);text-align:left}
@@ -60,31 +103,62 @@ td.tag{color:var(--ink);white-space:nowrap}
 .legend{display:flex;gap:16px;font-size:11px;color:var(--ink2);margin-top:8px;flex-wrap:wrap}
 .legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;
   margin-right:6px;vertical-align:-1px;background:var(--c);box-shadow:0 0 8px var(--c)}
-.banner{background:linear-gradient(90deg,rgba(0,229,160,.10),transparent 70%);
-  border:1px solid var(--border);border-left:3px solid var(--accent);
-  border-radius:12px;padding:12px 16px;margin:0 0 16px;font-size:13.5px;color:var(--ink2)}
-.banner b{color:var(--accent)}
-.prof{background:linear-gradient(90deg,rgba(55,224,255,.08),transparent 70%);
-  border:1px solid var(--border);border-left:3px solid var(--cyan);
-  border-radius:12px;padding:12px 16px;margin:0 0 16px;font-size:13.5px;color:var(--ink2)}
-.prof b{color:var(--cyan)}
 .rat{padding:12px 0;border-bottom:1px solid var(--grid)} .rat:last-child{border-bottom:0}
 .rt{font-weight:700;font-size:14px;margin-bottom:4px;color:var(--gold)}
 .rd{font-size:13.5px;color:var(--ink2)}
-.gl{padding:8px 0;border-bottom:1px dashed var(--grid);font-size:12.5px}
-.gl:last-child{border-bottom:0}
-.gt{color:var(--cyan);font-weight:700;margin-right:8px;letter-spacing:.04em}
-.gd{color:var(--ink2)}
+.tvimg{width:100%;height:auto;border-radius:10px;border:1px solid var(--border);display:block}
+
+/* ===== mobile ===== */
+.burger{display:none}
+@media (max-width:860px){
+  .sidebar{transform:translateX(-100%);transition:transform .2s}
+  .sidebar.open{transform:none;box-shadow:20px 0 60px rgba(0,0,0,.6)}
+  .main{margin-left:0;padding:18px 14px}
+  .burger{display:flex;position:fixed;left:12px;top:10px;z-index:30;width:40px;height:40px;
+    align-items:center;justify-content:center;border-radius:10px;cursor:pointer;
+    background:var(--surface2);border:1px solid var(--border);color:var(--cyan);font-size:18px}
+  .pagehead{margin-top:44px}
+}
 </style></head><body>
-<h1>Gamma Lines // 14/07/2026</h1>
-<div class="sub" id="sub"></div>
-<div class="banner">Mapa calculado com os dados do pregão de <b>13/07/2026</b> (fechamento) — preparado para a sessão de <b>14/07/2026</b>.</div>
-<div class="prof"><b>Aula rápida antes do pregão:</b> este painel é o seu mapa do território. As
+<div class="burger" id="burger">&#9776;</div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="logo"><h1>Gamma Lines</h1><div class="d">sessão de 14/07/2026</div></div>
+  <nav class="nav" id="nav">
+    <div class="sec">Painel</div>
+    <a data-v="overview" class="on"><span class="ic">&#9673;</span> Visão geral</a>
+    <a data-v="aula"><span class="ic">&#127891;</span> A aula do dia</a>
+    <a data-v="niveis"><span class="ic">&#8801;</span> Níveis do dia</a>
+    <div class="sec">Análises</div>
+    <a data-v="stats"><span class="ic">&#10003;</span> Estatísticas das zonas</a>
+    <a data-v="graficos"><span class="ic">&#8767;</span> Gráficos de gamma</a>
+    <a data-v="fluxo"><span class="ic">$</span> Fluxo estrangeiro</a>
+    <a data-v="vp"><span class="ic">&#9636;</span> Volume profile</a>
+    <div class="sec">Contexto</div>
+    <a data-v="global"><span class="ic">&#127758;</span> Mercado global</a>
+    <a data-v="news"><span class="ic">&#128240;</span> Notícias &amp; agenda</a>
+    <div class="sec">Extras</div>
+    <a data-v="tv"><span class="ic">&#128200;</span> Mapa no TradingView</a>
+    <a data-v="gloss"><span class="ic">?</span> Glossário</a>
+  </nav>
+  <div class="side-foot">
+    <span class="pill pill-pos">GAMMA POSITIVO</span>
+    flip 173.961 · material educacional, não é recomendação
+  </div>
+</aside>
+
+<main class="main">
+
+<section class="view on" id="v-overview">
+  <div class="pagehead"><h3>Visão geral</h3><span class="crumb">o essencial antes do pregão</span></div>
+  <div class="sub" id="sub"></div>
+  <div class="banner">Mapa calculado com os dados do pregão de <b>13/07/2026</b> (fechamento) — preparado para a sessão de <b>14/07/2026</b>.</div>
+  <div class="prof"><b>Aula rápida antes do pregão:</b> este painel é o seu mapa do território. As
 <b>walls</b> são as paredes onde os grandes players se defendem; o <b>flip</b> diz se o dia tende a ser
 calmo ou nervoso; as <b>bandas</b> mostram o tamanho esperado do dia; o <b>POC</b> mostra onde o mercado
 negociou ontem; e o <b>fluxo</b> mostra quem está colocando dinheiro. Nenhuma linha é sinal de entrada
 sozinha — elas marcam os pontos de decisão onde você deve OBSERVAR a reação do preço antes de agir.</div>
-<div class="tiles">
+  <div class="tiles">
       <div class="tile"><div class="tl">Probabilidade de alta*</div>
         <div class="tv neon">59%</div>
         <div class="ts">chance de fechar acima do preço atual até 17/07/2026</div></div>
@@ -93,12 +167,11 @@ sozinha — elas marcam os pontos de decisão onde você deve OBSERVAR a reaçã
         <div class="ts">o "tamanho do dia" que as opções precificam (1σ)</div></div>
       <div class="tile"><div class="tl">Regime de gamma</div>
         <div class="tv pos">GAMMA POSITIVO</div>
-        <div class="ts">regime calmo: as paredes tendem a segurar o preço · flip em 173.941</div></div>
+        <div class="ts">regime calmo: as paredes tendem a segurar o preço · flip em 173.961</div></div>
       <div class="tile"><div class="tl">Parede principal</div>
-        <div class="tv neon">176.790</div>
+        <div class="tv neon">177.013</div>
         <div class="ts">a wall ★★★ — maior concentração de proteção dos bancos</div></div>
-    </div>
-<div class="tiles">
+    
       <div class="tile"><div class="tl">Fluxo estrangeiro · 10/07/2026</div>
         <div class="tv pos">+R$ 1.522 <span class="unit">mi</span></div>
         <div class="ts">o dinheiro gringo entrou nesse dia (dado com 2 pregões de atraso)</div></div>
@@ -111,98 +184,178 @@ sozinha — elas marcam os pontos de decisão onde você deve OBSERVAR a reaçã
       <div class="tile"><div class="tl">POC composto · 5 sessões</div>
         <div class="tv neon">173.700</div>
         <div class="ts">área de valor 172.005 — 177.975 (zona consolidada da semana)</div></div></div>
-<div class="card" style="margin-bottom:16px"><h2>A aula do dia — cenários e como operá-los</h2>
-<div class='rat'><div class='rt'>O regime de hoje: gamma POSITIVO</div><div class='rd'>Pense assim: os grandes bancos venderam opções e precisam se proteger. Com o preço de referência (177.537) ACIMA do gamma flip (173.941), a proteção deles funciona CONTRA o movimento — quando o mercado cai, eles compram; quando sobe, eles vendem. Na prática, isso 'segura' o preço. É por isso que em dia de gamma positivo o mercado tende a andar de lado entre as linhas, devolvendo os exageros. Tradução para o iniciante: dia de comprar barato e vender caro perto das linhas, e NÃO de perseguir rompimento.</div></div>
-<div class='rat'><div class='rt'>Cenário de VENDA (o trade de rejeição no teto)</div><div class='rd'>A primeira parede acima do preço é 177.801 ★ — ali há uma concentração grande de proteção dos bancos, que costuma agir como teto. A lição: se o preço subir até 177.801 e MOSTRAR REJEIÇÃO (candles com pavio para cima, perda de força, velocidade caindo), arma-se a VENDA, com primeiro alvo na mid wall 177.295 e alvo estendido na wall 176.790. E onde o professor manda sair se der errado? Se o preço ACEITAR acima de 177.801 (fechar candles consistentes lá em cima), a tese morreu — não discuta com o mercado; a próxima referência passa a ser 178.811.</div></div>
-<div class='rat'><div class='rt'>Cenário de COMPRA (o trade de defesa no suporte)</div><div class='rd'>A parede de sustentação mais próxima é 176.790 ★★★. Quando o preço cai até uma wall e ela SEGURA (o mercado desacelera, aparecem compradores, candles deixam pavio para baixo), arma-se a COMPRA na defesa do nível, buscando primeiro a mid wall 177.295 e, se o fluxo ajudar, a wall 177.801. Invalidação: perda consistente de 176.790 — abaixo disso quem comprou está errado e a referência vira 175.780. Regra de ouro: a wall é um PONTO DE DECISÃO, não uma promessa. Espere o preço REAGIR nela antes de entrar.</div></div>
-<div class='rat'><div class='rt'>O sinal de perigo: perder o gamma flip</div><div class='rd'>O flip (173.941) é a linha onde o comportamento dos bancos INVERTE. Abaixo dele, a proteção deles passa a EMPURRAR o movimento: eles vendem na queda e compram na alta, jogando gasolina no fogo. Se o mercado perder o flip, esqueça a reversão à média — quedas aceleram em direção às walls de baixo e, no extremo, ao min gamma (170.258). Erro clássico de iniciante nesse regime: comprar 'porque já caiu muito'. Não caia nessa.</div></div>
+  <div class="card"><h2>Resumo do professor</h2><div class="rd">Dia de gamma positivo com o gringo comprador na semana: o mapa favorece <b>operar as bordas</b> — compra na defesa de 177.013, venda na rejeição de 178.025, sem perseguir rompimento. Abra <b>A aula do dia</b> no menu para os cenários completos com alvo e invalidação.</div></div>
+</section>
+
+<section class="view" id="v-aula">
+  <div class="pagehead"><h3>A aula do dia</h3><span class="crumb">cenários e como operá-los</span></div>
+  <div class="card"><div class='rat'><div class='rt'>O regime de hoje: gamma POSITIVO</div><div class='rd'>Pense assim: os grandes bancos venderam opções e precisam se proteger. Com o preço de referência (177.537) ACIMA do gamma flip (173.961), a proteção deles funciona CONTRA o movimento — quando o mercado cai, eles compram; quando sobe, eles vendem. Na prática, isso 'segura' o preço. É por isso que em dia de gamma positivo o mercado tende a andar de lado entre as linhas, devolvendo os exageros. Tradução para o iniciante: dia de comprar barato e vender caro perto das linhas, e NÃO de perseguir rompimento.</div></div>
+<div class='rat'><div class='rt'>Cenário de VENDA (o trade de rejeição no teto)</div><div class='rd'>A primeira parede acima do preço é 178.025 ★ — ali há uma concentração grande de proteção dos bancos, que costuma agir como teto. A lição: se o preço subir até 178.025 e MOSTRAR REJEIÇÃO (candles com pavio para cima, perda de força, velocidade caindo), arma-se a VENDA, com primeiro alvo na mid wall 177.519 e alvo estendido na wall 177.013. E onde o professor manda sair se der errado? Se o preço ACEITAR acima de 178.025 (fechar candles consistentes lá em cima), a tese morreu — não discuta com o mercado; a próxima referência passa a ser 179.036.</div></div>
+<div class='rat'><div class='rt'>Cenário de COMPRA (o trade de defesa no suporte)</div><div class='rd'>A parede de sustentação mais próxima é 177.013 ★★★. Quando o preço cai até uma wall e ela SEGURA (o mercado desacelera, aparecem compradores, candles deixam pavio para baixo), arma-se a COMPRA na defesa do nível, buscando primeiro a mid wall 177.519 e, se o fluxo ajudar, a wall 178.025. Invalidação: perda consistente de 177.013 — abaixo disso quem comprou está errado e a referência vira 176.002. Regra de ouro: a wall é um PONTO DE DECISÃO, não uma promessa. Espere o preço REAGIR nela antes de entrar.</div></div>
+<div class='rat'><div class='rt'>O sinal de perigo: perder o gamma flip</div><div class='rd'>O flip (173.961) é a linha onde o comportamento dos bancos INVERTE. Abaixo dele, a proteção deles passa a EMPURRAR o movimento: eles vendem na queda e compram na alta, jogando gasolina no fogo. Se o mercado perder o flip, esqueça a reversão à média — quedas aceleram em direção às walls de baixo e, no extremo, ao min gamma (170.258). Erro clássico de iniciante nesse regime: comprar 'porque já caiu muito'. Não caia nessa.</div></div>
 <div class='rat'><div class='rt'>As bandas do dia: o 'campo de jogo' esperado</div><div class='rd'>O mercado de opções está precificando que o dia deve transcorrer entre 174.602 e 180.472 (1 desvio-padrão). Como usar: toque na banda JUNTO com uma wall é o ponto de maior interesse do dia para reversão — dois motivos independentes apontando para o mesmo lugar. Já preço rodando FORA da banda avisa que o dia é atípico (notícia, fluxo forte): reduza a expectativa de reversão à média e respeite a tendência.</div></div>
 <div class='rat'><div class='rt'>Teto e piso do mapa</div><div class='rd'>Max gamma (182.330) e min gamma (170.258) são os extremos do posicionamento atual — pense neles como as bordas do tabuleiro. Historicamente, aproximações desses níveis atraem realização e defesa pesada dos grandes players. Não é nível de todo dia: quando o preço chega lá, algo relevante está acontecendo.</div></div>
-<div class='rat'><div class='rt'>Volume profile: onde o mercado 'aceitou' negociar</div><div class='rd'>Ontem o mercado negociou mais no POC 179.670, com a área de valor entre 177.945 e 180.185. A leitura que ensino sempre: se o dia ABRIR DENTRO dessa faixa, o mercado está 'confortável' — espere rotação e opere as bordas (compra no VAL, venda no VAH, alvo no POC). Se ABRIR FORA, o mercado rejeitou os preços de ontem — ou ele volta para testar o POC (movimento de retorno) ou engata tendência para longe dele. Detalhe importante hoje: há wall de gamma a menos de 200 pontos de 177.801, 179.821 — quando volume e gamma apontam para o mesmo lugar, o nível vale em dobro.</div></div>
+<div class='rat'><div class='rt'>Volume profile: onde o mercado 'aceitou' negociar</div><div class='rd'>Ontem o mercado negociou mais no POC 179.670, com a área de valor entre 177.945 e 180.185. A leitura que ensino sempre: se o dia ABRIR DENTRO dessa faixa, o mercado está 'confortável' — espere rotação e opere as bordas (compra no VAL, venda no VAH, alvo no POC). Se ABRIR FORA, o mercado rejeitou os preços de ontem — ou ele volta para testar o POC (movimento de retorno) ou engata tendência para longe dele. Detalhe importante hoje: há wall de gamma a menos de 200 pontos de 178.025, 180.048 — quando volume e gamma apontam para o mesmo lugar, o nível vale em dobro.</div></div>
 <div class='rat'><div class='rt'>Fluxo estrangeiro: quem está pagando a conta</div><div class='rd'>O estrangeiro — que é quem de fato move o nosso índice — apareceu COMPRADOR em R$ 1.522 mi na sessão de 10/07/2026 (o dado sai com 2 pregões de atraso) e vem comprando R$ 632 mi no acumulado de 5 sessões. Como usar: fluxo persistente na MESMA direção do movimento valida rompimentos; preço subindo com estrangeiro vendendo (ou o contrário) é movimento com perna curta — desconfie.</div></div></div>
-<div class="card" style="margin-bottom:16px">
-<h2>Estatísticas das zonas — auditoria dos últimos 1 pregões</h2>
+</section>
+
+<section class="view" id="v-niveis">
+  <div class="pagehead"><h3>Níveis do dia</h3><span class="crumb">pontos do futuro, do maior para o menor</span></div>
+  <div class="card"><table>
+    <tr><th>nível</th><th>tipo</th><th>como usar</th></tr>
+    <tr><td class='num'>182.330,5</td><td class='tag'>MAX GAMMA</td><td class='muted'>teto estatístico do mapa</td></tr>
+<tr><td class='num'>181.059,3</td><td class='tag'>WALL ★</td><td class='muted'>parede de proteção · strike 179.000</td></tr>
+<tr><td class='num'>180.553,6</td><td class='tag'>mid wall</td><td class='muted'>primeiro alvo entre paredes</td></tr>
+<tr><td class='num'>180.471,7</td><td class='tag'>banda +1σ</td><td class='muted'>limite superior esperado do dia</td></tr>
+<tr><td class='num'>180.185,0</td><td class='tag'>VAH (1 sessão)</td><td class='muted'>topo da área de valor de ontem</td></tr>
+<tr><td class='num'>180.047,8</td><td class='tag'>WALL ★★</td><td class='muted'>parede de proteção · strike 178.000</td></tr>
+<tr><td class='num'>179.670,0</td><td class='tag'>POC (1 sessão)</td><td class='muted'>preço mais negociado ontem — ímã de preço</td></tr>
+<tr><td class='num'>179.542,1</td><td class='tag'>mid wall</td><td class='muted'>primeiro alvo entre paredes</td></tr>
+<tr><td class='num'>179.036,3</td><td class='tag'>WALL ★★</td><td class='muted'>parede de proteção · strike 177.000</td></tr>
+<tr><td class='num'>178.530,6</td><td class='tag'>mid wall</td><td class='muted'>primeiro alvo entre paredes</td></tr>
+<tr><td class='num'>178.024,8</td><td class='tag'>WALL ★</td><td class='muted'>parede de proteção · strike 176.000</td></tr>
+<tr><td class='num'>177.975,0</td><td class='tag'>VAH (5 sessões)</td><td class='muted'>topo da área de valor semanal</td></tr>
+<tr><td class='num'>177.945,0</td><td class='tag'>VAL (1 sessão)</td><td class='muted'>fundo da área de valor de ontem</td></tr>
+<tr><td class='num'>177.519,1</td><td class='tag'>mid wall</td><td class='muted'>primeiro alvo entre paredes</td></tr>
+<tr><td class='num'>177.013,3</td><td class='tag'>WALL ★★★</td><td class='muted'>parede de proteção · strike 175.000</td></tr>
+<tr><td class='num'>176.507,6</td><td class='tag'>mid wall</td><td class='muted'>primeiro alvo entre paredes</td></tr>
+<tr><td class='num'>176.001,8</td><td class='tag'>WALL ★</td><td class='muted'>parede de proteção · strike 174.000</td></tr>
+<tr><td class='num'>175.496,1</td><td class='tag'>mid wall</td><td class='muted'>primeiro alvo entre paredes</td></tr>
+<tr><td class='num'>174.990,3</td><td class='tag'>WALL ★</td><td class='muted'>parede de proteção · strike 173.000</td></tr>
+<tr><td class='num'>174.602,3</td><td class='tag'>banda −1σ</td><td class='muted'>limite inferior esperado do dia</td></tr>
+<tr><td class='num'>174.484,6</td><td class='tag'>mid wall</td><td class='muted'>primeiro alvo entre paredes</td></tr>
+<tr><td class='num'>173.978,8</td><td class='tag'>WALL ★</td><td class='muted'>parede de proteção · strike 172.000</td></tr>
+<tr><td class='num'>173.960,8</td><td class='tag'>GAMMA FLIP</td><td class='muted'>divisor de regime — a linha mais importante</td></tr>
+<tr><td class='num'>173.700,0</td><td class='tag'>POC (5 sessões)</td><td class='muted'>preço mais negociado da semana</td></tr>
+<tr><td class='num'>172.005,0</td><td class='tag'>VAL (5 sessões)</td><td class='muted'>fundo da área de valor semanal</td></tr>
+<tr><td class='num'>170.258,0</td><td class='tag'>MIN GAMMA</td><td class='muted'>piso estatístico do mapa</td></tr></table></div>
+</section>
+
+<section class="view" id="v-stats">
+  <div class="pagehead"><h3>Estatísticas das zonas</h3><span class="crumb">o mapa auditado contra o mercado real</span></div>
+  <div class="card">
+<h2>Auditoria dos últimos 20 pregões</h2>
 <div class="rd" style="margin-bottom:10px">Aula de honestidade: todo dia o mapa
-da véspera é comparado com o que o mercado REALMENTE fez (13/07/2026
+da véspera é comparado com o que o mercado REALMENTE fez (16/06/2026
 a 13/07/2026). Toque = preço chegou a 100 pts da linha; rejeição =
 afastou 400 pts sem romper; rompimento = atravessou 200 pts. Amostra pequena
 ainda merece desconfiança — os números amadurecem a cada sessão.</div>
 <table><tr><th>linha</th><th>toques</th><th>rejeitou</th><th>rompeu</th><th>taxa de rejeição</th></tr>
-<tr><td class='tag'>WALL ★★★</td><td class='num'>1</td><td class='num'>0</td><td class='num'>0</td><td class='num'>—</td></tr><tr><td class='tag'>WALL ★★</td><td class='num'>1</td><td class='num'>1</td><td class='num'>0</td><td class='num'>100%</td></tr><tr><td class='tag'>WALL ★</td><td class='num'>2</td><td class='num'>1</td><td class='num'>1</td><td class='num'>50%</td></tr></table>
-<div class='rd' style='margin-top:6px'><b>Bandas ±1σ:</b> o dia ficou inteiro dentro do esperado em 0% das sessões (0/1).</div><div class='rd' style='margin-top:6px'><b>POC como ímã:</b> o preço voltou a negociar no POC da véspera em 100% dos dias.</div><div class='rd' style='margin-top:6px'><b>Abertura fora da área de valor:</b> virou dia de tendência em 0% das vezes (1 amostras).</div></div>
-<div class="grid">
-  <div class="card"><h2>Gamma dos dealers × nível do futuro</h2>
-    <svg id="curve" viewBox="0 0 560 260"></svg>
-    <div class="legend"><span style="--c:var(--pos)">gamma positivo (segura)</span>
-      <span style="--c:var(--neg)">gamma negativo (acelera)</span>
-      <span style="--c:var(--gold)">flip</span><span style="--c:var(--muted)">preço ref.</span></div></div>
-  <div class="card"><h2>Concentração por strike (R$ mi)</h2>
-    <svg id="bars" viewBox="0 0 560 260"></svg>
-    <div class="legend"><span style="--c:var(--pos)">bancos long gamma</span>
-      <span style="--c:var(--neg)">bancos short gamma</span><span style="--c:var(--muted)">★ = wall</span></div></div>
-  <div class="card"><h2>Onde o mercado acha que fecha (distribuição)</h2>
-    <svg id="dens" viewBox="0 0 560 240"></svg>
-    <div class="legend"><span style="--c:var(--accent)">probabilidade</span>
-      <span style="--c:var(--muted)">P10–P90</span><span style="--c:var(--pos)">±1σ dia</span></div></div>
-  <div class="card"><h2>Níveis do dia (pontos do futuro)</h2>
-    <div style="max-height:320px;overflow:auto"><table>
-      <tr><th>nível</th><th>tipo</th><th>como usar</th></tr>
-      <tr><td class='num'>182.330,5</td><td class='tag'>MAX GAMMA</td><td class='muted'>teto estatístico do mapa</td></tr>
-<tr><td class='num'>180.831,3</td><td class='tag'>WALL ★</td><td class='muted'>parede de proteção · strike 179.000</td></tr>
-<tr><td class='num'>180.471,7</td><td class='tag'>banda +1σ</td><td class='muted'>limite superior esperado do dia</td></tr>
-<tr><td class='num'>180.326,2</td><td class='tag'>mid wall</td><td class='muted'>primeiro alvo entre paredes</td></tr>
-<tr><td class='num'>180.185,0</td><td class='tag'>VAH (1 sessão)</td><td class='muted'>topo da área de valor de ontem</td></tr>
-<tr><td class='num'>179.821,1</td><td class='tag'>WALL ★★</td><td class='muted'>parede de proteção · strike 178.000</td></tr>
-<tr><td class='num'>179.670,0</td><td class='tag'>POC (1 sessão)</td><td class='muted'>preço mais negociado ontem — ímã de preço</td></tr>
-<tr><td class='num'>179.315,9</td><td class='tag'>mid wall</td><td class='muted'>primeiro alvo entre paredes</td></tr>
-<tr><td class='num'>178.810,8</td><td class='tag'>WALL ★★</td><td class='muted'>parede de proteção · strike 177.000</td></tr>
-<tr><td class='num'>178.305,7</td><td class='tag'>mid wall</td><td class='muted'>primeiro alvo entre paredes</td></tr>
-<tr><td class='num'>177.975,0</td><td class='tag'>VAH (5 sessões)</td><td class='muted'>topo da área de valor semanal</td></tr>
-<tr><td class='num'>177.945,0</td><td class='tag'>VAL (1 sessão)</td><td class='muted'>fundo da área de valor de ontem</td></tr>
-<tr><td class='num'>177.800,6</td><td class='tag'>WALL ★</td><td class='muted'>parede de proteção · strike 176.000</td></tr>
-<tr><td class='num'>177.295,5</td><td class='tag'>mid wall</td><td class='muted'>primeiro alvo entre paredes</td></tr>
-<tr><td class='num'>176.790,4</td><td class='tag'>WALL ★★★</td><td class='muted'>parede de proteção · strike 175.000</td></tr>
-<tr><td class='num'>176.285,2</td><td class='tag'>mid wall</td><td class='muted'>primeiro alvo entre paredes</td></tr>
-<tr><td class='num'>175.780,1</td><td class='tag'>WALL ★</td><td class='muted'>parede de proteção · strike 174.000</td></tr>
-<tr><td class='num'>175.275,0</td><td class='tag'>mid wall</td><td class='muted'>primeiro alvo entre paredes</td></tr>
-<tr><td class='num'>174.769,9</td><td class='tag'>WALL ★</td><td class='muted'>parede de proteção · strike 173.000</td></tr>
-<tr><td class='num'>174.602,3</td><td class='tag'>banda −1σ</td><td class='muted'>limite inferior esperado do dia</td></tr>
-<tr><td class='num'>174.264,8</td><td class='tag'>mid wall</td><td class='muted'>primeiro alvo entre paredes</td></tr>
-<tr><td class='num'>173.941,2</td><td class='tag'>GAMMA FLIP</td><td class='muted'>divisor de regime — a linha mais importante</td></tr>
-<tr><td class='num'>173.759,7</td><td class='tag'>WALL ★</td><td class='muted'>parede de proteção · strike 172.000</td></tr>
-<tr><td class='num'>173.700,0</td><td class='tag'>POC (5 sessões)</td><td class='muted'>preço mais negociado da semana</td></tr>
-<tr><td class='num'>172.005,0</td><td class='tag'>VAL (5 sessões)</td><td class='muted'>fundo da área de valor semanal</td></tr>
-<tr><td class='num'>170.258,0</td><td class='tag'>MIN GAMMA</td><td class='muted'>piso estatístico do mapa</td></tr></table></div></div>
+<tr><td class='tag'>WALL ★★★</td><td class='num'>7</td><td class='num'>2</td><td class='num'>4</td><td class='num'>33%</td></tr><tr><td class='tag'>WALL ★★</td><td class='num'>19</td><td class='num'>12</td><td class='num'>7</td><td class='num'>63%</td></tr><tr><td class='tag'>WALL ★</td><td class='num'>29</td><td class='num'>16</td><td class='num'>13</td><td class='num'>55%</td></tr></table>
+<div class='rd' style='margin-top:6px'><b>Bandas ±1σ:</b> o dia ficou inteiro dentro do esperado em 45% das sessões (9/20).</div><div class='rd' style='margin-top:6px'><b>POC como ímã:</b> o preço voltou a negociar no POC da véspera em 68% dos dias.</div><div class='rd' style='margin-top:6px'><b>Abertura dentro da área de valor:</b> virou dia de rotação em 30% das vezes (10 amostras).</div><div class='rd' style='margin-top:6px'><b>Abertura fora da área de valor:</b> virou dia de tendência em 78% das vezes (9 amostras).</div><div class='rd' style='margin-top:6px'><b>Perda do flip:</b> aconteceu 4x; queda adicional média de 1.450 pts.</div></div>
+</section>
+
+<section class="view" id="v-graficos">
+  <div class="pagehead"><h3>Gráficos de gamma</h3><span class="crumb">posicionamento dos dealers e distribuição</span></div>
+  <div class="grid">
+    <div class="card"><h2>Gamma dos dealers × nível do futuro</h2>
+      <svg id="curve" viewBox="0 0 560 260"></svg>
+      <div class="legend"><span style="--c:var(--pos)">gamma positivo (segura)</span>
+        <span style="--c:var(--neg)">gamma negativo (acelera)</span>
+        <span style="--c:var(--gold)">flip</span><span style="--c:var(--muted)">preço ref.</span></div></div>
+    <div class="card"><h2>Concentração por strike (R$ mi)</h2>
+      <svg id="bars" viewBox="0 0 560 260"></svg>
+      <div class="legend"><span style="--c:var(--pos)">bancos long gamma</span>
+        <span style="--c:var(--neg)">bancos short gamma</span><span style="--c:var(--muted)">★ = wall</span></div></div>
+    <div class="card"><h2>Onde o mercado acha que fecha (distribuição)</h2>
+      <svg id="dens" viewBox="0 0 560 240"></svg>
+      <div class="legend"><span style="--c:var(--accent)">probabilidade</span>
+        <span style="--c:var(--muted)">P10–P90</span><span style="--c:var(--pos)">±1σ dia</span></div></div>
+  </div>
+</section>
+
+<section class="view" id="v-fluxo">
+  <div class="pagehead"><h3>Fluxo estrangeiro</h3><span class="crumb">quem está pagando a conta</span></div>
+  <div class="tiles">
+      <div class="tile"><div class="tl">Fluxo estrangeiro · 10/07/2026</div>
+        <div class="tv pos">+R$ 1.522 <span class="unit">mi</span></div>
+        <div class="ts">o dinheiro gringo entrou nesse dia (dado com 2 pregões de atraso)</div></div>
+      <div class="tile"><div class="tl">Fluxo estrangeiro · 5 sessões</div>
+        <div class="tv pos">+R$ 632 <span class="unit">mi</span></div>
+        <div class="ts">21 sessões: −R$ 2.160 mi</div></div></div>
   <div class="card" id="cardflow" style="display:none"><h2>Fluxo estrangeiro por sessão (R$ mi)</h2>
     <svg id="flow" viewBox="0 0 560 240"></svg>
     <div class="legend"><span style="--c:var(--pos)">gringo comprando</span>
       <span style="--c:var(--neg)">gringo vendendo</span>
       <span style="--c:var(--muted)">à vista · defasagem D-2</span></div></div>
+</section>
+
+<section class="view" id="v-vp">
+  <div class="pagehead"><h3>Volume profile</h3><span class="crumb">onde o mercado 'aceitou' negociar</span></div>
+  <div class="tiles">
+      <div class="tile"><div class="tl">POC da sessão anterior · WINQ26</div>
+        <div class="tv neon">179.670</div>
+        <div class="ts">área de valor 177.945 — 180.185 (onde 70% do volume girou)</div></div>
+      <div class="tile"><div class="tl">POC composto · 5 sessões</div>
+        <div class="tv neon">173.700</div>
+        <div class="ts">área de valor 172.005 — 177.975 (zona consolidada da semana)</div></div></div>
   <div class="card" id="cardvp" style="display:none"><h2>Volume profile do WIN (ontem × semana)</h2>
     <svg id="vp" viewBox="0 0 560 300"></svg>
     <div class="legend"><span style="--c:var(--pos)">volume de ontem</span>
       <span style="--c:var(--mid)">volume da semana</span>
       <span style="--c:var(--magenta)">POC</span><span style="--c:var(--muted)">VAH/VAL</span></div></div>
-  <div class="card"><h2>Glossário do professor</h2>
-<div class='gl'><span class='gt'>WALL (parede)</span><span class='gd'>Strike onde os bancos concentram proteção de opções. Funciona como ímã e barreira: o preço é atraído, mas tem dificuldade de atravessar. Mais estrelas = parede mais forte.</span></div>
-<div class='gl'><span class='gt'>GAMMA FLIP</span><span class='gd'>A linha divisória de comportamento. Acima dela o mercado tende a andar de lado (regime calmo); abaixo, tende a acelerar (regime nervoso). É a linha mais importante do mapa.</span></div>
-<div class='gl'><span class='gt'>MID WALL</span><span class='gd'>Ponto médio entre duas walls — costuma ser o primeiro alvo de quem opera a rejeição de uma parede.</span></div>
-<div class='gl'><span class='gt'>BANDAS ±1σ</span><span class='gd'>O tamanho de movimento que o mercado de opções espera para o dia. Dentro delas, dia normal; fora delas, dia atípico.</span></div>
-<div class='gl'><span class='gt'>POC</span><span class='gd'>Point of Control: o preço onde MAIS contratos foram negociados na sessão anterior. É a região de maior aceitação — o mercado 'gosta' desse preço e tende a revisitá-lo.</span></div>
-<div class='gl'><span class='gt'>VAH / VAL</span><span class='gd'>Topo e fundo da área de valor (70% do volume da sessão anterior). Abrir dentro dela favorece dia de rotação; abrir fora favorece dia de tendência.</span></div>
-<div class='gl'><span class='gt'>FLUXO ESTRANGEIRO</span><span class='gd'>Saldo de compras e vendas dos investidores estrangeiros na bolsa (defasado 2 pregões). Eles movem o índice: fluxo persistente numa direção dá sustentação ao movimento.</span></div>
-<div class='gl'><span class='gt'>MAX / MIN GAMMA</span><span class='gd'>Extremos do mapa de posicionamento — teto e piso estatísticos onde a defesa dos grandes players costuma ser mais agressiva.</span></div></div>
-</div>
+</section>
+
+<section class="view" id="v-global">
+  <div class="pagehead"><h3>Mercado global</h3><span class="crumb">o humor do mundo antes da abertura</span></div>
+  <div class="prof"><b>Como ler:</b> a Ásia já fechou (é o "resultado da madrugada"); a Europa está
+rodando agora; os futuros americanos dão o tom do risco. Dólar forte (DXY subindo) e VIX alto pedem
+cautela com compra no Ibovespa; petróleo e minério puxam Petrobras e Vale, os pesos-pesados do índice.</div>
+  <div class='grid'><div class='card'><h2>Ásia — fechamento</h2><table><tr><th>ativo</th><th>último</th><th>var.</th></tr><tr><td class='tag'>Nikkei 225 (Japão)</td><td class='num'>67.744</td><td class='num' style='color:var(--pos)'>+1,38%</td></tr><tr><td class='tag'>Hang Seng (Hong Kong)</td><td class='num'>24.341</td><td class='num' style='color:var(--pos)'>+3,59%</td></tr><tr><td class='tag'>Xangai Composto (China)</td><td class='num'>3.967</td><td class='num' style='color:var(--neg)'>−0,09%</td></tr><tr><td class='tag'>KOSPI (Coreia)</td><td class='num'>6.857</td><td class='num' style='color:var(--neg)'>−10,44%</td></tr></table></div><div class='card'><h2>Europa — em andamento</h2><table><tr><th>ativo</th><th>último</th><th>var.</th></tr><tr><td class='tag'>Euro Stoxx 50</td><td class='num'>6.280</td><td class='num' style='color:var(--pos)'>+1,21%</td></tr><tr><td class='tag'>DAX (Alemanha)</td><td class='num'>25.147</td><td class='num' style='color:var(--neg)'>−1,25%</td></tr><tr><td class='tag'>FTSE 100 (Reino Unido)</td><td class='num'>10.529</td><td class='num' style='color:var(--neg)'>−1,28%</td></tr><tr><td class='tag'>CAC 40 (França)</td><td class='num'>8.367</td><td class='num' style='color:var(--pos)'>+1,38%</td></tr></table></div><div class='card'><h2>EUA — futuros e risco</h2><table><tr><th>ativo</th><th>último</th><th>var.</th></tr><tr><td class='tag'>S&P 500 futuro</td><td class='num'>7.589</td><td class='num' style='color:var(--pos)'>+0,00%</td></tr><tr><td class='tag'>Nasdaq 100 futuro</td><td class='num'>29.768</td><td class='num' style='color:var(--neg)'>−0,56%</td></tr><tr><td class='tag'>Dow Jones futuro</td><td class='num'>52.802</td><td class='num' style='color:var(--pos)'>+0,08%</td></tr><tr><td class='tag'>VIX (medo)</td><td class='num'>16,50</td><td class='num' style='color:var(--neg)'>−2,37%</td></tr></table></div><div class='card'><h2>Dólar × moedas</h2><table><tr><th>ativo</th><th>último</th><th>var.</th></tr><tr><td class='tag'>USD/BRL</td><td class='num'>5,07</td><td class='num' style='color:var(--neg)'>−1,74%</td></tr><tr><td class='tag'>DXY (índice do dólar)</td><td class='num'>100,94</td><td class='num' style='color:var(--pos)'>+0,00%</td></tr><tr><td class='tag'>EUR/USD</td><td class='num'>1,14</td><td class='num' style='color:var(--pos)'>+0,03%</td></tr><tr><td class='tag'>USD/JPY</td><td class='num'>162,24</td><td class='num' style='color:var(--neg)'>−0,19%</td></tr><tr><td class='tag'>USD/CNY</td><td class='num'>6,76</td><td class='num' style='color:var(--neg)'>−0,59%</td></tr></table></div><div class='card'><h2>Commodities</h2><table><tr><th>ativo</th><th>último</th><th>var.</th></tr><tr><td class='tag'>Petróleo Brent</td><td class='num'>85,44</td><td class='num' style='color:var(--pos)'>+11,98%</td></tr><tr><td class='tag'>Petróleo WTI</td><td class='num'>79,94</td><td class='num' style='color:var(--pos)'>+10,90%</td></tr><tr><td class='tag'>Ouro</td><td class='num'>4.055</td><td class='num' style='color:var(--neg)'>−1,83%</td></tr><tr><td class='tag'>Prata</td><td class='num'>59,01</td><td class='num' style='color:var(--neg)'>−2,27%</td></tr><tr><td class='tag'>Cobre</td><td class='num'>6,37</td><td class='num' style='color:var(--pos)'>+2,41%</td></tr><tr><td class='tag'>Minério de ferro (SGX)</td><td class='num'>161,91</td><td class='num' style='color:var(--pos)'>+64,26%</td></tr></table></div></div>
+</section>
+
+<section class="view" id="v-news">
+  <div class="pagehead"><h3>Notícias &amp; agenda</h3><span class="crumb">o que pode mexer com o dia</span></div>
+  <div class='card'><h2>Manchetes que podem mexer com o pregão</h2><div class='rat'><div class='rd'><a href='https://www.moneytimes.com.br/ibovespa-14-7-26-apsa/' target='_blank' style='color:var(--ink);text-decoration:none'>Ibovespa avança com Vale (VALE3) e inflação dos EUA mais fraca; dólar cai a R$ 5,07</a><br><span class='muted' style='font-size:11px'>Money Times · 14/07 17:28</span></div></div><div class='rat'><div class='rd'><a href='https://www.infomoney.com.br/politica/durigan-mdic-esta-em-contato-com-representantes-dos-eua-sobre-tarifaco/' target='_blank' style='color:var(--ink);text-decoration:none'>Durigan: MDIC está em contato com representantes dos EUA sobre tarifaço</a><br><span class='muted' style='font-size:11px'>InfoMoney · 14/07 19:46</span></div></div><div class='rat'><div class='rd'><a href='https://www.infomoney.com.br/mercados/vale-vale3-elege-wilfred-theodoor-bruijn-como-presidente-do-conselho/' target='_blank' style='color:var(--ink);text-decoration:none'>Vale (VALE3) elege Wilfred Theodoor Bruijn como presidente do conselho</a><br><span class='muted' style='font-size:11px'>InfoMoney · 14/07 19:10</span></div></div><div class='rat'><div class='rd'><a href='https://www.infomoney.com.br/mundo/e-jean-carroll-recebe-us563-mi-devidos-por-trump-em-caso-de-abuso-sexual/' target='_blank' style='color:var(--ink);text-decoration:none'>E. Jean Carroll recebe US$5,63 mi devidos por Trump em caso de abuso sexual</a><br><span class='muted' style='font-size:11px'>InfoMoney · 14/07 19:08</span></div></div><div class='rat'><div class='rd'><a href='https://www.moneytimes.com.br/vale-vale3-elege-presidente-tampao-para-conselho-veja-quem-assume/' target='_blank' style='color:var(--ink);text-decoration:none'>Vale (VALE3) elege presidente tampão para conselho; veja quem assume</a><br><span class='muted' style='font-size:11px'>Money Times · 14/07 18:28</span></div></div><div class='rat'><div class='rd'><a href='https://www.moneytimes.com.br/tarifa-dos-eua-sobre-produtos-brasileiros-pode-chegar-a-26-estima-citi/' target='_blank' style='color:var(--ink);text-decoration:none'>Tarifa dos EUA sobre produtos brasileiros pode chegar a 26%, estima Citi</a><br><span class='muted' style='font-size:11px'>Money Times · 14/07 17:28</span></div></div></div><div class='card'><h2>Agenda econômica de hoje (horário de Brasília)</h2><table><tr><th>hora</th><th>moeda</th><th>impacto</th><th>evento</th><th>projeção</th><th>anterior</th></tr><tr><td class='num' style='font-size:14px'>05:45</td><td class='tag'>GBP</td><td style='color:var(--gold)'>★★</td><td>BOE Gov Bailey Speaks</td><td class='muted'>—</td><td class='muted'>—</td></tr><tr><td class='num' style='font-size:14px'>09:30</td><td class='tag'>USD</td><td style='color:var(--gold)'>★★★</td><td>Core CPI m/m</td><td class='muted'>0.2%</td><td class='muted'>0.2%</td></tr><tr><td class='num' style='font-size:14px'>09:30</td><td class='tag'>USD</td><td style='color:var(--gold)'>★★★</td><td>Core CPI y/y</td><td class='muted'>2.8%</td><td class='muted'>2.9%</td></tr><tr><td class='num' style='font-size:14px'>09:30</td><td class='tag'>USD</td><td style='color:var(--gold)'>★★★</td><td>CPI m/m</td><td class='muted'>-0.1%</td><td class='muted'>0.5%</td></tr><tr><td class='num' style='font-size:14px'>09:30</td><td class='tag'>USD</td><td style='color:var(--gold)'>★★★</td><td>CPI y/y</td><td class='muted'>3.8%</td><td class='muted'>4.2%</td></tr><tr><td class='num' style='font-size:14px'>11:00</td><td class='tag'>USD</td><td style='color:var(--gold)'>★★★</td><td>Fed Chairman Warsh Testifies</td><td class='muted'>—</td><td class='muted'>—</td></tr><tr><td class='num' style='font-size:14px'>17:00</td><td class='tag'>GBP</td><td style='color:var(--gold)'>★★★</td><td>BOE Gov Bailey Speaks</td><td class='muted'>—</td><td class='muted'>—</td></tr></table><div class='rd' style='margin-top:8px'>Regra do professor: nos minutos em torno de evento ★★★, o mapa perde força — spreads abrem e o preço atravessa níveis sem respeitar. Ou esteja fora, ou esteja com stop na mão.</div></div>
+</section>
+
+<section class="view" id="v-tv">
+  <div class="pagehead"><h3>Mapa no TradingView</h3><span class="crumb">WIN 15 min com as linhas desenhadas</span></div>
+  <div class="card"><h2>Print do dia</h2>
+    <!--TVSLOT-->
+    <div class="rd" id="tvnote">O print do TradingView não está disponível nesta edição do painel —
+    ele é gerado na entrega da manhã quando o computador com o TradingView está conectado.</div>
+  </div>
+</section>
+
+<section class="view" id="v-gloss">
+  <div class="pagehead"><h3>Glossário do professor</h3><span class="crumb">os termos do mapa, explicados</span></div>
+  <div class="card"><div class='rat'><div class='rt' style='color:var(--cyan)'>WALL (parede)</div><div class='rd'>Strike onde os bancos concentram proteção de opções. Funciona como ímã e barreira: o preço é atraído, mas tem dificuldade de atravessar. Mais estrelas = parede mais forte.</div></div>
+<div class='rat'><div class='rt' style='color:var(--cyan)'>GAMMA FLIP</div><div class='rd'>A linha divisória de comportamento. Acima dela o mercado tende a andar de lado (regime calmo); abaixo, tende a acelerar (regime nervoso). É a linha mais importante do mapa.</div></div>
+<div class='rat'><div class='rt' style='color:var(--cyan)'>MID WALL</div><div class='rd'>Ponto médio entre duas walls — costuma ser o primeiro alvo de quem opera a rejeição de uma parede.</div></div>
+<div class='rat'><div class='rt' style='color:var(--cyan)'>BANDAS ±1σ</div><div class='rd'>O tamanho de movimento que o mercado de opções espera para o dia. Dentro delas, dia normal; fora delas, dia atípico.</div></div>
+<div class='rat'><div class='rt' style='color:var(--cyan)'>POC</div><div class='rd'>Point of Control: o preço onde MAIS contratos foram negociados na sessão anterior. É a região de maior aceitação — o mercado 'gosta' desse preço e tende a revisitá-lo.</div></div>
+<div class='rat'><div class='rt' style='color:var(--cyan)'>VAH / VAL</div><div class='rd'>Topo e fundo da área de valor (70% do volume da sessão anterior). Abrir dentro dela favorece dia de rotação; abrir fora favorece dia de tendência.</div></div>
+<div class='rat'><div class='rt' style='color:var(--cyan)'>FLUXO ESTRANGEIRO</div><div class='rd'>Saldo de compras e vendas dos investidores estrangeiros na bolsa (defasado 2 pregões). Eles movem o índice: fluxo persistente numa direção dá sustentação ao movimento.</div></div>
+<div class='rat'><div class='rt' style='color:var(--cyan)'>MAX / MIN GAMMA</div><div class='rd'>Extremos do mapa de posicionamento — teto e piso estatísticos onde a defesa dos grandes players costuma ser mais agressiva.</div></div></div>
+</section>
+
 <div class="foot" id="foot"></div>
+</main>
 <div class="tip" id="tip"></div>
 <script>
-const D = {"session": "2026-07-14", "ref": "2026-07-13", "fut": "INDQ26", "fator": 1.010230621441742, "spot_fut": 177537.0, "ibov": 175739.08, "bova": 172.25, "fut_settle": 177537.0, "ibov_source": "cotacao.b3", "cdi": 0.14, "regime": "GAMMA POSITIVO", "regime_desc": "regime calmo: as paredes tendem a segurar o pre\u00e7o", "flip": 173941.16755460377, "maxg": 182330.499, "ming": 170257.98300000004, "walls": [{"strike": 172000, "width": 1, "fut": 173759.7}, {"strike": 173000, "width": 1, "fut": 174769.9}, {"strike": 174000, "width": 1, "fut": 175780.1}, {"strike": 175000, "width": 3, "fut": 176790.4}, {"strike": 176000, "width": 1, "fut": 177800.6}, {"strike": 177000, "width": 2, "fut": 178810.8}, {"strike": 178000, "width": 2, "fut": 179821.1}, {"strike": 179000, "width": 1, "fut": 180831.3}], "mids": [174264.8, 175275.0, 176285.2, 177295.5, 178305.7, 179315.9, 180326.2], "prob": {"p_up": 0.5918254089920506, "iv_atm": 0.2624036306707716, "sigma_day": 0.016529874997031013, "band_up": 180471.6644173479, "band_down": 174602.3355826521, "expiry": "2026-07-17", "pct": {"p10": 171841.4981590902, "p25": 175228.41565392708, "p50": 178615.3331487639, "p75": 181645.7330125653, "p90": 184319.61524533122}}, "curve": {"x": [156232.56000000003, 156942.708, 157652.85600000003, 158363.00400000002, 159073.152, 159783.30000000002, 160493.44800000003, 161203.59600000002, 161913.74400000004, 162623.89200000002, 163334.04000000004, 164044.18800000002, 164754.336, 165464.48400000003, 166174.632, 166884.78, 167594.928, 168305.076, 169015.22400000002, 169725.37200000003, 170435.52000000002, 171145.66800000003, 171855.81600000002, 172565.964, 173276.11200000002, 173986.26, 174696.40800000002, 175406.556, 176116.704, 176826.852, 177537.00000000003, 178247.14800000004, 178957.29600000003, 179667.44400000002, 180377.59200000003, 181087.74000000002, 181797.888, 182508.03600000002, 183218.184, 183928.33200000002, 184638.48, 185348.628, 186058.776, 186768.92400000003, 187479.07200000001, 188189.22000000003, 188899.36800000002, 189609.51600000003, 190319.66400000002, 191029.812, 191739.96000000002, 192450.108, 193160.25600000002, 193870.40400000004, 194580.55200000003, 195290.70000000004, 196000.84800000003, 196710.996, 197421.14400000003, 198131.29200000002, 198841.44000000003], "y": [-19885.383672690783, -21118.03139585061, -22324.892685136438, -23485.256262445393, -24578.296906648673, -25584.986391294384, -26490.72691431311, -27288.592794177064, -27982.794859870723, -28591.62646360598, -29148.79733719726, -29701.885434377455, -30306.870458775145, -31018.536556048894, -31877.875398594777, -32898.94125102774, -34057.77459096085, -35283.4930113598, -36445.38261693481, -37321.20945498055, -37528.13967891548, -36415.59887544795, -32985.62249107601, -26018.643720050673, -14601.341115662799, 1080.040675523339, 19375.19455883766, 37861.6274923571, 54656.21414471158, 69147.08987688305, 81649.7422467831, 92619.55875592567, 102168.62216675287, 110055.01003390289, 115943.2539493359, 119687.29098299067, 121454.90314415524, 121648.56007248657, 120720.47302545694, 119020.77471006087, 116749.63514141095, 113995.05418003009, 110798.54798477275, 107203.88136908867, 103275.4247207119, 99094.61431614241, 94748.40669461731, 90319.06325583342, 85878.34171050023, 81485.41525459921, 77186.8689253216, 73017.58237471413, 69001.97923598095, 65155.489985975626, 61486.1475883749, 57996.196568184816, 54683.581136086104, 51543.21900823015, 48568.03423793869, 45749.77518490138, 43079.663896930775]}, "buckets": [{"fut": 163657.36067356222, "net": -218.07446313654648, "absg": 221.00286186328543, "wall": 0}, {"fut": 164667.59129500395, "net": -1366.1824076794367, "absg": 1386.7889249168181, "wall": 0}, {"fut": 165677.82191644568, "net": -5.195935626239305, "absg": 9.166639465383879, "wall": 0}, {"fut": 166688.05253788744, "net": -2368.0263936263013, "absg": 2374.4554474167485, "wall": 0}, {"fut": 167698.28315932918, "net": -809.2874177805526, "absg": 829.0992942943554, "wall": 0}, {"fut": 168708.5137807709, "net": -1004.7408279182619, "absg": 1161.2052238164429, "wall": 0}, {"fut": 169718.74440221267, "net": -1862.0648864943676, "absg": 1935.171556581303, "wall": 0}, {"fut": 170728.9750236544, "net": -2537.942826335591, "absg": 2590.5500329734864, "wall": 0}, {"fut": 171739.20564509614, "net": -9853.223726269705, "absg": 11219.958463191082, "wall": 0}, {"fut": 172749.43626653787, "net": -6470.024037209989, "absg": 6516.206932514839, "wall": 0}, {"fut": 173759.66688797963, "net": -4441.385418035121, "absg": 12514.641908888008, "wall": 1}, {"fut": 174769.89750942137, "net": -9362.381568982759, "absg": 11159.708162797207, "wall": 1}, {"fut": 175780.1281308631, "net": -2332.1287364879427, "absg": 5552.653103412479, "wall": 1}, {"fut": 176790.35875230486, "net": 10426.258867529988, "absg": 63011.25973719431, "wall": 3}, {"fut": 177800.5893737466, "net": 4681.724176265803, "absg": 20403.910851815603, "wall": 1}, {"fut": 178810.81999518833, "net": 891.2471879693195, "absg": 22368.614794952773, "wall": 2}, {"fut": 179821.0506166301, "net": 17980.8676888386, "absg": 24037.622862619588, "wall": 2}, {"fut": 180831.28123807182, "net": 6128.655174046721, "absg": 13014.171910230703, "wall": 1}, {"fut": 181841.51185951356, "net": 13769.64814983973, "absg": 31965.560684080305, "wall": 0}, {"fut": 182851.74248095532, "net": 15988.31026289597, "absg": 16389.866162836144, "wall": 0}, {"fut": 183861.97310239705, "net": 13985.956208956448, "absg": 14015.92617042485, "wall": 0}, {"fut": 184872.2037238388, "net": 9602.300515657484, "absg": 9863.651586311962, "wall": 0}, {"fut": 185882.43434528052, "net": -720.8319471468485, "absg": 841.8078163901428, "wall": 0}, {"fut": 186892.66496672228, "net": 4855.967564117191, "absg": 14793.60545130461, "wall": 0}, {"fut": 187902.895588164, "net": 4493.706806324278, "absg": 4615.11920345646, "wall": 0}, {"fut": 188913.12620960575, "net": 1846.7245886140274, "absg": 2642.646407608362, "wall": 0}, {"fut": 189923.3568310475, "net": 1712.2507716089465, "absg": 1727.2332830124249, "wall": 0}, {"fut": 190933.58745248924, "net": 5262.332831606754, "absg": 5282.550369941552, "wall": 0}], "dens": {"x": [142785.3112297005, 144211.38175384235, 145637.45227798415, 147063.52280212595, 148489.5933262678, 149915.66385040962, 151341.73437455145, 152767.80489869328, 154193.87542283512, 155619.94594697695, 157046.01647111878, 158472.08699526062, 159898.15751940245, 161324.22804354425, 162750.2985676861, 164176.36909182792, 165602.43961596972, 167028.51014011155, 168454.58066425342, 169880.65118839522, 171306.72171253705, 172732.79223667886, 174158.8627608207, 175584.93328496252, 177011.00380910435, 178437.0743332462, 179863.14485738802, 181289.21538152985, 182715.28590567163, 184141.3564298135, 185567.42695395532, 186993.49747809712, 188419.568002239, 189845.63852638082, 191271.70905052262, 192697.77957466446, 194123.85009880632, 195549.92062294812, 196975.99114708995, 198402.0616712318, 199828.1321953736, 201254.2027195154, 202680.27324365726, 204106.3437677991, 205532.4142919409, 206958.48481608275, 208384.55534022453, 209810.62586436636, 211236.69638850822, 212662.76691265003], "y": [4.198321225092713e-05, 4.1195494589477915e-05, 4.236958122960009e-05, 4.597280816546041e-05, 5.276739478844654e-05, 6.397108020391354e-05, 8.151897388062988e-05, 0.00010849445889775777, 0.00014984385835017515, 0.0002135680672517406, 0.0003127135330944596, 0.00046868854596794727, 0.0007167323367624662, 0.001114755981361558, 0.0017571452591683156, 0.002795088539741913, 0.004463640735273435, 0.007111254863771843, 0.01121732474182808, 0.01736577867218504, 0.026122637639636976, 0.037762674373687015, 0.05184420125979936, 0.06677612542430789, 0.07971533104696116, 0.08718405362284361, 0.0864562711232429, 0.07706982810532223, 0.061373822718984596, 0.04351106755617069, 0.027454524604558665, 0.0154651112912073, 0.00782676407443314, 0.003592596381681738, 0.001513923673531823, 0.0005941061316438309, 0.00022055522700838325, 7.874339628901143e-05, 2.748620383273832e-05, 9.530182747364726e-06, 3.3306507277636115e-06, 1.1885897932159518e-06, 4.379107088043519e-07, 1.6804769991224992e-07, 6.761893306498596e-08, 2.8660571436363128e-08, 1.2831468496913476e-08, 6.0759945236673405e-09, 3.0446881871063412e-09, 1.615794514780643e-09]}, "n_series": {"bova": 721, "ibov": 169}, "flow": {"last_session": "2026-07-10", "estrangeiro_dia_mi": 1521.5, "estrangeiro_5d_mi": 632.2, "estrangeiro_21d_mi": -2160.5, "institucional_dia_mi": -840.8, "pessoa_fisica_dia_mi": -641.0, "series": [{"session": "2026-06-22", "estrangeiro": -2086.2, "institucional": 1520.6, "pessoa_fisica": 19.2}, {"session": "2026-06-23", "estrangeiro": -1063.3, "institucional": 786.3, "pessoa_fisica": 138.1}, {"session": "2026-06-24", "estrangeiro": -855.5, "institucional": 339.7, "pessoa_fisica": 262.4}, {"session": "2026-06-25", "estrangeiro": -410.8, "institucional": 237.2, "pessoa_fisica": -70.0}, {"session": "2026-06-26", "estrangeiro": 34.7, "institucional": 408.3, "pessoa_fisica": -99.3}, {"session": "2026-06-29", "estrangeiro": 666.5, "institucional": -767.0, "pessoa_fisica": 8.0}, {"session": "2026-06-30", "estrangeiro": 302.1, "institucional": -851.0, "pessoa_fisica": 319.3}, {"session": "2026-07-01", "estrangeiro": -589.8, "institucional": 199.0, "pessoa_fisica": 186.7}, {"session": "2026-07-02", "estrangeiro": 567.6, "institucional": -119.2, "pessoa_fisica": 76.9}, {"session": "2026-07-03", "estrangeiro": 698.1, "institucional": -679.6, "pessoa_fisica": -213.2}, {"session": "2026-07-06", "estrangeiro": -500.3, "institucional": -391.9, "pessoa_fisica": 464.7}, {"session": "2026-07-07", "estrangeiro": 12.2, "institucional": -577.1, "pessoa_fisica": 302.5}, {"session": "2026-07-08", "estrangeiro": -607.6, "institucional": 172.4, "pessoa_fisica": 220.4}, {"session": "2026-07-09", "estrangeiro": 206.4, "institucional": -281.5, "pessoa_fisica": -247.9}, {"session": "2026-07-10", "estrangeiro": 1521.5, "institucional": -840.8, "pessoa_fisica": -641.0}], "lag_note": "defasagem de 2 preg\u00f5es (dado p\u00fablico mais recente da B3)"}, "vp": {"ticker": "WINQ26", "session": "2026-07-13", "d1": {"poc": 179670.0, "vah": 180185.0, "val": 177945.0, "volume": 16750846}, "comp": {"days": 5, "poc": 173700.0, "vah": 177975.0, "val": 172005.0, "volume": 84387370}, "hist1d": [[177000.0, 30734], [177100.0, 205994], [177200.0, 198255], [177300.0, 237230], [177400.0, 321063], [177500.0, 892000], [177600.0, 1071270], [177700.0, 931713], [177800.0, 629831], [177900.0, 455851], [178000.0, 312798], [178100.0, 306733], [178200.0, 216184], [178300.0, 579101], [178400.0, 808447], [178500.0, 479941], [178600.0, 268067], [178700.0, 525221], [178800.0, 331345], [178900.0, 293963], [179000.0, 436796], [179100.0, 345807], [179200.0, 669187], [179300.0, 421664], [179400.0, 345415], [179500.0, 430390], [179600.0, 465986], [179700.0, 995680], [179800.0, 1099388], [179900.0, 937630], [180000.0, 921763], [180100.0, 459106], [180200.0, 126293]], "histcomp": [[172000.0, 28113], [172100.0, 227371], [172200.0, 538516], [172300.0, 1109808], [172400.0, 894781], [172500.0, 1063583], [172600.0, 1368065], [172700.0, 1579010], [172800.0, 1859655], [172900.0, 2077200], [173000.0, 1773898], [173100.0, 1103677], [173200.0, 1165135], [173300.0, 1133335], [173400.0, 1745792], [173500.0, 1477651], [173600.0, 2204601], [173700.0, 2712437], [173800.0, 1869248], [173900.0, 1703490], [174000.0, 2062344], [174100.0, 1463449], [174200.0, 1629919], [174300.0, 1104234], [174400.0, 1423608], [174500.0, 1036502], [174600.0, 1068144], [174700.0, 1388807], [174800.0, 1275290], [174900.0, 1458266], [175000.0, 1443437], [175100.0, 1376519], [175200.0, 1265186], [175300.0, 954650], [175400.0, 1086283], [175500.0, 997601], [175600.0, 646294], [175700.0, 182411], [175800.0, 49551], [175900.0, 43601], [176000.0, 15122], [176100.0, 35805], [176200.0, 93273], [176300.0, 85462], [176400.0, 81557], [176500.0, 60045], [176600.0, 39605], [176700.0, 108209], [176800.0, 168039], [176900.0, 158894], [177000.0, 98970], [177100.0, 289128], [177200.0, 288974], [177300.0, 469390], [177400.0, 613508], [177500.0, 1213222], [177600.0, 1482940], [177700.0, 1543401], [177800.0, 1238409], [177900.0, 1104857], [178000.0, 967452], [178100.0, 935736], [178200.0, 944046], [178300.0, 1730740], [178400.0, 2195171], [178500.0, 1421973], [178600.0, 1254698], [178700.0, 1172354], [178800.0, 1145940], [178900.0, 762984], [179000.0, 668881], [179100.0, 543820], [179200.0, 915728], [179300.0, 1014318], [179400.0, 1241636], [179500.0, 859754], [179600.0, 1078906], [179700.0, 1554285], [179800.0, 1563046], [179900.0, 1141230], [180000.0, 1076941], [180100.0, 577222], [180200.0, 175871], [180300.0, 175696], [180400.0, 213414], [180500.0, 176403], [180600.0, 96747], [180700.0, 2106]]}};
+const D = {"session": "2026-07-14", "ref": "2026-07-13", "fut": "INDQ26", "fator": 1.0115046505476093, "spot_fut": 177537.0, "ibov": 175517.72985313003, "bova": 172.25, "fut_settle": 177537.0, "ibov_source": "carry_estimate", "cdi": 0.14, "regime": "GAMMA POSITIVO", "regime_desc": "regime calmo: as paredes tendem a segurar o pre\u00e7o", "flip": 173960.76574929224, "maxg": 182330.499, "ming": 170257.98299999998, "walls": [{"strike": 172000, "width": 1, "fut": 173978.8}, {"strike": 173000, "width": 1, "fut": 174990.3}, {"strike": 174000, "width": 1, "fut": 176001.8}, {"strike": 175000, "width": 3, "fut": 177013.3}, {"strike": 176000, "width": 1, "fut": 178024.8}, {"strike": 177000, "width": 2, "fut": 179036.3}, {"strike": 178000, "width": 2, "fut": 180047.8}, {"strike": 179000, "width": 1, "fut": 181059.3}], "mids": [174484.6, 175496.1, 176507.6, 177519.1, 178530.6, 179542.1, 180553.6], "prob": {"p_up": 0.5918254089920506, "iv_atm": 0.2624036306707716, "sigma_day": 0.016529874997031013, "band_up": 180471.6644173479, "band_down": 174602.33558265207, "expiry": "2026-07-17", "pct": {"p10": 171841.49815909017, "p25": 175228.41565392708, "p50": 178615.33314876386, "p75": 181645.73301256527, "p90": 184319.6152453312}}, "curve": {"x": [156232.56, 156942.70799999998, 157652.856, 158363.004, 159073.152, 159783.3, 160493.448, 161203.596, 161913.74399999998, 162623.892, 163334.03999999998, 164044.188, 164754.33599999998, 165464.484, 166174.632, 166884.78, 167594.928, 168305.076, 169015.224, 169725.372, 170435.52, 171145.668, 171855.816, 172565.964, 173276.112, 173986.25999999998, 174696.408, 175406.55599999998, 176116.704, 176826.85199999998, 177537.00000000003, 178247.14800000002, 178957.296, 179667.44400000002, 180377.592, 181087.74000000002, 181797.888, 182508.036, 183218.184, 183928.332, 184638.48, 185348.628, 186058.77599999998, 186768.924, 187479.072, 188189.22, 188899.368, 189609.51600000003, 190319.66400000002, 191029.812, 191739.96000000002, 192450.108, 193160.256, 193870.404, 194580.55200000003, 195290.7, 196000.848, 196710.996, 197421.144, 198131.292, 198841.44], "y": [-19797.49298675243, -21041.64464128002, -22261.596217393595, -23436.612893843867, -24545.819708830983, -25570.109402350685, -26494.77335144326, -27312.742380454947, -28028.05326347936, -28658.80142249167, -29238.487382591156, -29814.48761194639, -30442.612375818066, -31177.534911301213, -32060.217788163594, -33104.781124512665, -34287.42221406569, -35537.480266764534, -36724.47865271612, -37626.36914962009, -37860.37784031792, -36775.79841782125, -33374.30122278782, -26435.71755683009, -15045.927501878383, 609.739026208606, 18881.898721083726, 37348.877321823005, 54128.164394887484, 68608.24132969159, 81104.6526542874, 92072.57925833041, 101623.69615084806, 109515.55598447504, 115412.13595877399, 119166.86453180235, 120947.11278214517, 121155.06120501945, 120242.75181447169, 118560.2464360623, 116307.7098894628, 113573.1671363528, 110398.15829458476, 106826.44758503055, 102922.36633338903, 98767.26823565275, 94447.98563959112, 90046.6205972115, 85634.74502619423, 81271.3290451252, 77002.7457514441, 72863.66106584833, 68878.2886476192, 65061.85689328236, 61422.2075467175, 57961.40684479511, 54677.235058496204, 51564.46125864718, 48615.876746438094, 45823.11334929259, 43177.29289871117]}, "buckets": [{"fut": 163863.7533887127, "net": -218.09442015362131, "absg": 221.02281888036023, "wall": 0}, {"fut": 164875.2580392603, "net": -1366.2228694965613, "absg": 1386.8293867339428, "wall": 0}, {"fut": 165886.76268980792, "net": -5.195935626239305, "absg": 9.166639465383879, "wall": 0}, {"fut": 166898.26734035552, "net": -2368.026393626302, "absg": 2374.455447416749, "wall": 0}, {"fut": 167909.77199090313, "net": -809.2874177805526, "absg": 829.0992942943554, "wall": 0}, {"fut": 168921.27664145076, "net": -1004.7819619909617, "absg": 1161.246357889143, "wall": 0}, {"fut": 169932.78129199837, "net": -1862.0648864943676, "absg": 1935.171556581303, "wall": 0}, {"fut": 170944.28594254598, "net": -2539.828501703541, "absg": 2592.4412556022694, "wall": 0}, {"fut": 171955.79059309358, "net": -9904.330644721644, "absg": 11271.065381643022, "wall": 0}, {"fut": 172967.2952436412, "net": -6470.02403720999, "absg": 6516.2069325148395, "wall": 0}, {"fut": 173978.7998941888, "net": -4442.630273238763, "absg": 12515.886764091652, "wall": 1}, {"fut": 174990.3045447364, "net": -9370.66469340568, "absg": 11167.991287220131, "wall": 1}, {"fut": 176001.809195284, "net": -2361.0714547388447, "absg": 5581.577901381562, "wall": 1}, {"fut": 177013.31384583164, "net": 10404.02933061784, "absg": 63004.02678037382, "wall": 3}, {"fut": 178024.81849637924, "net": 4696.165864895648, "absg": 20531.751053053467, "wall": 1}, {"fut": 179036.32314692685, "net": 816.698297337022, "absg": 22774.939051423113, "wall": 2}, {"fut": 180047.82779747446, "net": 18021.404041536913, "absg": 23751.53312479687, "wall": 2}, {"fut": 181059.33244802206, "net": 6116.4772043190615, "absg": 12910.769257720372, "wall": 1}, {"fut": 182070.83709856967, "net": 13765.346756541163, "absg": 31955.06585595032, "wall": 0}, {"fut": 183082.34174911727, "net": 15971.910463736083, "absg": 16358.693792744947, "wall": 0}, {"fut": 184093.84639966488, "net": 13951.585129583189, "absg": 13987.98296935279, "wall": 0}, {"fut": 185105.3510502125, "net": 9575.64172621577, "absg": 9881.983377110017, "wall": 0}, {"fut": 186116.85570076012, "net": -727.0843145717258, "absg": 764.1821036138039, "wall": 0}, {"fut": 187128.36035130773, "net": 4817.2898662970665, "absg": 14767.699936924671, "wall": 0}, {"fut": 188139.86500185533, "net": 4494.972860191771, "absg": 4601.397142054747, "wall": 0}, {"fut": 189151.36965240294, "net": 1841.859856248282, "absg": 2636.1932979657768, "wall": 0}, {"fut": 190162.87430295054, "net": 1705.0176247353752, "absg": 1716.5283079447454, "wall": 0}, {"fut": 191174.37895349815, "net": 5174.870623058478, "absg": 5195.088161393276, "wall": 0}], "dens": {"x": [142785.31122970048, 144211.38175384232, 145637.45227798412, 147063.52280212595, 148489.5933262678, 149915.6638504096, 151341.73437455145, 152767.80489869328, 154193.8754228351, 155619.94594697695, 157046.01647111878, 158472.0869952606, 159898.15751940242, 161324.22804354425, 162750.29856768608, 164176.36909182792, 165602.43961596972, 167028.51014011155, 168454.5806642534, 169880.6511883952, 171306.72171253702, 172732.79223667886, 174158.8627608207, 175584.9332849625, 177011.00380910435, 178437.07433324616, 179863.144857388, 181289.2153815298, 182715.28590567163, 184141.3564298135, 185567.4269539553, 186993.49747809712, 188419.56800223896, 189845.63852638076, 191271.70905052262, 192697.77957466446, 194123.8500988063, 195549.9206229481, 196975.9911470899, 198402.0616712318, 199828.1321953736, 201254.2027195154, 202680.27324365726, 204106.34376779906, 205532.41429194086, 206958.4848160827, 208384.55534022456, 209810.62586436636, 211236.6963885082, 212662.76691265], "y": [4.198321225092713e-05, 4.1195494589477915e-05, 4.236958122960009e-05, 4.597280816546041e-05, 5.276739478844654e-05, 6.397108020391354e-05, 8.151897388062988e-05, 0.00010849445889775777, 0.00014984385835017515, 0.0002135680672517406, 0.0003127135330944596, 0.00046868854596794727, 0.0007167323367624662, 0.001114755981361558, 0.0017571452591683156, 0.002795088539741913, 0.004463640735273435, 0.007111254863771843, 0.01121732474182808, 0.01736577867218504, 0.026122637639636976, 0.037762674373687015, 0.05184420125979936, 0.06677612542430789, 0.07971533104696116, 0.08718405362284361, 0.0864562711232429, 0.07706982810532223, 0.061373822718984596, 0.04351106755617069, 0.027454524604558665, 0.0154651112912073, 0.00782676407443314, 0.003592596381681738, 0.001513923673531823, 0.0005941061316438309, 0.00022055522700838325, 7.874339628901143e-05, 2.748620383273832e-05, 9.530182747364726e-06, 3.3306507277636115e-06, 1.1885897932159518e-06, 4.379107088043519e-07, 1.6804769991224992e-07, 6.761893306498596e-08, 2.8660571436363128e-08, 1.2831468496913476e-08, 6.0759945236673405e-09, 3.0446881871063412e-09, 1.615794514780643e-09]}, "n_series": {"bova": 721, "ibov": 169}, "flow": {"last_session": "2026-07-10", "estrangeiro_dia_mi": 1521.5, "estrangeiro_5d_mi": 632.2, "estrangeiro_21d_mi": -2160.5, "institucional_dia_mi": -840.8, "pessoa_fisica_dia_mi": -641.0, "series": [{"session": "2026-06-22", "estrangeiro": -2086.2, "institucional": 1520.6, "pessoa_fisica": 19.2}, {"session": "2026-06-23", "estrangeiro": -1063.3, "institucional": 786.3, "pessoa_fisica": 138.1}, {"session": "2026-06-24", "estrangeiro": -855.5, "institucional": 339.7, "pessoa_fisica": 262.4}, {"session": "2026-06-25", "estrangeiro": -410.8, "institucional": 237.2, "pessoa_fisica": -70.0}, {"session": "2026-06-26", "estrangeiro": 34.7, "institucional": 408.3, "pessoa_fisica": -99.3}, {"session": "2026-06-29", "estrangeiro": 666.5, "institucional": -767.0, "pessoa_fisica": 8.0}, {"session": "2026-06-30", "estrangeiro": 302.1, "institucional": -851.0, "pessoa_fisica": 319.3}, {"session": "2026-07-01", "estrangeiro": -589.8, "institucional": 199.0, "pessoa_fisica": 186.7}, {"session": "2026-07-02", "estrangeiro": 567.6, "institucional": -119.2, "pessoa_fisica": 76.9}, {"session": "2026-07-03", "estrangeiro": 698.1, "institucional": -679.6, "pessoa_fisica": -213.2}, {"session": "2026-07-06", "estrangeiro": -500.3, "institucional": -391.9, "pessoa_fisica": 464.7}, {"session": "2026-07-07", "estrangeiro": 12.2, "institucional": -577.1, "pessoa_fisica": 302.5}, {"session": "2026-07-08", "estrangeiro": -607.6, "institucional": 172.4, "pessoa_fisica": 220.4}, {"session": "2026-07-09", "estrangeiro": 206.4, "institucional": -281.5, "pessoa_fisica": -247.9}, {"session": "2026-07-10", "estrangeiro": 1521.5, "institucional": -840.8, "pessoa_fisica": -641.0}], "lag_note": "defasagem de 2 preg\u00f5es (dado p\u00fablico mais recente da B3)"}, "vp": {"ticker": "WINQ26", "session": "2026-07-13", "d1": {"poc": 179670.0, "vah": 180185.0, "val": 177945.0, "volume": 16750846}, "comp": {"days": 5, "poc": 173700.0, "vah": 177975.0, "val": 172005.0, "volume": 84387370}, "hist1d": [[177000.0, 30734], [177100.0, 205994], [177200.0, 198255], [177300.0, 237230], [177400.0, 321063], [177500.0, 892000], [177600.0, 1071270], [177700.0, 931713], [177800.0, 629831], [177900.0, 455851], [178000.0, 312798], [178100.0, 306733], [178200.0, 216184], [178300.0, 579101], [178400.0, 808447], [178500.0, 479941], [178600.0, 268067], [178700.0, 525221], [178800.0, 331345], [178900.0, 293963], [179000.0, 436796], [179100.0, 345807], [179200.0, 669187], [179300.0, 421664], [179400.0, 345415], [179500.0, 430390], [179600.0, 465986], [179700.0, 995680], [179800.0, 1099388], [179900.0, 937630], [180000.0, 921763], [180100.0, 459106], [180200.0, 126293]], "histcomp": [[172000.0, 28113], [172100.0, 227371], [172200.0, 538516], [172300.0, 1109808], [172400.0, 894781], [172500.0, 1063583], [172600.0, 1368065], [172700.0, 1579010], [172800.0, 1859655], [172900.0, 2077200], [173000.0, 1773898], [173100.0, 1103677], [173200.0, 1165135], [173300.0, 1133335], [173400.0, 1745792], [173500.0, 1477651], [173600.0, 2204601], [173700.0, 2712437], [173800.0, 1869248], [173900.0, 1703490], [174000.0, 2062344], [174100.0, 1463449], [174200.0, 1629919], [174300.0, 1104234], [174400.0, 1423608], [174500.0, 1036502], [174600.0, 1068144], [174700.0, 1388807], [174800.0, 1275290], [174900.0, 1458266], [175000.0, 1443437], [175100.0, 1376519], [175200.0, 1265186], [175300.0, 954650], [175400.0, 1086283], [175500.0, 997601], [175600.0, 646294], [175700.0, 182411], [175800.0, 49551], [175900.0, 43601], [176000.0, 15122], [176100.0, 35805], [176200.0, 93273], [176300.0, 85462], [176400.0, 81557], [176500.0, 60045], [176600.0, 39605], [176700.0, 108209], [176800.0, 168039], [176900.0, 158894], [177000.0, 98970], [177100.0, 289128], [177200.0, 288974], [177300.0, 469390], [177400.0, 613508], [177500.0, 1213222], [177600.0, 1482940], [177700.0, 1543401], [177800.0, 1238409], [177900.0, 1104857], [178000.0, 967452], [178100.0, 935736], [178200.0, 944046], [178300.0, 1730740], [178400.0, 2195171], [178500.0, 1421973], [178600.0, 1254698], [178700.0, 1172354], [178800.0, 1145940], [178900.0, 762984], [179000.0, 668881], [179100.0, 543820], [179200.0, 915728], [179300.0, 1014318], [179400.0, 1241636], [179500.0, 859754], [179600.0, 1078906], [179700.0, 1554285], [179800.0, 1563046], [179900.0, 1141230], [180000.0, 1076941], [180100.0, 577222], [180200.0, 175871], [180300.0, 175696], [180400.0, 213414], [180500.0, 176403], [180600.0, 96747], [180700.0, 2106]]}};
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const fmt = (x,d=0)=>x.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
 document.getElementById('sub').textContent =
   `dados de ${D.ref} · ${D.fut} ajuste ${fmt(D.fut_settle)} · IBOV ${fmt(D.ibov,2)} (${D.ibov_source}) · fator ${D.fator.toFixed(5)} · séries: ${D.n_series.bova} BOVA11 + ${D.n_series.ibov} IBOV`;
 document.getElementById('foot').textContent =
   '*Probabilidade risk-neutral extraída da curva de opções (Breeden-Litzenberger). Este painel é material educacional gerado automaticamente a partir de dados públicos da B3 — leitura de cenário, não recomendação de investimento. Gerencie seu risco: nenhum mapa substitui o stop.';
+
+// ---- navegação da sidebar
+const nav = document.getElementById('nav');
+const sidebar = document.getElementById('sidebar');
+document.getElementById('burger').addEventListener('click',()=>sidebar.classList.toggle('open'));
+nav.addEventListener('click', e => {
+  const a = e.target.closest('a[data-v]'); if (!a) return;
+  nav.querySelectorAll('a').forEach(x => x.classList.remove('on'));
+  a.classList.add('on');
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  document.getElementById('v-' + a.dataset.v).classList.add('on');
+  sidebar.classList.remove('open');
+  window.scrollTo({top:0});
+});
+
 const tip = document.getElementById('tip');
 function showTip(ev,html){tip.innerHTML=html;tip.style.display='block';
   tip.style.left=(ev.clientX+12)+'px';tip.style.top=(ev.clientY-10)+'px';}
