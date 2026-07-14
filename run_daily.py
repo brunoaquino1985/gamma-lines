@@ -23,6 +23,7 @@ from report_html import build_report          # noqa: E402
 from flow_participants import build_flow_history, flow_block  # noqa: E402
 from volume_profile import build_vp_block     # noqa: E402
 import backtest as btm                        # noqa: E402
+from global_context import build_context      # noqa: E402
 
 WORK = os.path.join(HERE, "work")
 OUT = os.path.join(HERE, "output")
@@ -81,6 +82,13 @@ def main():
     except Exception as e:
         print(f"[warn] backtest indisponível: {e}", file=sys.stderr)
 
+    # --- Onda 4: contexto global (mercados, agenda, notícias) ---
+    ctx = None
+    try:
+        ctx = build_context(session)
+    except Exception as e:
+        print(f"[warn] contexto global indisponível: {e}", file=sys.stderr)
+
     code = generate_ntsl(res, session)
 
     os.makedirs(OUT, exist_ok=True)
@@ -119,7 +127,7 @@ def main():
     if bt_stats:
         levels["bt"] = bt_stats
     html = build_report(res, meta, meta["session"], flow=flow, vp=vp,
-                        bt=bt_stats)
+                        bt=bt_stats, ctx=ctx)
     open(os.path.join(OUT, "report.html"), "w", encoding="utf-8").write(html)
     json.dump(levels, open(os.path.join(OUT, "levels.json"), "w"),
               indent=2, ensure_ascii=False)

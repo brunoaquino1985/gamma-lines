@@ -139,7 +139,65 @@ GLOSSARY = [
 ]
 
 
-def build_report(res, meta, session_str, flow=None, vp=None, bt=None):
+def _ctx_sections(ctx):
+    """HTML das abas 'Mercado global' e 'Notícias & agenda' (Onda 4)."""
+    off = ("<div class='card'><div class='rd'>Indisponível nesta edição do "
+           "painel — a fonte não respondeu na hora da geração.</div></div>")
+    mk_html = news_html = cal_html = off
+    ctx = ctx or {}
+
+    if ctx.get("markets"):
+        cards = ""
+        for g in ctx["markets"]:
+            rows = "".join(
+                f"<tr><td class='tag'>{r['name']}</td>"
+                f"<td class='num'>{_fmt(r['last'], 2 if r['last'] < 1000 else 0)}</td>"
+                f"<td class='num' style='color:var(--{'pos' if r['var'] >= 0 else 'neg'})'>"
+                f"{'+' if r['var'] >= 0 else '−'}{_fmt(abs(r['var']), 2)}%</td></tr>"
+                for r in g["rows"])
+            cards += (f"<div class='card'><h2>{g['label']}</h2>"
+                      f"<table><tr><th>ativo</th><th>último</th><th>var.</th></tr>"
+                      f"{rows}</table></div>")
+        mk_html = f"<div class='grid'>{cards}</div>"
+
+    if ctx.get("news"):
+        items = "".join(
+            f"<div class='rat'><div class='rd'><a href='{n['link']}' "
+            f"target='_blank' style='color:var(--ink);text-decoration:none'>"
+            f"{n['titulo']}</a><br><span class='muted' style='font-size:11px'>"
+            f"{n['fonte']} · {n['hora']}</span></div></div>"
+            for n in ctx["news"])
+        news_html = (f"<div class='card'><h2>Manchetes que podem mexer com o "
+                     f"pregão</h2>{items}</div>")
+
+    if ctx.get("calendar"):
+        rows = "".join(
+            f"<tr><td class='num' style='font-size:14px'>{e['hora']}</td>"
+            f"<td class='tag'>{e['moeda']}</td>"
+            f"<td style='color:var(--gold)'>{'★' * e['impacto']}</td>"
+            f"<td>{e['evento']}</td>"
+            f"<td class='muted'>{e['projecao']}</td>"
+            f"<td class='muted'>{e['anterior']}</td></tr>"
+            for e in ctx["calendar"])
+        cal_html = (f"<div class='card'><h2>Agenda econômica de hoje "
+                    f"(horário de Brasília)</h2>"
+                    f"<table><tr><th>hora</th><th>moeda</th><th>impacto</th>"
+                    f"<th>evento</th><th>projeção</th><th>anterior</th></tr>"
+                    f"{rows}</table>"
+                    f"<div class='rd' style='margin-top:8px'>Regra do professor: "
+                    f"nos minutos em torno de evento ★★★, o mapa perde força — "
+                    f"spreads abrem e o preço atravessa níveis sem respeitar. "
+                    f"Ou esteja fora, ou esteja com stop na mão.</div></div>")
+    elif ctx.get("markets") or ctx.get("news"):
+        cal_html = ("<div class='card'><h2>Agenda econômica de hoje</h2>"
+                    "<div class='rd'>Sem eventos de impacto médio/alto nas "
+                    "moedas principais para hoje.</div></div>")
+
+    return mk_html, news_html + cal_html
+
+
+def build_report(res, meta, session_str, flow=None, vp=None, bt=None,
+                 ctx=None):
     prob = res.get("prob") or {}
     spot_fut = res["ibov_close"] * res["factor"]
     flip_fut = res["flip"][1]
@@ -374,8 +432,11 @@ ainda merece desconfiança — os números amadurecem a cada sessão.</div>
 
     regime_pill_cls = "pill-pos" if pos else "pill-neg"
     tiles_all = tiles + flow_tiles + vp_tiles
+    global_html, newscal_html = _ctx_sections(ctx)
 
     return (HTML_TMPL
+            .replace("__GLOBALSEC__", global_html)
+            .replace("__NEWSSEC__", newscal_html)
             .replace("__DATA__", json.dumps(data))
             .replace("__TILES__", tiles_all)
             .replace("__FLOWTILES__", flow_tiles or
@@ -532,6 +593,9 @@ td.tag{color:var(--ink);white-space:nowrap}
     <a data-v="graficos"><span class="ic">&#8767;</span> Gráficos de gamma</a>
     <a data-v="fluxo"><span class="ic">$</span> Fluxo estrangeiro</a>
     <a data-v="vp"><span class="ic">&#9636;</span> Volume profile</a>
+    <div class="sec">Contexto</div>
+    <a data-v="global"><span class="ic">&#127758;</span> Mercado global</a>
+    <a data-v="news"><span class="ic">&#128240;</span> Notícias &amp; agenda</a>
     <div class="sec">Extras</div>
     <a data-v="tv"><span class="ic">&#128200;</span> Mapa no TradingView</a>
     <a data-v="gloss"><span class="ic">?</span> Glossário</a>
@@ -611,6 +675,19 @@ sozinha — elas marcam os pontos de decisão onde você deve OBSERVAR a reaçã
     <div class="legend"><span style="--c:var(--pos)">volume de ontem</span>
       <span style="--c:var(--mid)">volume da semana</span>
       <span style="--c:var(--magenta)">POC</span><span style="--c:var(--muted)">VAH/VAL</span></div></div>
+</section>
+
+<section class="view" id="v-global">
+  <div class="pagehead"><h3>Mercado global</h3><span class="crumb">o humor do mundo antes da abertura</span></div>
+  <div class="prof"><b>Como ler:</b> a Ásia já fechou (é o "resultado da madrugada"); a Europa está
+rodando agora; os futuros americanos dão o tom do risco. Dólar forte (DXY subindo) e VIX alto pedem
+cautela com compra no Ibovespa; petróleo e minério puxam Petrobras e Vale, os pesos-pesados do índice.</div>
+  __GLOBALSEC__
+</section>
+
+<section class="view" id="v-news">
+  <div class="pagehead"><h3>Notícias &amp; agenda</h3><span class="crumb">o que pode mexer com o dia</span></div>
+  __NEWSSEC__
 </section>
 
 <section class="view" id="v-tv">
