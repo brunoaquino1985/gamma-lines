@@ -63,7 +63,15 @@ footer{margin-top:22px;font-size:11.5px;color:var(--muted);text-align:center}
   <div class="dot" id="dot"></div>
   <h1>GAMMA LINES <small>AO VIVO · WIN — mini índice</small></h1>
   <span id="status" style="margin-left:auto">carregando…</span>
+  <a id="full" href="output/report.html" target="_blank" style="color:var(--accent);font-size:12.5px;border:1px solid var(--border);border-radius:20px;padding:4px 14px;text-decoration:none">painel completo do dia ↗</a>
 </header>
+
+<div class="card" style="margin-bottom:14px">
+  <h2>Contexto do dia</h2>
+  <div id="ctx" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
+    <div class="empty">carregando…</div>
+  </div>
+</div>
 
 <div class="grid">
   <div>
@@ -102,8 +110,47 @@ async function loadLevels(){
     const r = await fetch(RAW + "?cb=" + Date.now());
     levels = await r.json();
     document.getElementById("sess").textContent = "· sessão " + levels.session.split("-").reverse().join("/");
+    renderCtx();
     renderRuler();
   }catch(e){ console.log("levels", e); }
+}
+
+function tile(t, v, s, cls){
+  return `<div style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:9px 11px">
+    <div style="font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">${t}</div>
+    <div style="font-size:17px;font-weight:800;color:${cls==='pos'?'var(--pos)':cls==='neg'?'var(--neg)':'var(--accent)'}">${v}</div>
+    <div style="font-size:11px;color:var(--muted);line-height:1.35">${s}</div></div>`;
+}
+
+function renderCtx(){
+  if(!levels) return;
+  const el = document.getElementById("ctx");
+  const spot = levels.fut_settle;
+  const tiles = [];
+  if(levels.prob){
+    const p = levels.prob;
+    tiles.push(tile("P(alta)", Math.round(p.p_up_expiry*100)+"%", "até o vencimento " + p.expiry.split("-").reverse().join("/")));
+    tiles.push(tile("Movimento esperado", "±" + fmt(spot*p.sigma_day) + " pts", "1σ do dia precificado pelas opções"));
+  }
+  const pos = levels.gamma_flip && spot > levels.gamma_flip;
+  tiles.push(tile("Regime de gamma", pos?"POSITIVO":"NEGATIVO", "flip em " + fmt(levels.gamma_flip) + (pos?" · range/reversão":" · aceleração"), pos?"pos":"neg"));
+  if(levels.flow){
+    const f = levels.flow, d = Number(f.estrangeiro_dia_mi), d5 = Number(f.estrangeiro_5d_mi);
+    tiles.push(tile("Fluxo gringo", (d>=0?"+":"−")+"R$ "+fmt(Math.abs(d))+" mi",
+      "5 sessões: "+(d5>=0?"+":"−")+"R$ "+fmt(Math.abs(d5))+" mi (defasagem 2 pregões)", d>=0?"pos":"neg"));
+  }
+  if(levels.flows){
+    const c = Number(levels.flows.charm_day_mi), v = Number(levels.flows.vanna_1pct_mi);
+    const money = m => Math.abs(m)>=1000 ? "R$ "+(Math.abs(m)/1000).toFixed(1).replace(".",",")+" bi" : "R$ "+fmt(Math.abs(m))+" mi";
+    tiles.push(tile("Charm (relógio)", money(c)+"/dia", "dealers tendem a "+(c>0?"VENDER":"COMPRAR")+" pela passagem do dia", c>0?"neg":"pos"));
+    tiles.push(tile("Vanna (vol)", money(v)+"/pt", "vol subindo → dealers "+(v>0?"vendem":"compram")+"; caindo → o inverso"));
+  }
+  if(levels.bt && levels.bt.walls){
+    const w = levels.bt.walls;
+    const r = k => w[k] ? Math.round(w[k].taxa_rejeicao*100)+"%" : "—";
+    tiles.push(tile("Rejeição das walls", "★ "+r("1")+" · ★★ "+r("2")+" · ★★★ "+r("3"), levels.bt.n_days+" pregões auditados"));
+  }
+  el.innerHTML = tiles.join("");
 }
 
 function rows(){
