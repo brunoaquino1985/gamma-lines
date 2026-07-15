@@ -149,6 +149,30 @@
       "crosses": 4,
       "queda_media_extra": 1450.3
     },
+    "cond": {},
+    "gaps": {
+      "ate_300": {
+        "n": 5,
+        "fechou": 4,
+        "taxa_fechou": 0.8
+      },
+      "300_700": {
+        "n": 8,
+        "fechou": 4,
+        "taxa_fechou": 0.5
+      },
+      "700_1500": {
+        "n": 5,
+        "fechou": 4,
+        "taxa_fechou": 0.8
+      },
+      "acima_1500": {
+        "n": 1,
+        "fechou": 1,
+        "taxa_fechou": 1.0
+      }
+    },
+    "hourly": {},
     "desde": "2026-06-16",
     "ate": "2026-07-13"
   }
