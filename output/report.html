@@ -183,7 +183,13 @@ sozinha — elas marcam os pontos de decisão onde você deve OBSERVAR a reaçã
         <div class="ts">área de valor 177.945 — 180.185 (onde 70% do volume girou)</div></div>
       <div class="tile"><div class="tl">POC composto · 5 sessões</div>
         <div class="tv neon">173.700</div>
-        <div class="ts">área de valor 172.005 — 177.975 (zona consolidada da semana)</div></div></div>
+        <div class="ts">área de valor 172.005 — 177.975 (zona consolidada da semana)</div></div>
+      <div class="tile"><div class="tl">Vanna — hedge por vol</div>
+        <div class="tv neon">R$ 26,5 bi <span class="unit">/ 1pt vol</span></div>
+        <div class="ts">vol subindo → dealers vendem; vol caindo → compram</div></div>
+      <div class="tile"><div class="tl">Charm — hedge do relógio</div>
+        <div class="tv pos">R$ 15,7 bi <span class="unit">/ dia</span></div>
+        <div class="ts">a cada dia que passa os dealers tendem a comprar esse tanto</div></div></div>
   <div class="card"><h2>Resumo do professor</h2><div class="rd">Dia de gamma positivo com o gringo comprador na semana: o mapa favorece <b>operar as bordas</b> — compra na defesa de 177.013, venda na rejeição de 178.025, sem perseguir rompimento. Abra <b>A aula do dia</b> no menu para os cenários completos com alvo e invalidação.</div></div>
 </section>
 
@@ -234,22 +240,37 @@ sozinha — elas marcam os pontos de decisão onde você deve OBSERVAR a reaçã
 <section class="view" id="v-stats">
   <div class="pagehead"><h3>Estatísticas das zonas</h3><span class="crumb">o mapa auditado contra o mercado real</span></div>
   <div class="card">
-<h2>Auditoria dos últimos 20 pregões</h2>
+<h2>Auditoria dos últimos 21 pregões</h2>
 <div class="rd" style="margin-bottom:10px">Aula de honestidade: todo dia o mapa
 da véspera é comparado com o que o mercado REALMENTE fez (16/06/2026
-a 13/07/2026). Toque = preço chegou a 100 pts da linha; rejeição =
+a 14/07/2026). Toque = preço chegou a 100 pts da linha; rejeição =
 afastou 400 pts sem romper; rompimento = atravessou 200 pts. Amostra pequena
 ainda merece desconfiança — os números amadurecem a cada sessão.</div>
 <table><tr><th>linha</th><th>toques</th><th>rejeitou</th><th>rompeu</th><th>taxa de rejeição</th></tr>
-<tr><td class='tag'>WALL ★★★</td><td class='num'>7</td><td class='num'>2</td><td class='num'>4</td><td class='num'>33%</td></tr><tr><td class='tag'>WALL ★★</td><td class='num'>19</td><td class='num'>12</td><td class='num'>7</td><td class='num'>63%</td></tr><tr><td class='tag'>WALL ★</td><td class='num'>29</td><td class='num'>16</td><td class='num'>13</td><td class='num'>55%</td></tr></table>
-<div class='rd' style='margin-top:6px'><b>Bandas ±1σ:</b> o dia ficou inteiro dentro do esperado em 45% das sessões (9/20).</div><div class='rd' style='margin-top:6px'><b>POC como ímã:</b> o preço voltou a negociar no POC da véspera em 68% dos dias.</div><div class='rd' style='margin-top:6px'><b>Abertura dentro da área de valor:</b> virou dia de rotação em 30% das vezes (10 amostras).</div><div class='rd' style='margin-top:6px'><b>Abertura fora da área de valor:</b> virou dia de tendência em 78% das vezes (9 amostras).</div><div class='rd' style='margin-top:6px'><b>Perda do flip:</b> aconteceu 4x; queda adicional média de 1.450 pts.</div></div><div class="card">
+<tr><td class='tag'>WALL ★★★</td><td class='num'>7</td><td class='num'>2</td><td class='num'>4</td><td class='num'>33%</td></tr><tr><td class='tag'>WALL ★★</td><td class='num'>20</td><td class='num'>12</td><td class='num'>8</td><td class='num'>60%</td></tr><tr><td class='tag'>WALL ★</td><td class='num'>29</td><td class='num'>14</td><td class='num'>15</td><td class='num'>48%</td></tr></table>
+<div class='rd' style='margin-top:6px'><b>Bandas ±1σ:</b> o dia ficou inteiro dentro do esperado em 48% das sessões (10/21).</div><div class='rd' style='margin-top:6px'><b>POC como ímã:</b> o preço voltou a negociar no POC da véspera em 70% dos dias.</div><div class='rd' style='margin-top:6px'><b>Abertura dentro da área de valor:</b> virou dia de rotação em 36% das vezes (11 amostras).</div><div class='rd' style='margin-top:6px'><b>Abertura fora da área de valor:</b> virou dia de tendência em 78% das vezes (9 amostras).</div><div class='rd' style='margin-top:6px'><b>Perda do flip:</b> aconteceu 4x; queda adicional média de 1.812 pts.</div></div><div class="card">
+<h2>Como as walls se comportam em cada cenário</h2>
+<div class="rd" style="margin-bottom:10px">A mesma parede não vale o mesmo em
+todo dia. Aqui está a taxa de rejeição das walls (todas juntas) separada pelo
+regime de gamma do dia e pelo lado do fluxo estrangeiro conhecido na manhã —
+é assim que estatística vira setup: opere a rejeição nos cenários em que ela
+historicamente funciona.</div>
+<table><tr><th>cenário</th><th>toques</th><th>rejeitou</th><th>rompeu</th><th>taxa de rejeição</th></tr>
+<tr><td class='tag'>Gamma POSITIVO</td><td class='num'>44</td><td class='num'>20</td><td class='num'>23</td><td class='num'>46%</td></tr><tr><td class='tag'>Gamma NEGATIVO</td><td class='num'>10</td><td class='num'>6</td><td class='num'>4</td><td class='num'>60%</td></tr><tr><td class='tag'>Gringo COMPRADOR (5 sessões)</td><td class='num'>21</td><td class='num'>11</td><td class='num'>9</td><td class='num'>55%</td></tr><tr><td class='tag'>Gringo VENDEDOR (5 sessões)</td><td class='num'>33</td><td class='num'>15</td><td class='num'>18</td><td class='num'>46%</td></tr></table></div><div class="card">
 <h2>Gap de abertura — fecha ou não fecha?</h2>
 <div class="rd" style="margin-bottom:10px">Gap = distância entre a abertura de
 hoje e o fechamento de ontem. "Fechou" = em algum momento do dia o preço voltou
 ao fechamento da véspera. A lição clássica: gap pequeno é ímã, gap grande é
 tendência — confira o que os números REAIS dizem antes do primeiro trade.</div>
 <table><tr><th>tamanho do gap</th><th>ocorrências</th><th>fechou no dia</th><th>taxa</th></tr>
-<tr><td class='tag'>até 300 pts</td><td class='num'>5</td><td class='num'>4</td><td class='num'>80%</td></tr><tr><td class='tag'>300–700 pts</td><td class='num'>8</td><td class='num'>4</td><td class='num'>50%</td></tr><tr><td class='tag'>700–1.500 pts</td><td class='num'>5</td><td class='num'>4</td><td class='num'>80%</td></tr><tr><td class='tag'>acima de 1.500 pts</td><td class='num'>1</td><td class='num'>1</td><td class='num'>100%</td></tr></table></div>
+<tr><td class='tag'>até 300 pts</td><td class='num'>5</td><td class='num'>4</td><td class='num'>80%</td></tr><tr><td class='tag'>300–700 pts</td><td class='num'>9</td><td class='num'>5</td><td class='num'>56%</td></tr><tr><td class='tag'>700–1.500 pts</td><td class='num'>5</td><td class='num'>4</td><td class='num'>80%</td></tr><tr><td class='tag'>acima de 1.500 pts</td><td class='num'>1</td><td class='num'>1</td><td class='num'>100%</td></tr></table></div><div class="card">
+<h2>Relógio do pregão — quando os níveis valem mais</h2>
+<div class="rd" style="margin-bottom:10px">Hora do primeiro toque em cada wall
+e o resultado, mais a fatia do volume negociado em cada hora. Use para escolher
+a SUA janela: rejeição funciona melhor nas horas em que historicamente é mais
+respeitada; hora de volume fraco (almoço) costuma dar sinal falso.</div>
+<table><tr><th>hora</th><th>toques em wall</th><th>taxa de rejeição</th><th>% do volume do dia</th></tr>
+<tr><td class='num' style='font-size:14px'>9h</td><td class='num'>37</td><td class='num'>46%</td><td class='num'>19.7%</td></tr><tr><td class='num' style='font-size:14px'>10h</td><td class='num'>9</td><td class='num'>78%</td><td class='num'>25.3%</td></tr><tr><td class='num' style='font-size:14px'>11h</td><td class='num'>3</td><td class='num'>33%</td><td class='num'>16.2%</td></tr><tr><td class='num' style='font-size:14px'>12h</td><td class='num'>2</td><td class='num'>50%</td><td class='num'>9.2%</td></tr><tr><td class='num' style='font-size:14px'>13h</td><td class='num'>1</td><td class='num'>0%</td><td class='num'>6.7%</td></tr><tr><td class='num' style='font-size:14px'>14h</td><td class='num'>0</td><td class='num'>—</td><td class='num'>6.6%</td></tr><tr><td class='num' style='font-size:14px'>15h</td><td class='num'>0</td><td class='num'>—</td><td class='num'>6.3%</td></tr><tr><td class='num' style='font-size:14px'>16h</td><td class='num'>0</td><td class='num'>—</td><td class='num'>5.8%</td></tr><tr><td class='num' style='font-size:14px'>17h</td><td class='num'>2</td><td class='num'>0%</td><td class='num'>3.2%</td></tr><tr><td class='num' style='font-size:14px'>18h</td><td class='num'>0</td><td class='num'>—</td><td class='num'>0.9%</td></tr></table></div>
 </section>
 
 <section class="view" id="v-graficos">
@@ -269,6 +290,19 @@ tendência — confira o que os números REAIS dizem antes do primeiro trade.</d
       <div class="legend"><span style="--c:var(--accent)">probabilidade</span>
         <span style="--c:var(--muted)">P10–P90</span><span style="--c:var(--pos)">±1σ dia</span></div></div>
   </div>
+  <div class="card">
+<h2>Fluxos de hedge dos dealers — vanna e charm</h2>
+<div class="rd">O gamma diz o que os bancos fazem quando o <b>preço</b> se move.
+Mas eles também rebalanceiam quando a <b>volatilidade</b> muda (vanna) e quando
+simplesmente <b>o tempo passa</b> (charm). Hoje o book indica: se a vol implícita
+subir 1 ponto, os dealers precisam <b>vendem ~R$ 26,5 bi</b> em índice
+para se manterem neutros (e compram se a vol cair — é por isso que dia de vol
+derretendo costuma virar rali lento e constante). Pela passagem do dia, o
+decaimento do delta os obriga a <b>comprar ~R$ 15,7 bi</b> — esse fluxo
+de charm concentra-se na primeira hora e cresce muito na semana do vencimento.
+Leitura prática: quando vanna e charm apontam para o mesmo lado do seu trade,
+o "vento de fundo" dos hedges está a seu favor; contra, exija mais confirmação.</div>
+</div>
 </section>
 
 <section class="view" id="v-fluxo">
@@ -308,7 +342,7 @@ tendência — confira o que os números REAIS dizem antes do primeiro trade.</d
   <div class="prof"><b>Como ler:</b> a Ásia já fechou (é o "resultado da madrugada"); a Europa está
 rodando agora; os futuros americanos dão o tom do risco. Dólar forte (DXY subindo) e VIX alto pedem
 cautela com compra no Ibovespa; petróleo e minério puxam Petrobras e Vale, os pesos-pesados do índice.</div>
-  <div class='grid'><div class='card'><h2>Ásia — fechamento</h2><table><tr><th>ativo</th><th>último</th><th>var.</th></tr><tr><td class='tag'>Nikkei 225 (Japão)</td><td class='num'>68.512</td><td class='num' style='color:var(--pos)'>+1,13%</td></tr><tr><td class='tag'>Hang Seng (Hong Kong)</td><td class='num'>24.341</td><td class='num' style='color:var(--pos)'>+3,59%</td></tr><tr><td class='tag'>Xangai Composto (China)</td><td class='num'>3.967</td><td class='num' style='color:var(--neg)'>−0,09%</td></tr><tr><td class='tag'>KOSPI (Coreia)</td><td class='num'>7.322</td><td class='num' style='color:var(--pos)'>+1,04%</td></tr></table></div><div class='card'><h2>Europa — em andamento</h2><table><tr><th>ativo</th><th>último</th><th>var.</th></tr><tr><td class='tag'>Euro Stoxx 50</td><td class='num'>6.280</td><td class='num' style='color:var(--pos)'>+1,21%</td></tr><tr><td class='tag'>DAX (Alemanha)</td><td class='num'>25.147</td><td class='num' style='color:var(--neg)'>−1,25%</td></tr><tr><td class='tag'>FTSE 100 (Reino Unido)</td><td class='num'>10.529</td><td class='num' style='color:var(--neg)'>−1,28%</td></tr><tr><td class='tag'>CAC 40 (França)</td><td class='num'>8.367</td><td class='num' style='color:var(--pos)'>+1,38%</td></tr></table></div><div class='card'><h2>EUA — futuros e risco</h2><table><tr><th>ativo</th><th>último</th><th>var.</th></tr><tr><td class='tag'>S&P 500 futuro</td><td class='num'>7.596</td><td class='num' style='color:var(--pos)'>+0,10%</td></tr><tr><td class='tag'>Nasdaq 100 futuro</td><td class='num'>29.872</td><td class='num' style='color:var(--neg)'>−0,22%</td></tr><tr><td class='tag'>Dow Jones futuro</td><td class='num'>52.795</td><td class='num' style='color:var(--pos)'>+0,06%</td></tr><tr><td class='tag'>VIX (medo)</td><td class='num'>16,50</td><td class='num' style='color:var(--neg)'>−2,37%</td></tr></table></div><div class='card'><h2>Dólar × moedas</h2><table><tr><th>ativo</th><th>último</th><th>var.</th></tr><tr><td class='tag'>USD/BRL</td><td class='num'>5,07</td><td class='num' style='color:var(--neg)'>−1,74%</td></tr><tr><td class='tag'>DXY (índice do dólar)</td><td class='num'>100,87</td><td class='num' style='color:var(--neg)'>−0,07%</td></tr><tr><td class='tag'>EUR/USD</td><td class='num'>1,14</td><td class='num' style='color:var(--pos)'>+0,08%</td></tr><tr><td class='tag'>USD/JPY</td><td class='num'>162,17</td><td class='num' style='color:var(--neg)'>−0,23%</td></tr><tr><td class='tag'>USD/CNY</td><td class='num'>6,76</td><td class='num' style='color:var(--neg)'>−0,59%</td></tr></table></div><div class='card'><h2>Commodities</h2><table><tr><th>ativo</th><th>último</th><th>var.</th></tr><tr><td class='tag'>Petróleo Brent</td><td class='num'>86,33</td><td class='num' style='color:var(--pos)'>+13,15%</td></tr><tr><td class='tag'>Petróleo WTI</td><td class='num'>80,53</td><td class='num' style='color:var(--pos)'>+11,72%</td></tr><tr><td class='tag'>Ouro</td><td class='num'>4.060</td><td class='num' style='color:var(--neg)'>−1,72%</td></tr><tr><td class='tag'>Prata</td><td class='num'>59,09</td><td class='num' style='color:var(--neg)'>−2,14%</td></tr><tr><td class='tag'>Cobre</td><td class='num'>6,37</td><td class='num' style='color:var(--pos)'>+2,51%</td></tr><tr><td class='tag'>Minério de ferro (SGX)</td><td class='num'>161,91</td><td class='num' style='color:var(--pos)'>+64,26%</td></tr></table></div></div>
+  <div class='grid'><div class='card'><h2>Ásia — fechamento</h2><table><tr><th>ativo</th><th>último</th><th>var.</th></tr><tr><td class='tag'>Nikkei 225 (Japão)</td><td class='num'>68.210</td><td class='num' style='color:var(--pos)'>+0,69%</td></tr><tr><td class='tag'>Hang Seng (Hong Kong)</td><td class='num'>24.341</td><td class='num' style='color:var(--pos)'>+3,59%</td></tr><tr><td class='tag'>Xangai Composto (China)</td><td class='num'>3.967</td><td class='num' style='color:var(--neg)'>−0,09%</td></tr><tr><td class='tag'>KOSPI (Coreia)</td><td class='num'>7.301</td><td class='num' style='color:var(--pos)'>+0,75%</td></tr></table></div><div class='card'><h2>Europa — em andamento</h2><table><tr><th>ativo</th><th>último</th><th>var.</th></tr><tr><td class='tag'>Euro Stoxx 50</td><td class='num'>6.280</td><td class='num' style='color:var(--pos)'>+1,21%</td></tr><tr><td class='tag'>DAX (Alemanha)</td><td class='num'>25.147</td><td class='num' style='color:var(--neg)'>−1,25%</td></tr><tr><td class='tag'>FTSE 100 (Reino Unido)</td><td class='num'>10.529</td><td class='num' style='color:var(--neg)'>−1,28%</td></tr><tr><td class='tag'>CAC 40 (França)</td><td class='num'>8.367</td><td class='num' style='color:var(--pos)'>+1,38%</td></tr></table></div><div class='card'><h2>EUA — futuros e risco</h2><table><tr><th>ativo</th><th>último</th><th>var.</th></tr><tr><td class='tag'>S&P 500 futuro</td><td class='num'>7.601</td><td class='num' style='color:var(--pos)'>+0,16%</td></tr><tr><td class='tag'>Nasdaq 100 futuro</td><td class='num'>29.913</td><td class='num' style='color:var(--neg)'>−0,08%</td></tr><tr><td class='tag'>Dow Jones futuro</td><td class='num'>52.821</td><td class='num' style='color:var(--pos)'>+0,11%</td></tr><tr><td class='tag'>VIX (medo)</td><td class='num'>16,50</td><td class='num' style='color:var(--neg)'>−2,37%</td></tr></table></div><div class='card'><h2>Dólar × moedas</h2><table><tr><th>ativo</th><th>último</th><th>var.</th></tr><tr><td class='tag'>USD/BRL</td><td class='num'>5,07</td><td class='num' style='color:var(--neg)'>−1,74%</td></tr><tr><td class='tag'>DXY (índice do dólar)</td><td class='num'>100,83</td><td class='num' style='color:var(--neg)'>−0,11%</td></tr><tr><td class='tag'>EUR/USD</td><td class='num'>1,14</td><td class='num' style='color:var(--pos)'>+0,12%</td></tr><tr><td class='tag'>USD/JPY</td><td class='num'>162,07</td><td class='num' style='color:var(--neg)'>−0,29%</td></tr><tr><td class='tag'>USD/CNY</td><td class='num'>6,76</td><td class='num' style='color:var(--neg)'>−0,59%</td></tr></table></div><div class='card'><h2>Commodities</h2><table><tr><th>ativo</th><th>último</th><th>var.</th></tr><tr><td class='tag'>Petróleo Brent</td><td class='num'>86,05</td><td class='num' style='color:var(--pos)'>+12,78%</td></tr><tr><td class='tag'>Petróleo WTI</td><td class='num'>80,31</td><td class='num' style='color:var(--pos)'>+11,42%</td></tr><tr><td class='tag'>Ouro</td><td class='num'>4.064</td><td class='num' style='color:var(--neg)'>−1,61%</td></tr><tr><td class='tag'>Prata</td><td class='num'>59,26</td><td class='num' style='color:var(--neg)'>−1,85%</td></tr><tr><td class='tag'>Cobre</td><td class='num'>6,38</td><td class='num' style='color:var(--pos)'>+2,62%</td></tr><tr><td class='tag'>Minério de ferro (SGX)</td><td class='num'>161,91</td><td class='num' style='color:var(--pos)'>+64,26%</td></tr></table></div></div>
 </section>
 
 <section class="view" id="v-news">
