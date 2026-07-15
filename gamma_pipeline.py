@@ -154,6 +154,35 @@ def gamma_black(S, F, K, T, sigma, DF):
     d1 = (math.log(F / K) + 0.5 * v * v) / v
     return DF * norm_pdf(d1) * (F / S) ** 2 / (F * v)
 
+
+def vanna_black(S, F, K, T, sigma, DF):
+    """Vanna spot (dDelta/dSigma, por 1.00 de vol) com F acompanhando S.
+    Igual para call e put."""
+    if sigma <= 0 or T <= 0 or S <= 0:
+        return 0.0
+    v = sigma * math.sqrt(T)
+    d1 = (math.log(F / K) + 0.5 * v * v) / v
+    d2 = d1 - v
+    return -DF * (F / S) * norm_pdf(d1) * d2 / sigma
+
+
+def charm_black(S, F, K, T, sigma, DF):
+    """Charm spot: variação do delta por 1 dia corrido que passa
+    (delta amanhã − delta hoje). Como DF·F/S ≈ 1, call e put têm o
+    mesmo charm; calculado pela call."""
+    if sigma <= 0 or S <= 0 or T <= 0:
+        return 0.0
+
+    def _delta(t):
+        if t <= 1e-6:
+            return DF * (F / S) if F > K else 0.0
+        v = sigma * math.sqrt(t)
+        d1 = (math.log(F / K) + 0.5 * v * v) / v
+        return DF * (F / S) * norm_cdf(d1)
+
+    dt = 1.0 / 365.0
+    return _delta(max(T - dt, 1e-6)) - _delta(T)
+
 # ----------------------------------------------------------------------------
 # Smile quadrático por vencimento
 # ----------------------------------------------------------------------------
@@ -279,6 +308,25 @@ def strike_gex(series, spot, mult):
         e[1] += abs(v)
         e[2] += s["oi"]
     return m
+
+
+def dealer_flows(books):
+    """books: lista de (series, spot). Exposição líquida dealer no spot atual,
+    convenção GEX (call +, put −), em R$:
+      vanna_1pct — delta (R$) que os dealers precisam hedgear se a vol
+                   implícita SUBIR 1 ponto (0.01);
+      charm_day  — delta (R$) que decai a cada dia corrido que passa
+                   (fluxo de rebalanceamento 'do relógio')."""
+    vanna = 0.0
+    charm = 0.0
+    for series, spot in books:
+        for s in series:
+            sgn = 1.0 if s["cp"] == "C" else -1.0
+            va = vanna_black(spot, s["F"], s["strike"], s["T"], s["iv"], s["DF"])
+            ch = charm_black(spot, s["F"], s["strike"], s["T"], s["iv"], s["DF"])
+            vanna += sgn * va * s["oi"] * spot * 0.01
+            charm += sgn * ch * s["oi"] * spot
+    return dict(vanna_1pct=vanna, charm_day=charm)
 
 # ----------------------------------------------------------------------------
 # Distribuição implícita (Breeden-Litzenberger) e bandas de probabilidade
@@ -456,8 +504,12 @@ def run_model(cot_text, pr_text, ibov_close, r_annual, ref_date,
                          pm["density"][1]),
         )
 
+    # --- Onda 6: fluxos de dealer (vanna / charm) ----------------------------
+    flows = dealer_flows([(ibov, ibov_close), (bova, bova_spot)])
+
     res = dict(
         prob=prob,
+        flows=flows,
         ref_date=ref_date, fut_ticker=fut_tk, fut_settle=fut_settle,
         ibov_close=ibov_close, bova_spot=bova_spot, factor=factor,
         walls=[(w, width[w], w * factor) for w in walls],
@@ -479,4 +531,6 @@ def run_model(cot_text, pr_text, ibov_close, r_annual, ref_date,
             print(f"  {b:>7}: net {netv/1e6:>8.1f}  abs {abv/1e6:>8.1f}{mark}")
         print(f"flip:  {res['flip']}")
         print(f"maxG:  {res['max_gamma']}   minG: {res['min_gamma']}")
+        print(f"flows: vanna(+1pt) R$ {flows['vanna_1pct']/1e6:+.1f} mi  "
+              f"charm(dia) R$ {flows['charm_day']/1e6:+.1f} mi")
     return res

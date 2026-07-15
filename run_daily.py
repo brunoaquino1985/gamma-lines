@@ -119,6 +119,10 @@ def main():
             band_down=round(p["band_down_fut"], 3),
             pct={k: round(v, 1) for k, v in p["pct_fut"].items()},
         )
+    if res.get("flows"):
+        levels["flows"] = dict(
+            vanna_1pct_mi=round(res["flows"]["vanna_1pct"] / 1e6, 1),
+            charm_day_mi=round(res["flows"]["charm_day"] / 1e6, 1))
     if flow:
         levels["flow"] = {k: v for k, v in flow.items() if k != "series"}
     if vp and vp.get("d1"):

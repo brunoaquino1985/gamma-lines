@@ -286,6 +286,40 @@ def build_report(res, meta, session_str, flow=None, vp=None, bt=None,
         <div class="tv neon">{_fmt(comp['poc'])}</div>
         <div class="ts">área de valor {_fmt(comp['val'])} — {_fmt(comp['vah'])} (zona consolidada da semana)</div></div>"""
 
+    greek_tiles = ""
+    greek_card = ""
+    fl = res.get("flows")
+    if fl:
+        vmi = fl["vanna_1pct"] / 1e6
+        cmi = fl["charm_day"] / 1e6
+        _money = lambda m: (f"R$ {_fmt(abs(m)/1000, 1)} bi" if abs(m) >= 1000
+                            else f"R$ {_fmt(abs(m))} mi")
+        # hedge = oposto da variação de delta dos dealers
+        v_up = "vendem" if vmi > 0 else "compram"
+        v_dn = "compram" if vmi > 0 else "vendem"
+        c_act = "vender" if cmi > 0 else "comprar"
+        c_cls = "neg" if cmi > 0 else "pos"
+        greek_tiles = f"""
+      <div class="tile"><div class="tl">Vanna — hedge por vol</div>
+        <div class="tv neon">{_money(vmi)} <span class="unit">/ 1pt vol</span></div>
+        <div class="ts">vol subindo → dealers {v_up}; vol caindo → {v_dn}</div></div>
+      <div class="tile"><div class="tl">Charm — hedge do relógio</div>
+        <div class="tv {c_cls}">{_money(cmi)} <span class="unit">/ dia</span></div>
+        <div class="ts">a cada dia que passa os dealers tendem a {c_act} esse tanto</div></div>"""
+        greek_card = f"""<div class="card">
+<h2>Fluxos de hedge dos dealers — vanna e charm</h2>
+<div class="rd">O gamma diz o que os bancos fazem quando o <b>preço</b> se move.
+Mas eles também rebalanceiam quando a <b>volatilidade</b> muda (vanna) e quando
+simplesmente <b>o tempo passa</b> (charm). Hoje o book indica: se a vol implícita
+subir 1 ponto, os dealers precisam <b>{v_up} ~{_money(vmi)}</b> em índice
+para se manterem neutros (e {v_dn} se a vol cair — é por isso que dia de vol
+derretendo costuma virar rali lento e constante). Pela passagem do dia, o
+decaimento do delta os obriga a <b>{c_act} ~{_money(cmi)}</b> — esse fluxo
+de charm concentra-se na primeira hora e cresce muito na semana do vencimento.
+Leitura prática: quando vanna e charm apontam para o mesmo lado do seu trade,
+o "vento de fundo" dos hedges está a seu favor; contra, exija mais confirmação.</div>
+</div>"""
+
     rows = []
     for w in walls:
         tag = {3: "WALL ★★★", 2: "WALL ★★", 1: "WALL ★"}[w["width"]]
@@ -491,7 +525,7 @@ respeitada; hora de volume fraco (almoço) costuma dar sinal falso.</div>
                    "com o que o mercado realmente fez.</div></div>")
 
     regime_pill_cls = "pill-pos" if pos else "pill-neg"
-    tiles_all = tiles + flow_tiles + vp_tiles
+    tiles_all = tiles + flow_tiles + vp_tiles + greek_tiles
     global_html, newscal_html = _ctx_sections(ctx)
 
     return (HTML_TMPL
@@ -508,6 +542,7 @@ respeitada; hora de volume fraco (almoço) costuma dar sinal falso.</div>
             .replace("__ROWS__", table_rows)
             .replace("__RATIONALE__", rat_html)
             .replace("__BTCARD__", bt_html)
+            .replace("__GREEKCARD__", greek_card)
             .replace("__GLOSSARY__", gloss_html)
             .replace("__BANNER__", banner)
             .replace("__RESUMO__", resumo)
@@ -715,6 +750,7 @@ sozinha — elas marcam os pontos de decisão onde você deve OBSERVAR a reaçã
       <div class="legend"><span style="--c:var(--accent)">probabilidade</span>
         <span style="--c:var(--muted)">P10–P90</span><span style="--c:var(--pos)">±1σ dia</span></div></div>
   </div>
+  __GREEKCARD__
 </section>
 
 <section class="view" id="v-fluxo">
