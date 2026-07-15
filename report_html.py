@@ -424,6 +424,66 @@ ainda merece desconfiança — os números amadurecem a cada sessão.</div>
 <table><tr><th>linha</th><th>toques</th><th>rejeitou</th><th>rompeu</th><th>taxa de rejeição</th></tr>
 {wrows}</table>
 {extras_html}</div>"""
+
+        # --- Onda 5: condicionais, gaps e relógio do pregão ---
+        cond = bt.get("cond") or {}
+        if cond:
+            labels = (("pos", "Gamma POSITIVO"), ("neg", "Gamma NEGATIVO"),
+                      ("comprador", "Gringo COMPRADOR (5 sessões)"),
+                      ("vendedor", "Gringo VENDEDOR (5 sessões)"))
+            crows = "".join(
+                f"<tr><td class='tag'>{lab}</td>"
+                f"<td class='num'>{cond[k]['toques']}</td>"
+                f"<td class='num'>{cond[k]['rejeitou']}</td>"
+                f"<td class='num'>{cond[k]['rompeu']}</td>"
+                f"<td class='num'>{pct(cond[k]['taxa_rejeicao'])}</td></tr>"
+                for k, lab in labels if k in cond)
+            bt_html += f"""<div class="card">
+<h2>Como as walls se comportam em cada cenário</h2>
+<div class="rd" style="margin-bottom:10px">A mesma parede não vale o mesmo em
+todo dia. Aqui está a taxa de rejeição das walls (todas juntas) separada pelo
+regime de gamma do dia e pelo lado do fluxo estrangeiro conhecido na manhã —
+é assim que estatística vira setup: opere a rejeição nos cenários em que ela
+historicamente funciona.</div>
+<table><tr><th>cenário</th><th>toques</th><th>rejeitou</th><th>rompeu</th><th>taxa de rejeição</th></tr>
+{crows}</table></div>"""
+
+        gaps = bt.get("gaps") or {}
+        if any((g or {}).get("n") for g in gaps.values()):
+            glabels = (("ate_300", "até 300 pts"), ("300_700", "300–700 pts"),
+                       ("700_1500", "700–1.500 pts"),
+                       ("acima_1500", "acima de 1.500 pts"))
+            grows = "".join(
+                f"<tr><td class='tag'>{lab}</td>"
+                f"<td class='num'>{gaps[k]['n']}</td>"
+                f"<td class='num'>{gaps[k]['fechou']}</td>"
+                f"<td class='num'>{pct(gaps[k]['taxa_fechou'])}</td></tr>"
+                for k, lab in glabels if gaps.get(k, {}).get("n"))
+            bt_html += f"""<div class="card">
+<h2>Gap de abertura — fecha ou não fecha?</h2>
+<div class="rd" style="margin-bottom:10px">Gap = distância entre a abertura de
+hoje e o fechamento de ontem. "Fechou" = em algum momento do dia o preço voltou
+ao fechamento da véspera. A lição clássica: gap pequeno é ímã, gap grande é
+tendência — confira o que os números REAIS dizem antes do primeiro trade.</div>
+<table><tr><th>tamanho do gap</th><th>ocorrências</th><th>fechou no dia</th><th>taxa</th></tr>
+{grows}</table></div>"""
+
+        hourly = bt.get("hourly") or {}
+        if hourly:
+            hrows = "".join(
+                f"<tr><td class='num' style='font-size:14px'>{h}h</td>"
+                f"<td class='num'>{hourly[h]['toques']}</td>"
+                f"<td class='num'>{pct(hourly[h]['taxa_rejeicao'])}</td>"
+                f"<td class='num'>{hourly[h].get('vol_pct', 0)}%</td></tr>"
+                for h in sorted(hourly.keys(), key=int))
+            bt_html += f"""<div class="card">
+<h2>Relógio do pregão — quando os níveis valem mais</h2>
+<div class="rd" style="margin-bottom:10px">Hora do primeiro toque em cada wall
+e o resultado, mais a fatia do volume negociado em cada hora. Use para escolher
+a SUA janela: rejeição funciona melhor nas horas em que historicamente é mais
+respeitada; hora de volume fraco (almoço) costuma dar sinal falso.</div>
+<table><tr><th>hora</th><th>toques em wall</th><th>taxa de rejeição</th><th>% do volume do dia</th></tr>
+{hrows}</table></div>"""
     else:
         bt_html = ("<div class='card'><h2>Auditoria dos pregões</h2>"
                    "<div class='rd'>As primeiras estatísticas aparecem aqui após a "

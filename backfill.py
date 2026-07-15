@@ -30,6 +30,7 @@ def build_levels(session, ref, res, vp_block):
     """Réplica mínima do levels.json do run_daily (campos usados no backtest)."""
     lv = dict(
         session=f"{session:%Y-%m-%d}", ref=f"{ref:%Y-%m-%d}",
+        ibov_close=res["ibov_close"], fator=res["factor"],
         walls=[dict(strike=k, width=w, fut=round(f, 3))
                for k, w, f in res["walls"]],
         gamma_flip=round(res["flip"][1], 3) if res["flip"][1] else None,
@@ -96,9 +97,8 @@ def main():
 
     done = 0
     for s in sessions:
-        rec_path = os.path.join(OUT, "backtest", f"{s:%Y-%m-%d}.json")
-        if os.path.exists(rec_path):
-            print(f"{s}: já avaliado, pulando")
+        if bt.record_is_current(OUT, f"{s:%Y-%m-%d}"):
+            print(f"{s}: já avaliado (v{bt.REC_VERSION}), pulando")
             done += 1
             continue
         print(f"{s}: processando…")
