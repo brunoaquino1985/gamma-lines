@@ -971,8 +971,17 @@ cautela com compra no Ibovespa; petróleo e minério puxam Petrobras e Vale, os 
   <div class="pagehead"><h3>Mapa no TradingView</h3><span class="crumb">WIN 15 min com as linhas desenhadas</span></div>
   <div class="card"><h2>Print do dia</h2>
     <!--TVSLOT-->
+    <img id="tvimg2" class="tvimg" style="display:none;width:100%;height:auto;border-radius:10px;border:1px solid rgba(55,224,255,.14)" alt="WIN com as gamma lines do dia">
     <div class="rd" id="tvnote">O print do TradingView não está disponível nesta edição do painel —
     ele é gerado na entrega da manhã quando o computador com o TradingView está conectado.</div>
+    <script>
+    (function(){
+      var im = document.getElementById('tvimg2');
+      im.onload = function(){ im.style.display='block';
+        var n = document.getElementById('tvnote'); if (n) n.style.display='none'; };
+      im.src = 'tv.png?cb=' + Date.now();
+    })();
+    </script>
   </div>
 </section>
 
