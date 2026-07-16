@@ -139,6 +139,14 @@ def main():
         rev = None
     html = build_report(res, meta, meta["session"], flow=flow, vp=vp,
                         bt=bt_stats, ctx=ctx, rev=rev)
+
+    # --- Onda 8: gráfico PNG (sessão anterior + mapa do dia) ---
+    try:
+        import chart_png
+        tk = (vp or {}).get("ticker") or f"WIN{current_contract(ref)}"
+        chart_png.render(OUT, WORK, res, meta, vp, btm, tk)
+    except Exception as e:
+        print(f"[warn] tv.png indisponível: {e}", file=sys.stderr)
     open(os.path.join(OUT, "report.html"), "w", encoding="utf-8").write(html)
     json.dump(levels, open(os.path.join(OUT, "levels.json"), "w"),
               indent=2, ensure_ascii=False)
