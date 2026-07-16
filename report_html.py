@@ -152,7 +152,7 @@ def _ctx_sections(ctx):
             rows = "".join(
                 f"<tr><td class='tag'>{r['name']}</td>"
                 f"<td class='num'>{_fmt(r['last'], 2 if r['last'] < 1000 else 0)}</td>"
-                f"<td class='num' style='color:var(--{'pos' if r['var'] >= 0 else 'neg'})'>"
+                f"<td class='num' style='color:var(--{'accent' if r['var'] >= 0 else 'neg'})'>"
                 f"{'+' if r['var'] >= 0 else '−'}{_fmt(abs(r['var']), 2)}%</td></tr>"
                 for r in g["rows"])
             cards += (f"<div class='card'><h2>{g['label']}</h2>"
@@ -243,10 +243,13 @@ def build_report(res, meta, session_str, flow=None, vp=None, bt=None,
 
     p_up = prob.get("p_up_expiry")
     sig = prob.get("sigma_day_frac") or 0
+    p_dn = (1 - p_up) if p_up is not None else None
+    p_cls = ("up" if (p_up or 0) > 0.6
+             else "neg" if (p_dn or 0) > 0.6 else "neon")
     tiles = f"""
-      <div class="tile"><div class="tl">Probabilidade de alta*</div>
-        <div class="tv neon">{(p_up*100):.0f}%</div>
-        <div class="ts">chance de fechar acima do preço atual até {_br_date(prob.get('expiry','-'))}</div></div>
+      <div class="tile"><div class="tl">Probabilidade alta × baixa*</div>
+        <div class="tv {p_cls}">&uarr;{(p_up*100):.0f}% <span class="unit">×</span> &darr;{((p_dn or 0)*100):.0f}%</div>
+        <div class="ts">chance de fechar acima × abaixo do preço atual até {_br_date(prob.get('expiry','-'))}</div></div>
       <div class="tile"><div class="tl">Movimento esperado hoje</div>
         <div class="tv neon">±{_fmt(spot_fut*sig)} <span class="unit">pts</span></div>
         <div class="ts">o "tamanho do dia" que as opções precificam (1σ)</div></div>
@@ -635,6 +638,7 @@ h2::before{content:"▸ ";color:var(--accent)}
 .tv{font-size:32px;font-weight:700;margin:6px 0 4px;line-height:1.1}
 .tv.neon{color:var(--cyan);text-shadow:0 0 22px rgba(55,224,255,.45)}
 .tv.pos{color:var(--pos);text-shadow:0 0 22px rgba(51,177,255,.4)}
+.tv.up{color:var(--accent);text-shadow:0 0 22px rgba(0,229,160,.45)}
 .tv.neg{color:var(--neg);text-shadow:0 0 22px rgba(255,93,93,.4)}
 .unit{font-size:15px;color:var(--ink2);font-weight:400}
 .ts{font-size:11.5px;color:var(--ink2)}
