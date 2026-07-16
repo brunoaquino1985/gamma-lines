@@ -13,8 +13,23 @@ def render(out_dir, work_dir, res, meta, vp, btm, ticker):
 
     tz = os.path.join(work_dir, f"ticks_{meta['ref']}.zip")
     if not os.path.exists(tz):
-        print("[tv.png] sem tick zip — pulando", file=sys.stderr)
-        return False
+        # baixa os ticks da sessão anterior (mesma fonte do volume profile)
+        import urllib.request
+        url = f"https://drp.b3.com.br/rapinegocios/tickercsv/{meta['ref']}?type=1"
+        req = urllib.request.Request(
+            url, headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) gamma-lines/1.0"})
+        try:
+            with urllib.request.urlopen(req, timeout=900) as r, open(tz, "wb") as f:
+                while True:
+                    chunk = r.read(1 << 20)
+                    if not chunk:
+                        break
+                    f.write(chunk)
+        except Exception as e:
+            if os.path.exists(tz):
+                os.remove(tz)
+            print(f"[tv.png] download de ticks falhou: {e}", file=sys.stderr)
+            return False
     bars = btm.minute_bars(tz, ticker)
     if len(bars) < 30:
         print("[tv.png] poucas barras — pulando", file=sys.stderr)
