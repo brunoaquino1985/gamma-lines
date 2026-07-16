@@ -979,7 +979,19 @@ cautela com compra no Ibovespa; petróleo e minério puxam Petrobras e Vale, os 
       var im = document.getElementById('tvimg2');
       im.onload = function(){ im.style.display='block';
         var n = document.getElementById('tvnote'); if (n) n.style.display='none'; };
-      im.src = 'tv.png?cb=' + Date.now();
+      function fb(){ im.src = 'tv.png?cb=' + Date.now(); }
+      fetch('https://cbazccsoynzextabjnxq.supabase.co/rest/v1/gamma_files?name=eq.tv_real.png&select=b64,updated_at',
+            {headers:{apikey:'sb_publishable_JXjiEY5de-UMyFPMQIrO_A_-oOuJN5H'}})
+        .then(function(r){ return r.json(); })
+        .then(function(j){
+          if (j && j[0] && j[0].b64 && j[0].b64.length > 1000) {
+            im.src = 'data:image/png;base64,' + j[0].b64;
+            var d = new Date(j[0].updated_at);
+            im.insertAdjacentHTML('afterend', '<div class="rd" style="margin-top:6px;font-size:.78rem;opacity:.75">Print real do TradingView &middot; capturado em ' +
+              d.toLocaleString('pt-BR', {timeZone:'America/Sao_Paulo', day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'}) + ' (hor&aacute;rio de Bras&iacute;lia)</div>');
+          } else { fb(); }
+        })
+        .catch(fb);
     })();
     </script>
   </div>

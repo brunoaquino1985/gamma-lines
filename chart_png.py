@@ -35,10 +35,24 @@ def render(out_dir, work_dir, res, meta, vp, btm, ticker):
         print("[tv.png] poucas barras — pulando", file=sys.stderr)
         return False
 
-    xs = list(range(len(bars)))
-    closes = [b[3] for b in bars]
-    labs = [b[0] for b in bars]
-    lo_px, hi_px = min(b[2] for b in bars), max(b[1] for b in bars)
+    # agrega em candles de 15 minutos (mesmo visual do TradingView)
+    cds = []
+    prev_close = None
+    for hhmm, hi, lo, cl, _v in bars:
+        slot = (hhmm // 100) * 100 + (hhmm % 100) // 15 * 15
+        if not cds or cds[-1][0] != slot:
+            cds.append([slot, prev_close if prev_close is not None else cl,
+                        hi, lo, cl])
+        else:
+            c = cds[-1]
+            c[2] = max(c[2], hi)
+            c[3] = min(c[3], lo)
+            c[4] = cl
+        prev_close = cl
+
+    xs = list(range(len(cds)))
+    labs = [c[0] for c in cds]
+    lo_px, hi_px = min(c[3] for c in cds), max(c[2] for c in cds)
     pad = (hi_px - lo_px) * 0.35 + 200
     y0, y1 = lo_px - pad, hi_px + pad
 
@@ -71,11 +85,16 @@ def render(out_dir, work_dir, res, meta, vp, btm, ticker):
         hl(d1["vah"], "#c0c0c0", "--", f"VAH {fmt(d1['vah'])}", 0.9)
         hl(d1["val"], "#c0c0c0", "--", f"VAL {fmt(d1['val'])}", 0.9)
 
-    ax.plot(xs, closes, color="#37e0ff", lw=1.3, zorder=5)
-    ax.fill_between(xs, closes, y0, color="#37e0ff", alpha=0.05, zorder=4)
+    up, dn = "#089981", "#f23645"
+    for i, (_t, o, h, l, c) in enumerate(cds):
+        col = up if c >= o else dn
+        ax.plot([i, i], [l, h], color=col, lw=0.9, zorder=5)
+        ax.add_patch(plt.Rectangle((i - 0.32, min(o, c)), 0.64,
+                     max(abs(c - o), (hi_px - lo_px) * 0.0015),
+                     facecolor=col, edgecolor=col, lw=0.5, zorder=6))
 
     ax.set_ylim(y0, y1)
-    ax.set_xlim(0, len(xs) - 1)
+    ax.set_xlim(-1, len(xs))
     step = max(1, len(xs) // 9)
     ax.set_xticks(xs[::step])
     ax.set_xticklabels([f"{l // 100:02d}:{l % 100:02d}" for l in labs[::step]],
@@ -84,7 +103,7 @@ def render(out_dir, work_dir, res, meta, vp, btm, ticker):
     for s in ax.spines.values():
         s.set_color("#1b2433")
     ax.grid(color="#141d2c", lw=0.5)
-    ax.set_title(f"{ticker} 1 min — sessão de {meta['ref']}  ·  GAMMA LINES para {meta['session']}",
+    ax.set_title(f"{ticker} 15 min — sessão de {meta['ref']}  ·  GAMMA LINES para {meta['session']}",
                  color="#dbe7f4", fontsize=11, pad=10)
     fig.tight_layout()
     path = os.path.join(out_dir, "tv.png")
