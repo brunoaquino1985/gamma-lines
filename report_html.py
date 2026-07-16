@@ -680,6 +680,7 @@ td.tag{color:var(--ink);white-space:nowrap}
   <div class="logo"><h1>Gamma Lines</h1><div class="d">sessão de __SESSION__</div></div>
   <nav class="nav" id="nav">
     <div class="sec">Painel</div>
+    <a data-v="aovivo"><span class="ic" id="lv-dot" style="color:#555">&#9679;</span> Ao Vivo</a>
     <a data-v="overview" class="on"><span class="ic">&#9673;</span> Visão geral</a>
     <a data-v="aula"><span class="ic">&#127891;</span> A aula do dia</a>
     <a data-v="niveis"><span class="ic">&#8801;</span> Níveis do dia</a>
@@ -702,6 +703,48 @@ td.tag{color:var(--ink);white-space:nowrap}
 </aside>
 
 <main class="main">
+
+<section class="view" id="v-aovivo">
+  <div class="pagehead"><h3>Ao Vivo</h3><span class="crumb" id="lv-status">carregando…</span></div>
+  <style>
+  .lv-grid{display:grid;grid-template-columns:340px 1fr;gap:14px}
+  @media(max-width:860px){.lv-grid{grid-template-columns:1fr}}
+  #lv-price{font-size:42px;font-weight:800;color:var(--accent);line-height:1.05;text-shadow:0 0 18px rgba(55,224,255,.3)}
+  #lv-delta{font-size:16px;font-weight:700;margin-top:2px}
+  #lv-delta.pos{color:var(--pos)}#lv-delta.neg{color:var(--neg)}
+  #lv-nearest{margin-top:8px;font-size:13px;color:var(--muted)}#lv-nearest b{color:var(--ink)}
+  .lv-lvl{display:flex;align-items:center;gap:10px;padding:4px 8px;border-radius:8px;font-size:12.5px}
+  .lv-lvl .p{font-variant-numeric:tabular-nums;font-weight:700;min-width:72px;text-align:right}
+  .lv-lvl .tag{font-size:10.5px;letter-spacing:.5px;padding:1px 8px;border-radius:20px;border:1px solid}
+  .lv-lvl .d{margin-left:auto;font-size:11px;color:var(--muted)}
+  .lv-lvl.spot{background:rgba(55,224,255,.10);border:1px solid rgba(55,224,255,.35);margin:3px 0}
+  .lv-lvl.spot .p{color:var(--accent)}
+  .lv-w{color:#32cd32;border-color:rgba(50,205,50,.4)}.lv-f{color:var(--gold);border-color:rgba(255,215,0,.4)}
+  .lv-v{color:#ff00ff;border-color:rgba(255,0,255,.4)}.lv-s{color:#c0c0c0;border-color:rgba(192,192,192,.35)}
+  .lv-b{color:var(--accent);border-color:rgba(55,224,255,.35)}
+  .lv-feed{display:flex;flex-direction:column;gap:10px;max-height:66vh;overflow-y:auto}
+  .lv-msg{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-left:3px solid var(--accent);border-radius:10px;padding:9px 12px;font-size:13.5px}
+  .lv-msg .h{display:flex;gap:8px;align-items:baseline;margin-bottom:2px}
+  .lv-msg .t{color:var(--accent);font-weight:700;font-size:12.5px}
+  .lv-msg .k{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+  .lv-msg .px{margin-left:auto;font-size:12px;color:var(--muted)}
+  .lv-msg.abertura{border-left-color:var(--gold)}.lv-msg.evento{border-left-color:var(--neg)}
+  .lv-msg.fim{border-left-color:var(--muted)}
+  .lv-msg .note{white-space:pre-wrap}
+  </style>
+  <div class="prof">Leituras geradas a cada ~5 minutos durante o pregão (9h–12h BRT), cruzando o
+preço do WIN em tempo real com o mapa do dia e as estatísticas auditadas. Fora desse horário a
+página mostra o histórico da última sessão.</div>
+  <div class="lv-grid">
+    <div>
+      <div class="card" style="margin-bottom:14px"><h2>Última leitura</h2>
+        <div id="lv-price">—</div><div id="lv-delta"></div><div id="lv-nearest"></div></div>
+      <div class="card"><h2>Régua do dia</h2><div id="lv-ruler"></div></div>
+    </div>
+    <div class="card"><h2>Leituras do pregão</h2>
+      <div class="lv-feed" id="lv-feed"><div style="color:var(--muted);padding:16px;text-align:center">carregando…</div></div></div>
+  </div>
+</section>
 
 <section class="view on" id="v-overview">
   <div class="pagehead"><h3>Visão geral</h3><span class="crumb">o essencial antes do pregão</span></div>
@@ -825,6 +868,83 @@ nav.addEventListener('click', e => {
   sidebar.classList.remove('open');
   window.scrollTo({top:0});
 });
+// abre view pelo hash (#aovivo etc.)
+if (location.hash) {
+  const a = nav.querySelector(`a[data-v="${location.hash.slice(1)}"]`);
+  if (a) a.click();
+}
+
+// ---- Ao Vivo (Supabase)
+const LV_URL = "https://cbazccsoynzextabjnxq.supabase.co";
+const LV_KEY = "sb_publishable_JXjiEY5de-UMyFPMQIrO_A_-oOuJN5H";
+let lvSpot = null;
+function lvRows(){
+  const out = [{p:D.maxg, tag:"MAX G", cls:"lv-b"}];
+  for (const w of D.walls) out.push({p:w.fut, tag:"WALL " + "★".repeat(w.width), cls:"lv-w"});
+  if (D.prob && D.prob.band_up){ out.push({p:D.prob.band_up, tag:"+1σ", cls:"lv-b"});
+    out.push({p:D.prob.band_down, tag:"−1σ", cls:"lv-b"}); }
+  if (D.vp && D.vp.d1){ const d=D.vp.d1; out.push({p:d.poc, tag:"POC", cls:"lv-v"});
+    out.push({p:d.vah, tag:"VAH", cls:"lv-s"}); out.push({p:d.val, tag:"VAL", cls:"lv-s"}); }
+  out.push({p:D.flip, tag:"FLIP", cls:"lv-f"}); out.push({p:D.ming, tag:"MIN G", cls:"lv-b"});
+  return out.filter(x=>x.p).sort((a,b)=>b.p-a.p);
+}
+function lvRuler(){
+  const el = document.getElementById('lv-ruler'); if (!el) return;
+  el.innerHTML = ''; let done = false;
+  const spotRow = () => { const d = document.createElement('div'); d.className='lv-lvl spot';
+    d.innerHTML = `<span class="p">${fmt(lvSpot)}</span><span class="tag lv-b">WIN AGORA</span>`; return d; };
+  for (const r of lvRows()){
+    if (lvSpot && !done && lvSpot >= r.p){ el.appendChild(spotRow()); done = true; }
+    const div = document.createElement('div'); div.className = 'lv-lvl';
+    const dist = lvSpot ? Math.round(Math.abs(lvSpot - r.p)) : null;
+    div.innerHTML = `<span class="p">${fmt(r.p)}</span><span class="tag ${r.cls}">${r.tag}</span>` +
+      (dist !== null ? `<span class="d">${fmt(dist)} pts</span>` : '');
+    el.appendChild(div);
+  }
+  if (lvSpot && !done) el.appendChild(spotRow());
+}
+async function lvLoad(){
+  try{
+    const today = new Date(new Date().toLocaleString('en-US',{timeZone:'America/Sao_Paulo'})).toISOString().slice(0,10);
+    const u = `${LV_URL}/rest/v1/gamma_live_readings?select=*&kind=neq.teste&order=ts.desc&limit=120&session=eq.${today}`;
+    let data = await (await fetch(u, {headers:{apikey:LV_KEY, Authorization:'Bearer '+LV_KEY}})).json();
+    if (!Array.isArray(data)) data = [];
+    if (!data.length){
+      const u2 = `${LV_URL}/rest/v1/gamma_live_readings?select=*&kind=neq.teste&order=ts.desc&limit=60`;
+      data = await (await fetch(u2, {headers:{apikey:LV_KEY, Authorization:'Bearer '+LV_KEY}})).json();
+      if (!Array.isArray(data)) data = [];
+    }
+    const feed = document.getElementById('lv-feed'), st = document.getElementById('lv-status'),
+          dot = document.getElementById('lv-dot');
+    if (!data.length){ feed.innerHTML = '<div style="color:var(--muted);padding:16px;text-align:center">Nenhuma leitura ainda — elas começam ~9h em dia de pregão.</div>';
+      st.textContent = 'sem leituras'; lvRuler(); return; }
+    const last = data[0];
+    if (last.price){
+      lvSpot = Number(last.price);
+      document.getElementById('lv-price').textContent = fmt(lvSpot);
+      const d = Number(last.delta||0), de = document.getElementById('lv-delta');
+      de.textContent = (d>=0?'+':'−') + fmt(Math.abs(d)) + ' pts vs fechamento';
+      de.className = d>=0?'pos':'neg';
+      if (last.nearest) document.getElementById('lv-nearest').innerHTML =
+        `nível mais próximo: <b>${last.nearest}</b>` + (last.distance!=null?` a <b>${fmt(Math.round(last.distance))} pts</b>`:'');
+    }
+    feed.innerHTML = '';
+    for (const m of data){
+      const t = new Date(m.ts).toLocaleTimeString('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit'});
+      const div = document.createElement('div'); div.className = 'lv-msg ' + (m.kind||'');
+      div.innerHTML = `<div class="h"><span class="t">${t}</span><span class="k">${m.kind||''}</span>` +
+        (m.price?`<span class="px">${fmt(m.price)}</span>`:'') + `</div><div class="note"></div>`;
+      div.querySelector('.note').textContent = m.note || '';
+      feed.appendChild(div);
+    }
+    const mins = (Date.now() - new Date(last.ts).getTime())/60000,
+          tl = new Date(last.ts).toLocaleTimeString('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit'});
+    st.textContent = (mins<=7?'AO VIVO · ':'') + 'última leitura ' + tl;
+    dot.style.color = mins<=7 ? 'var(--pos)' : mins<=20 ? 'var(--gold)' : '#555';
+    lvRuler();
+  }catch(e){ console.log('aovivo', e); }
+}
+lvLoad(); setInterval(lvLoad, 30000);
 
 const tip = document.getElementById('tip');
 function showTip(ev,html){tip.innerHTML=html;tip.style.display='block';
