@@ -40,7 +40,7 @@ jobs:
           python-version: "3.12"
 
       - name: Instala dependências
-        run: pip install requests
+        run: pip install requests matplotlib
 
       - name: Verifica se já gerou hoje
         id: check
