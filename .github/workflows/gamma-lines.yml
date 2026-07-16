@@ -16,6 +16,11 @@ on:
         description: "Backfill do backtest (~20 pregoes passados)"
         type: boolean
         default: false
+      tv_url:
+        description: "URL do snapshot do TradingView para publicar como output/tv.png"
+        type: string
+        default: ""
+
 
 permissions:
   contents: write
@@ -63,8 +68,14 @@ jobs:
         if: inputs.backfill == true
         run: python backfill.py 20
 
+      - name: Publica print do TradingView
+        if: inputs.tv_url != ''
+        run: |
+          curl -sL --max-time 60 "${{ inputs.tv_url }}" -o output/tv.png
+          file output/tv.png | grep -qi png || (echo "download invalido" && rm -f output/tv.png)
+
       - name: Commita o resultado
-        if: steps.check.outputs.done == 'false' || inputs.backfill == true
+        if: steps.check.outputs.done == 'false' || inputs.backfill == true || inputs.tv_url != ''
         run: |
           git config user.name "gamma-bot"
           git config user.email "actions@github.com"
