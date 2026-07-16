@@ -197,7 +197,7 @@ def _ctx_sections(ctx):
 
 
 def build_report(res, meta, session_str, flow=None, vp=None, bt=None,
-                 ctx=None):
+                 ctx=None, rev=None):
     prob = res.get("prob") or {}
     spot_fut = res["ibov_close"] * res["factor"]
     flip_fut = res["flip"][1]
@@ -322,6 +322,133 @@ de charm concentra-se na primeira hora e cresce muito na semana do vencimento.
 Leitura prática: quando vanna e charm apontam para o mesmo lado do seu trade,
 o "vento de fundo" dos hedges está a seu favor; contra, exija mais confirmação.</div>
 </div>"""
+
+    # --- Onda 7: plano de voo, revisão da véspera e checklist ----------------
+    _p = lambda x: f"{x*100:.0f}%" if x is not None else "—"
+    btw = (bt or {}).get("walls") or {}
+    _wr = lambda w: _p(btw.get(str(w), {}).get("taxa_rejeicao")) if btw else "—"
+    stars = lambda w: "★" * w
+    plano_html = ""
+    try:
+        acima_w = [w for w in walls if w["fut"] > spot_fut]
+        abaixo_w = [w for w in walls if w["fut"] <= spot_fut]
+        vp1 = (vp or {}).get("d1") or {}
+        gaps_bt = (bt or {}).get("gaps") or {}
+        g300 = gaps_bt.get("ate_300", {}).get("taxa_fechou")
+        hourly = (bt or {}).get("hourly") or {}
+        bh = max((h for h in hourly if (hourly[h].get("toques") or 0) >= 5),
+                 key=lambda h: hourly[h].get("taxa_rejeicao") or 0, default=None)
+        r1 = acima_w[0] if acima_w else None
+        s1 = abaixo_w[-1] if abaixo_w else None
+        sf = max(abaixo_w, key=lambda w: w["width"]) if abaixo_w else None
+        itens = []
+        if vp1 and r1:
+            itens.append(f"<b>Lado comprador:</b> aceitação acima do POC {_fmt(vp1['poc'])} "
+                f"abre caminho para o VAH {_fmt(vp1['vah'])} e depois a WALL {stars(r1['width'])} "
+                f"{_fmt(r1['fut'])} — rejeição histórica de {_wr(r1['width'])} no 1º toque: "
+                f"chegando lá, observe a reação antes de comprar rompimento.")
+        if vp1 and s1:
+            extra = (f" O suporte mais forte do dia é a WALL {stars(sf['width'])} {_fmt(sf['fut'])}."
+                     if sf and sf is not s1 else "")
+            itens.append(f"<b>Lado vendedor:</b> perda do VAL {_fmt(vp1['val'])} coloca o teste "
+                f"da WALL {stars(s1['width'])} {_fmt(s1['fut'])} ({_wr(s1['width'])} de rejeição "
+                f"histórica).{extra}")
+        if g300 is not None:
+            itens.append(f"<b>Gap da abertura:</b> gap de até 300 pts fechou {_p(g300)} das vezes "
+                f"nos {bt.get('n_days')} pregões auditados — gap pequeno é ímã: o retorno ao "
+                f"fechamento da véspera é o trade estatístico da abertura.")
+        if bh:
+            itens.append(f"<b>Relógio:</b> a melhor janela histórica de rejeição é às {bh}h "
+                f"({_p(hourly[bh].get('taxa_rejeicao'))}); horário de almoço tem volume fraco e "
+                f"sinal falso. Regime {regime.lower()} — {regime_desc}. O flip {_fmt(flip_fut)} "
+                f"é o botão do pânico: perdeu, vira dia de tendência.")
+        if itens:
+            lis = "".join(f"<div class='rat'><div class='rd'>{i}</div></div>" for i in itens)
+            plano_html = (f"<div class='card' style='border-color:rgba(0,229,160,.35)'>"
+                          f"<h2>✈ Plano de voo do dia</h2>{lis}</div>")
+    except Exception:
+        plano_html = ""
+
+    rev_html = ""
+    try:
+        if rev and rev.get("walls") is not None:
+            wl = rev.get("walls") or []
+            wrows = ""
+            for w in wl:
+                h = w.get("hora")
+                hh = f"{h // 100}h{h % 100:02d}" if isinstance(h, int) else "—"
+                ic = "✅ rejeitou" if w.get("outcome") == "rejeitou" else \
+                     "❌ rompeu" if w.get("outcome") == "rompeu" else w.get("outcome", "—")
+                wrows += (f"<tr><td class='num'>{_fmt(w.get('level'))}</td>"
+                          f"<td class='tag'>WALL {stars(w.get('width', 1))}</td>"
+                          f"<td>{ic}</td><td class='num'>{hh}</td>"
+                          f"<td class='num'>{_fmt(w.get('mfe') or 0)} pts</td></tr>")
+            tbl = (f"<table><tr><th>nível</th><th>tipo</th><th>resultado</th>"
+                   f"<th>1º toque</th><th>excursão máx.</th></tr>{wrows}</table>"
+                   if wrows else "<div class='rd'>nenhuma wall foi tocada na sessão.</div>")
+            fl_r = rev.get("flip") or {}
+            va_r = rev.get("va") or {}
+            gap_r = rev.get("gap") or {}
+            obs = []
+            obs.append("bandas ±1σ seguraram o dia inteiro" if (rev.get("bands") or {}).get("inside")
+                       else "o preço saiu das bandas ±1σ — dia maior que o precificado")
+            obs.append("flip preservado (regime não virou)" if not fl_r.get("crossed_down")
+                       else f"flip PERDIDO — queda extra de {_fmt(fl_r.get('extra_drop') or 0)} pts")
+            if (rev.get("poc") or {}).get("touched"): obs.append("POC funcionou como ímã (foi tocado)")
+            if gap_r:
+                obs.append(f"gap de {_fmt(gap_r.get('pts') or 0)} pts "
+                           + ("fechou" if gap_r.get("fechou") else "NÃO fechou") + " no dia")
+            if va_r:
+                obs.append("abriu dentro da área de valor" if va_r.get("open_inside")
+                           else "abriu FORA da área de valor (viés de tendência)")
+            rev_html = (f"<div class='card'><h2>🔍 Revisão da véspera — o mapa contra o mercado real "
+                        f"({_br_date(rev.get('session', ''))})</h2>"
+                        f"<div class='rd' style='margin-bottom:10px'>Todo dia o mapa anterior é auditado "
+                        f"contra o que o pregão realmente fez. É assim que se aprende a confiar no que "
+                        f"funciona e a desconfiar do que não funciona — confiança calibrada, não fé.</div>"
+                        f"{tbl}<div class='rd' style='margin-top:10px'>• " + "<br>• ".join(obs) + "</div></div>")
+    except Exception:
+        rev_html = ""
+
+    check_html = ""
+    try:
+        n3 = sum(1 for e in (ctx or {}).get("calendar") or [] if e.get("impacto") == 3)
+        fl5 = (flow or {}).get("estrangeiro_5d_mi")
+        vp1 = (vp or {}).get("d1") or {}
+        hourly = (bt or {}).get("hourly") or {}
+        bh = max((h for h in hourly if (hourly[h].get("toques") or 0) >= 5),
+                 key=lambda h: hourly[h].get("taxa_rejeicao") or 0, default=None)
+        g300 = ((bt or {}).get("gaps") or {}).get("ate_300", {}).get("taxa_fechou")
+        cks = [
+            ("Qual é o regime do dia?",
+             f"{regime} — " + ("paredes tendem a segurar: opere reversão nos níveis."
+                               if pos else "movimentos aceleram: reduza a mão e alargue o stop.")),
+            ("O fluxo gringo está a favor?",
+             (f"{'COMPRADOR' if fl5 >= 0 else 'VENDEDOR'} nas últimas 5 sessões "
+              f"({'+' if fl5 >= 0 else '−'}R$ {_fmt(abs(fl5))} mi) — rejeição de wall rende mais "
+              f"com fluxo a favor do trade.") if fl5 is not None else "dado indisponível hoje."),
+            ("Tem evento ★★★ na agenda?",
+             (f"SIM — {n3} evento(s) de alto impacto hoje: evite carregar posição no horário deles."
+              if n3 else "não — agenda sem evento de alto impacto.")),
+            ("Como está o gap de abertura?",
+             f"meça contra o fechamento da véspera na abertura" +
+             (f" — até 300 pts fecha {_p(g300)} das vezes (ímã)." if g300 is not None else ".")),
+            ("Estou na janela certa?",
+             (f"os primeiros toques se concentram entre 9h e 10h30; a melhor rejeição histórica é "
+              f"às {bh}h ({_p(hourly[bh].get('taxa_rejeicao'))}). Almoço = sinal falso."
+              if bh else "9h–10h30 concentra os toques; almoço = sinal falso.")),
+        ]
+        rows_ck = "".join(
+            f"<label style='display:flex;gap:10px;align-items:flex-start;padding:8px 10px;"
+            f"border:1px solid rgba(255,255,255,.06);border-radius:10px;margin:6px 0;cursor:pointer'>"
+            f"<input type='checkbox' style='margin-top:4px;accent-color:#00e5a0'>"
+            f"<span><b>{q}</b><br><span class='rd'>{a}</span></span></label>"
+            for q, a in cks)
+        check_html = (f"<div class='card'><h2>☑ Checklist pré-pregão</h2>"
+                      f"<div class='rd' style='margin-bottom:6px'>Cinco conferências antes do primeiro "
+                      f"trade — o painel responde, você confirma que leu:</div>{rows_ck}</div>")
+    except Exception:
+        check_html = ""
 
     rows = []
     for w in walls:
@@ -546,6 +673,9 @@ respeitada; hora de volume fraco (almoço) costuma dar sinal falso.</div>
             .replace("__RATIONALE__", rat_html)
             .replace("__BTCARD__", bt_html)
             .replace("__GREEKCARD__", greek_card)
+            .replace("__PLANO__", plano_html)
+            .replace("__REVISAO__", rev_html)
+            .replace("__CHECKLIST__", check_html)
             .replace("__GLOSSARY__", gloss_html)
             .replace("__BANNER__", banner)
             .replace("__RESUMO__", resumo)
@@ -639,6 +769,7 @@ h2::before{content:"▸ ";color:var(--accent)}
 .tv.neon{color:var(--cyan);text-shadow:0 0 22px rgba(55,224,255,.45)}
 .tv.pos{color:var(--pos);text-shadow:0 0 22px rgba(51,177,255,.4)}
 .tv.up{color:var(--accent);text-shadow:0 0 22px rgba(0,229,160,.45)}
+.gl{border-bottom:1px dotted rgba(55,224,255,.55);cursor:help}
 .tv.neg{color:var(--neg);text-shadow:0 0 22px rgba(255,93,93,.4)}
 .unit{font-size:15px;color:var(--ink2);font-weight:400}
 .ts{font-size:11.5px;color:var(--ink2)}
@@ -759,8 +890,11 @@ página mostra o histórico da última sessão.</div>
 calmo ou nervoso; as <b>bandas</b> mostram o tamanho esperado do dia; o <b>POC</b> mostra onde o mercado
 negociou ontem; e o <b>fluxo</b> mostra quem está colocando dinheiro. Nenhuma linha é sinal de entrada
 sozinha — elas marcam os pontos de decisão onde você deve OBSERVAR a reação do preço antes de agir.</div>
+  __PLANO__
   <div class="tiles">__TILES__</div>
   <div class="card"><h2>Resumo do professor</h2><div class="rd">__RESUMO__</div></div>
+  __CHECKLIST__
+  __REVISAO__
 </section>
 
 <section class="view" id="v-aula">
@@ -954,6 +1088,59 @@ const tip = document.getElementById('tip');
 function showTip(ev,html){tip.innerHTML=html;tip.style.display='block';
   tip.style.left=(ev.clientX+12)+'px';tip.style.top=(ev.clientY-10)+'px';}
 function hideTip(){tip.style.display='none';}
+
+// ---- glossário no lugar (tooltips nos termos técnicos)
+const GLOSS = {
+  "gamma": "Sensibilidade do delta das opções. Positivo = dealers seguram o preço; negativo = amplificam.",
+  "wall": "Strike com grande concentração de proteção dos bancos — funciona como parede de suporte/resistência.",
+  "walls": "Strikes com grande concentração de proteção dos bancos — paredes de suporte/resistência.",
+  "flip": "Nível onde o gamma dos dealers troca de sinal. Acima = dia calmo (range); abaixo = dia nervoso (tendência).",
+  "POC": "Point of Control — preço onde mais volume foi negociado. Age como ímã.",
+  "VAH": "Topo da área de valor — região onde 70% do volume girou.",
+  "VAL": "Fundo da área de valor — região onde 70% do volume girou.",
+  "vanna": "Quanto o hedge dos dealers muda quando a volatilidade muda — vol caindo costuma gerar compra lenta.",
+  "charm": "Quanto o hedge dos dealers muda só pela passagem do tempo — forte na semana do vencimento.",
+  "dealers": "Bancos e market makers que vendem opções e precisam se proteger comprando/vendendo futuro.",
+  "gap": "Distância entre a abertura de hoje e o fechamento de ontem. Gap pequeno tende a fechar (ímã).",
+  "strike": "Preço de exercício de uma opção.",
+  "vencimento": "Data em que as opções expiram — 3ª sexta do mês. Efeitos de hedge se intensificam nessa semana.",
+  "GEX": "Gamma Exposure — exposição total dos dealers em R$ por 1% de movimento do índice."
+};
+(function(){
+  const keys = Object.keys(GLOSS).sort((a,b)=>b.length-a.length);
+  const rx = new RegExp('\\b(' + keys.join('|') + ')\\b', 'gi');
+  const roots = document.querySelectorAll('.prof,.rd,.ts');
+  for (const root of roots){
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    const nodes = [];
+    let n; while ((n = walker.nextNode())) {
+      if (n.parentElement.closest('.gl,a,script,style')) continue;
+      rx.lastIndex = 0; if (rx.test(n.nodeValue)) nodes.push(n);
+    }
+    for (const nd of nodes){
+      const s = nd.nodeValue, frag = document.createDocumentFragment();
+      let last = 0, m; rx.lastIndex = 0;
+      while ((m = rx.exec(s))){
+        frag.appendChild(document.createTextNode(s.slice(last, m.index)));
+        const sp = document.createElement('span'); sp.className = 'gl'; sp.textContent = m[0];
+        sp.dataset.g = keys.find(k => k.toLowerCase() === m[0].toLowerCase()) || m[0];
+        frag.appendChild(sp); last = m.index + m[0].length;
+      }
+      frag.appendChild(document.createTextNode(s.slice(last)));
+      nd.parentNode.replaceChild(frag, nd);
+    }
+  }
+  document.addEventListener('mouseover', e => {
+    const g = e.target.closest('.gl');
+    if (g) showTip(e, '<b style="color:var(--cyan)">' + g.dataset.g + '</b><br>' + GLOSS[g.dataset.g]);
+  });
+  document.addEventListener('mouseout', e => { if (e.target.closest('.gl')) hideTip(); });
+  document.addEventListener('click', e => {
+    const g = e.target.closest('.gl');
+    if (g) showTip(e, '<b style="color:var(--cyan)">' + g.dataset.g + '</b><br>' + GLOSS[g.dataset.g]);
+    else if (!e.target.closest('#tip')) hideTip();
+  });
+})();
 const NS='http://www.w3.org/2000/svg';
 function el(p,t,a){const e=document.createElementNS(NS,t);
   for(const k in a)e.setAttribute(k,a[k]);p.appendChild(e);return e;}

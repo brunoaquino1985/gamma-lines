@@ -130,8 +130,15 @@ def main():
                             comp=vp.get("comp"))
     if bt_stats:
         levels["bt"] = bt_stats
+    rev = None
+    try:
+        rp = os.path.join(OUT, "backtest", f"{meta['ref']}.json")
+        if os.path.exists(rp):
+            rev = json.load(open(rp))
+    except Exception:
+        rev = None
     html = build_report(res, meta, meta["session"], flow=flow, vp=vp,
-                        bt=bt_stats, ctx=ctx)
+                        bt=bt_stats, ctx=ctx, rev=rev)
     open(os.path.join(OUT, "report.html"), "w", encoding="utf-8").write(html)
     json.dump(levels, open(os.path.join(OUT, "levels.json"), "w"),
               indent=2, ensure_ascii=False)
