@@ -34,8 +34,18 @@ def fmt(x, dec=3):
     return f"{x:.{dec}f}"
 
 
+def fmt_pts(x):
+    """177839.785 -> '177.840' (rótulo em pontos, milhar com ponto)."""
+    return f"{x:,.0f}".replace(",", ".")
+
+
 def generate_ntsl(res, session_date):
-    """res: saída de run_model (níveis já em pontos do futuro)."""
+    """res: saída de run_model (níveis já em pontos do futuro).
+
+    Formato com rótulos nativos (HorizontalLineCustom) aprovado em 16/07/2026.
+    Obs.: HorizontalLineCustom conflita com Plot() no mesmo indicador — não
+    misturar os dois formatos.
+    """
     code = current_contract(session_date)
     walls = res["walls"]            # [(strike_idx, width, nível_fut)]
     mids = res["mids"]              # [(m_idx, nível_fut)]
@@ -43,75 +53,63 @@ def generate_ntsl(res, session_date):
     ming = res["min_gamma"][1]
     flip = res["flip"][1]
 
-    lines = []                      # (valor, cor, width, style)
+    lines = []                      # (valor, cor, width, style, label, fonte)
     for k, w, fut in walls:
-        lines.append((fut, "clWall", w, 0))
+        lines.append((fut, "clWall", w, 0, f"WALL {'*' * w} {fmt_pts(fut)}", 10))
     for m, fut in mids:
-        lines.append((fut, "clMidWall", 1, 0))
-    lines.append((maxg, "clMaxGamma", 3, 0))
-    lines.append((ming, "clMinGamma", 3, 0))
-    lines.append((flip, "clFlip", 2, 0))
+        lines.append((fut, "clMidWall", 1, 0, "mid", 8))
+    lines.append((maxg, "clMaxGamma", 3, 0, f"MAX GAMMA {fmt_pts(maxg)}", 10))
+    lines.append((ming, "clMinGamma", 3, 0, f"MIN GAMMA {fmt_pts(ming)}", 10))
+    lines.append((flip, "clFlip", 2, 0, f"GAMMA FLIP {fmt_pts(flip)}", 10))
     prob = res.get("prob")
     if prob:
         # bandas de 1 desvio-padrão do dia (IV ATM do vencimento curto)
-        lines.append((prob["band_up_fut"], "clBanda", 1, 2))
-        lines.append((prob["band_down_fut"], "clBanda", 1, 2))
+        lines.append((prob["band_up_fut"], "clBanda", 1, 2,
+                      f"BANDA +1DP {fmt_pts(prob['band_up_fut'])}", 10))
+        lines.append((prob["band_down_fut"], "clBanda", 1, 2,
+                      f"BANDA -1DP {fmt_pts(prob['band_down_fut'])}", 10))
     vp = res.get("vp")
     if vp and vp.get("d1"):
         # volume profile da sessão anterior (POC cheio, VAH/VAL tracejadas)
-        lines.append((vp["d1"]["poc"], "clPoc", 2, 0))
-        lines.append((vp["d1"]["vah"], "clVA", 1, 2))
-        lines.append((vp["d1"]["val"], "clVA", 1, 2))
-    n = len(lines)
+        lines.append((vp["d1"]["poc"], "clPoc", 2, 0,
+                      f"POC {fmt_pts(vp['d1']['poc'])}", 10))
+        lines.append((vp["d1"]["vah"], "clVA", 1, 2,
+                      f"VAH {fmt_pts(vp['d1']['vah'])}", 10))
+        lines.append((vp["d1"]["val"], "clVA", 1, 2,
+                      f"VAL {fmt_pts(vp['d1']['val'])}", 10))
+
+    sty = {0: "psSolid", 1: "psDot", 2: "psDash"}
 
     out = []
     out.append("var")
     out.append("  clWall : integer;")
     out.append("  clMidWall : integer;")
     out.append("  clFlip : integer;")
-    out.append("  clMaxGamma: integer;")
+    out.append("  clMaxGamma : integer;")
     out.append("  clMinGamma : integer;")
     out.append("  clBanda : integer;")
     out.append("  clPoc : integer;")
     out.append("  clVA : integer;")
-    for i in range(1, n + 1):
-        out.append(f"  line{i} : float;")
-        out.append(f"  line{i}Color : integer;")
-        out.append(f"  line{i}Width : integer;")
-        out.append(f"  line{i}Style : integer;")
     out.append("")
     out.append("BEGIN")
     out.append("  clWall := clLime;")
     out.append("  clMidWall := clGray;")
     out.append("  clFlip := clYellow;")
-    out.append("  clMaxGamma:= clGreen;")
+    out.append("  clMaxGamma := clGreen;")
     out.append("  clMinGamma := clRed;")
     out.append("  clBanda := clAqua;")
     out.append("  clPoc := clFuchsia;")
     out.append("  clVA := clSilver;")
-    for i, (val, color, w, st) in enumerate(lines, 1):
-        out.append(f"  line{i} := {fmt(val)};")
-        out.append(f"  line{i}Color := {color};")
-        out.append(f"  line{i}Width := {w};")
-        out.append(f"  line{i}Style := {st};")
     out.append("")
     d = session_date
     assets = [f'"WINFUT"', f'"INDFUT"', f'"WIN{code}"', f'"IND{code}"']
     cond = " or ".join(f"(GetAsset() = {a})" for a in assets)
-    out.append(f" if (((Date = ELDate({d.year}, {d.month:02d}, {d.day:02d})) "
-               f"and (Time >= 900)) and ({cond})) then")
-    out.append("  begin")
-    for i in range(1, n + 1):
-        out.append(f"    SetPlotColor({i}, line{i}Color);")
-        out.append(f"    SetPlotWidth({i}, line{i}Width);")
-        out.append(f"    SetPlotStyle({i}, line{i}Style);")
-        out.append(f"    Plot{i if i > 1 else ''}(line{i});")
-    out.append("  end;")
-    out.append("")
-    out.append("  if (Time > 1900) then")
+    out.append(f"  if ((Date = ELDate({d.year}, {d.month:02d}, {d.day:02d})) "
+               f"and ({cond})) then")
     out.append("    begin")
-    for i in range(1, n + 1):
-        out.append(f"      NoPlot({i});")
+    for val, color, w, st, label, fs in lines:
+        out.append(f"      HorizontalLineCustom({fmt(val)}, {color}, {w}, "
+                   f"{sty[st]}, \"{label}\", {fs}, tpTopRight);")
     out.append("    end;")
     out.append("END;")
     return "\n".join(out)
