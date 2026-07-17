@@ -830,6 +830,7 @@ td.tag{color:var(--ink);white-space:nowrap}
     <div class="sec">Extras</div>
     <a data-v="tv"><span class="ic">&#128200;</span> Mapa no TradingView</a>
     <a data-v="gloss"><span class="ic">?</span> Glossário</a>
+    <a href="../manual.html" target="_blank"><span class="ic">&#128214;</span> Manual do Operador</a>
   </nav>
   <div class="side-foot">
     <span class="pill __REGIMECLS__">__REGIME__</span>
