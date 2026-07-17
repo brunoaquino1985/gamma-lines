@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GAMMA LINES — Manual do Operador</title>
+<style>
+:root{
+  --bg:#070b11; --bg2:#0d1420; --card:#0e1725; --line:#1b2433;
+  --txt:#dbe7f4; --dim:#7b8ba1; --accent:#00e5a0; --cyan:#37e0ff;
+  --gold:#ffd700; --neg:#ff5d5d; --pos:#33b1ff; --poc:#ff00ff; --wall:#32cd32;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font:16px/1.75 'Segoe UI',system-ui,sans-serif}
+a{color:var(--cyan);text-decoration:none}
+.wrap{display:grid;grid-template-columns:250px 1fr;max-width:1280px;margin:0 auto}
+nav{position:sticky;top:0;height:100vh;overflow-y:auto;padding:28px 18px;border-right:1px solid var(--line);background:rgba(7,11,17,.9)}
+nav h1{font-size:1.05rem;letter-spacing:.18em;color:var(--accent);margin-bottom:2px}
+nav .sub{font-size:.72rem;color:var(--dim);margin-bottom:22px}
+nav a{display:block;padding:7px 10px;border-radius:8px;color:var(--dim);font-size:.85rem;margin-bottom:2px}
+nav a:hover{background:var(--bg2);color:var(--txt)}
+main{padding:36px 44px 90px;min-width:0}
+h2{color:var(--accent);font-size:1.5rem;margin:54px 0 6px;scroll-margin-top:20px}
+h2 .n{color:var(--dim);font-weight:400;margin-right:10px}
+h3{color:var(--cyan);font-size:1.08rem;margin:30px 0 8px}
+p{margin:12px 0;color:#c6d4e4}
+b{color:var(--txt)}
+.lead{font-size:1.05rem;color:var(--txt)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin:18px 0}
+.tip{border-left:3px solid var(--accent);background:rgba(0,229,160,.06)}
+.warn{border-left:3px solid var(--neg);background:rgba(255,93,93,.06)}
+.note{border-left:3px solid var(--cyan);background:rgba(55,224,255,.05)}
+.hero{padding:64px 0 8px}
+.hero h1{font-size:2.4rem;letter-spacing:.14em;color:var(--accent)}
+.hero p{font-size:1.1rem;max-width:760px}
+.badge{display:inline-block;font-size:.72rem;letter-spacing:.1em;border:1px solid var(--line);border-radius:20px;padding:3px 12px;color:var(--dim);margin:4px 6px 0 0}
+img.shot{width:100%;border-radius:12px;border:1px solid rgba(55,224,255,.18);display:block;margin:14px 0 4px}
+.cap{font-size:.8rem;color:var(--dim);margin-bottom:18px}
+.linecard{display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:12px 0}
+.sw{height:0;border-top-width:3px;border-top-style:solid;margin-top:14px;position:relative}
+.sw span{position:absolute;right:0;top:-20px;font-size:.7rem;letter-spacing:.05em}
+.lt{font-weight:700;letter-spacing:.03em}
+.ld{font-size:.9rem;color:#b9c8da}
+.ld b{color:var(--txt)}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:14px 0}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line)}
+th{color:var(--dim);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase}
+td.k{color:var(--cyan);white-space:nowrap}
+.steps{counter-reset:s;margin:16px 0}
+.step{display:grid;grid-template-columns:44px 1fr;gap:14px;margin:14px 0;align-items:start}
+.step::before{counter-increment:s;content:counter(s);width:34px;height:34px;border-radius:50%;
+  border:1px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700}
+.rules li{margin:10px 0 10px 20px;color:#c6d4e4}
+.rules b{color:var(--accent)}
+.faq dt{color:var(--txt);font-weight:700;margin-top:18px}
+.faq dd{margin:6px 0 0 0;color:#b9c8da}
+.gl{display:grid;grid-template-columns:1fr 1fr;gap:10px 26px}
+.gl div{border-bottom:1px dashed var(--line);padding:8px 0;font-size:.9rem}
+.gl b{color:var(--cyan)}
+.tl{border-left:2px solid var(--line);margin:18px 0 18px 8px;padding-left:22px}
+.tl .ev{position:relative;margin:16px 0}
+.tl .ev::before{content:'';position:absolute;left:-28px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.tl .h{color:var(--accent);font-weight:700;font-size:.9rem}
+.mock{background:#0a1220;border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:10px 0;font-size:.85rem}
+.mock .mt{font-size:.68rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.mock .mv{font-size:1.5rem;font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+footer{margin-top:70px;border-top:1px solid var(--line);padding-top:22px;color:var(--dim);font-size:.82rem}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}nav{position:static;height:auto;display:flex;flex-wrap:wrap;gap:4px}
+.grid2,.grid4,.gl{grid-template-columns:1fr}.linecard{grid-template-columns:1fr}main{padding:24px 18px 70px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <h1>GAMMA LINES</h1>
+  <div class="sub">Manual do Operador · v1.0</div>
+  <a href="#intro">O que é a ferramenta</a>
+  <a href="#teoria">A teoria em 5 minutos</a>
+  <a href="#linhas">As linhas, uma a uma</a>
+  <a href="#situacoes">Situações reais</a>
+  <a href="#leitura">Como ler o dia</a>
+  <a href="#profit">Usando no Profit</a>
+  <a href="#painel">O painel web</a>
+  <a href="#stats">As estatísticas</a>
+  <a href="#regras">Regras de ouro</a>
+  <a href="#gloss">Glossário</a>
+  <a href="#faq">FAQ</a>
+</nav>
+<main>
+
+<div class="hero" id="intro">
+  <h1>GAMMA LINES</h1>
+  <p class="lead">Manual do operador — como transformar o hedge dos grandes bancos em um mapa
+  de níveis para o seu day trade no Índice.</p>
+  <span class="badge">WIN / IND — B3</span><span class="badge">ATUALIZADO TODO PREGÃO</span>
+  <span class="badge">MATERIAL EDUCACIONAL</span>
+</div>
+
+<h2 id="oque"><span class="n">§1</span>O que é a ferramenta</h2>
+<p class="lead">O GAMMA LINES calcula, todos os dias antes da abertura, <b>onde os grandes players do mercado
+de opções são obrigados a defender preço</b> — e desenha esses níveis no seu gráfico.</p>
+<p>Ele não é um indicador de entrada. Ele é um <b>mapa do território</b>: mostra onde estão as paredes
+(walls), onde o mercado negociou valor ontem (POC/VAH/VAL), até onde as opções "precificam" que o dia
+pode ir (bandas) e em que ponto o regime do mercado muda de calmo para nervoso (gamma flip). Com o mapa,
+você para de operar no escuro: cada região do gráfico passa a ter um contexto e uma estatística.</p>
+<div class="card note">
+<b>De onde vêm os dados?</b> O robô baixa da B3, todo dia de madrugada, a posição em aberto de
+<b>todas as séries de opções do Ibovespa</b> (mais de 800 séries), os negócios tick a tick do WIN e o
+fluxo por tipo de investidor. Nada é "achismo": é a posição real registrada na bolsa, processada por um
+modelo matemático (Black-76) que estima o hedge dos formadores de mercado.</p>
+</div>
+<h3>O seu dia com o GAMMA LINES</h3>
+<div class="tl">
+  <div class="ev"><div class="h">02:45–04:30 · madrugada</div>O robô roda sozinho na nuvem: baixa os dados da B3,
+  calcula o mapa, gera o indicador do Profit, o painel web e o print do gráfico.</div>
+  <div class="ev"><div class="h">08:15 · entrega</div>Você recebe no chat o arquivo do indicador, o painel do dia
+  e o resumo do professor. Cola o indicador no Profit (30 segundos) e lê o plano de voo.</div>
+  <div class="ev"><div class="h">08:50 · preparação ao vivo</div>Os alertas são criados no TradingView em cada
+  nível do dia. A página Ao Vivo é armada para o pregão.</div>
+  <div class="ev"><div class="h">09:00–10:00 · primeira hora</div>Leituras a cada 5 minutos: preço vs mapa,
+  gap, regime, primeiro toque nas walls. É a janela mais rica do dia.</div>
+  <div class="ev"><div class="h">10:30 / 11:00 / 11:30 / 12:00 · check-ins</div>Leituras de acompanhamento.
+  Ao meio-dia o modo ao vivo encerra com o balanço da manhã.</div>
+</div>
+
+<h2 id="teoria"><span class="n">§2</span>A teoria em 5 minutos</h2>
+<p class="lead">Você não precisa saber precificar opções para usar o mapa. Precisa só entender
+<b>por que</b> essas linhas funcionam.</p>
+<h3>1. Os dealers ficam com a ponta que ninguém quer</h3>
+<p>Quando fundos e investidores compram proteção (puts) ou fazem apostas (calls) no Ibovespa, alguém do
+outro lado vende essas opções: são os <b>dealers</b> (bancos e formadores de mercado). O dealer não quer
+apostar na direção — o negócio dele é embolsar o prêmio. Então ele <b>neutraliza o risco comprando e
+vendendo futuro de índice</b>. Isso se chama hedge.</p>
+<h3>2. O hedge é obrigatório — e mecânico</h3>
+<p>Conforme o preço se move, a quantidade de futuro que o dealer precisa ter muda (isso é o <b>gamma</b>).
+Ele é <i>obrigado</i> a reequilibrar, queira ou não. Quando bilhões de reais em opções estão concentrados
+num mesmo strike, o reequilíbrio de todos os dealers naquela região vira um <b>fluxo previsível</b> —
+grande o bastante para frear ou acelerar o índice.</p>
+<div class="grid2">
+<div class="card tip"><b>Regime GAMMA POSITIVO</b> (dealers comprados em gamma)<br>
+Para reequilibrar, eles <b>vendem quando sobe e compram quando cai</b> — agem contra o movimento.
+Efeito: dia mais calmo, preço "andando de lombada em lombada", walls seguram, movimentos revertem.
+É o regime em que respeitar os níveis funciona melhor.</div>
+<div class="card warn"><b>Regime GAMMA NEGATIVO</b> (dealers vendidos em gamma)<br>
+Para reequilibrar, eles <b>compram quando sobe e vendem quando cai</b> — jogam gasolina no movimento.
+Efeito: dia nervoso, tendências esticam, rompimento anda. Os níveis viram trampolim, não parede.</div>
+</div>
+<p>A fronteira entre os dois mundos é o <b style="color:var(--gold)">GAMMA FLIP</b>. Acima dele, mercado
+lombada; abaixo, mercado gasolina. Por isso o flip é o "botão do pânico" do mapa.</p>
+<h3>3. Vencimento de opções: o dia em que tudo é mais forte — e depois zera</h3>
+<p>Na 3ª sexta-feira do mês (e pentes quinzenais menores), as opções vencem. Perto do vencimento os efeitos
+de <b>charm</b> e <b>vanna</b> (hedge que muda com a passagem do tempo e com a volatilidade) atingem o
+máximo — e na segunda-feira seguinte o mapa <b>muda completamente</b>, porque a posição venceu. Regra
+prática: em semana de vencimento, dê mais peso às walls ★★★ e espere o novo mapa antes de confiar em
+níveis antigos.</p>
+
+<h2 id="linhas"><span class="n">§3</span>As linhas, uma a uma</h2>
+<p class="lead">Cada linha do mapa tem cor, significado e uso próprios. A partir de 17/07/2026 elas chegam
+<b>com o nome escrito no gráfico</b>, na borda direita.</p>
+
+<div class="linecard"><div><div class="sw" style="border-color:#32cd32"><span style="color:#32cd32">verde · cheia</span></div></div>
+<div><div class="lt" style="color:#32cd32">WALL ★ / ★★ / ★★★</div>
+<div class="ld">A <b>parede</b>: strike com grande concentração de gamma dos dealers. É onde o hedge deles
+freia o preço. As estrelas indicam a força (★★★ = maior concentração do dia — a "parede-mestra").
+<b>Uso:</b> zona de reação. No 1º toque do dia, observe: rejeitou → o nível está sendo defendido;
+rompeu com volume → vira ímã para a próxima wall. Nunca entre "porque chegou na linha" — entre na
+<i>reação</i> à linha.</div></div></div>
+
+<div class="linecard"><div><div class="sw" style="border-color:#2a6b4f;border-top-style:dotted"><span style="color:#5a8b74">verde escuro · pontilhada</span></div></div>
+<div><div class="lt" style="color:#5a8b74">mid</div>
+<div class="ld">Ponto médio entre duas walls vizinhas. Área de "terra de ninguém" onde o preço acelera —
+não espere defesa ali. <b>Uso:</b> régua de progresso do movimento e local comum de consolidação rápida.</div></div></div>
+
+<div class="linecard"><div><div class="sw" style="border-color:#ffd700"><span style="color:#ffd700">amarela · média</span></div></div>
+<div><div class="lt" style="color:#ffd700">GAMMA FLIP</div>
+<div class="ld">A fronteira entre o regime calmo (acima) e o nervoso (abaixo). <b>Uso:</b> enquanto o preço
+está bem acima do flip, quedas tendem a desacelerar nos níveis. Se o índice PERDER o flip, mude o chip:
+dia de tendência, pare de comprar suporte "porque segurou antes".</div></div></div>
+
+<div class="linecard"><div><div class="sw" style="border-color:#00ced1;border-top-style:dashed"><span style="color:#00ced1">ciano · tracejada</span></div></div>
+<div><div class="lt" style="color:#00ced1">BANDA +1DP / −1DP</div>
+<div class="ld">O "tamanho do dia" que o mercado de opções precifica: 1 desvio-padrão calculado com a
+volatilidade implícita. Em ~68% dos dias o fechamento fica entre as duas bandas. <b>Uso:</b> régua de
+expectativa — alvo máximo razoável do dia e zona de exaustão de movimento esticado.</div></div></div>
+
+<div class="linecard"><div><div class="sw" style="border-color:#ff00ff"><span style="color:#ff00ff">magenta · média</span></div></div>
+<div><div class="lt" style="color:#ff00ff">POC</div>
+<div class="ld">Point of Control: o preço onde mais contratos trocaram de mão na sessão anterior — o
+"preço justo" da véspera. <b>Uso:</b> ímã em dia calmo (mercado volta a negociar onde há liquidez) e
+divisor de aceitação: negociar ACIMA do POC = compradores no controle daquela região.</div></div></div>
+
+<div class="linecard"><div><div class="sw" style="border-color:#c0c0c0;border-top-style:dashed"><span style="color:#c0c0c0">prata · tracejada</span></div></div>
+<div><div class="lt" style="color:#c0c0c0">VAH / VAL</div>
+<div class="ld">Topo e fundo da área de valor da véspera (a faixa onde ficou ~70% do volume). <b>Uso:</b>
+abrir DENTRO da área de valor sugere dia de range; abrir FORA e não voltar sugere dia de tendência.
+Perder o VAL na abertura é aviso clássico de dia vendedor (foi o aviso de 16/07).</div></div></div>
+
+<div class="linecard"><div><div class="sw" style="border-color:#008000"><span style="color:#4c9a4c">verde escuro · grossa</span></div></div>
+<div><div class="lt" style="color:#4c9a4c">MAX GAMMA</div>
+<div class="ld">O strike com a maior concentração total de gamma acima do preço — teto estatístico do mapa.
+Raramente é alcançado no dia; se for, é zona de realização de lucro de compras, não de novas compras.</div></div></div>
+
+<div class="linecard"><div><div class="sw" style="border-color:#ff5d5d"><span style="color:#ff5d5d">vermelha · grossa</span></div></div>
+<div><div class="lt" style="color:#ff5d5d">MIN GAMMA</div>
+<div class="ld">O espelho do MAX GAMMA abaixo do preço — o "porão" do mapa. Se o índice se aproxima dele,
+o dia já é de pânico: gerencie risco, não procure faca caindo.</div></div></div>
+
+<h2 id="situacoes"><span class="n">§4</span>Situações reais — o pregão de 16/07/2026</h2>
+<p class="lead">Todas as imagens abaixo são do <b>mercado real</b>: WIN (mini-índice), pregão de
+16/07/2026, com o mapa GAMMA LINES daquele dia desenhado às 08:15 — antes da abertura. Nenhuma linha
+foi ajustada depois. Véspera de vencimento, regime gamma positivo, P(alta) 59%, gap de abertura −300 pts.</p>
+
+<h3>Situação 1 — O mapa completo do dia</h3>
+<img class="shot" data-sb="manual_01.png" alt="manual_01">
+<div class="cap">WIN 15 min, dia inteiro. Repare: quase todos os pontos de virada do dia aconteceram em cima de linhas desenhadas antes da abertura.</div>
+<p><b>Como ler:</b> o dia abriu na região da WALL ★ 178.843 e do VAH 178.110, foi rejeitado, perdeu o VAL
+177.485 (primeiro aviso de dia vendedor), rompeu a ★★ 176.823, buscou a ★ 175.812, repicou de volta à
+★★ 176.823 — que de suporte virou <b>resistência</b> — e voltou a cair. Um único mapa, desenhado de
+madrugada, deu o roteiro do pregão inteiro.</p>
+<div class="card tip"><b>Lição nº 1 do método:</b> wall rompida troca de lado. O nível não "erra" quando é
+rompido — ele passa a trabalhar para o outro time. A ★★ 176.823 segurou como suporte de manhã, foi rompida
+às 10:06 e rejeitou o repique à tarde como resistência, nos mesmos 176.8xx.</div>
+
+<h3>Situação 2 — Rejeição na abertura + perda do VAL</h3>
+<img class="shot" data-sb="manual_02.png" alt="manual_02">
+<div class="cap">WIN 5 min, 09:00–10:05. O gap de −300 abriu o dia já abaixo do POC; a região POC/★★ 177.8xx rejeitou, e a perda do VAL 177.485 confirmou o lado vendedor.</div>
+<p><b>O que aconteceu:</b> o índice abriu em gap de baixa. A estatística da casa diz que gaps de até 300
+pontos fecham em 80% dos pregões — mas o pré-requisito é <i>aceitação de volta acima do VAL</i>. Em vez
+disso, o preço testou a zona do POC 177.850 / ★★ 177.833 por baixo, foi rejeitado candle após candle e
+perdeu o VAL. Gap que não fecha na primeira hora + VAL perdido = jogar o playbook de range no lixo e
+tratar o dia como tendência de baixa.</p>
+<div class="card warn"><b>Erro clássico evitado:</b> comprar "porque o gap sempre fecha". O mapa mostrou
+em tempo real que a condição de compra (aceitar acima do VAL) nunca apareceu.</div>
+
+<h3>Situação 3 — Rompimento de wall vira ímã para a próxima</h3>
+<img class="shot" data-sb="manual_03.png" alt="manual_03">
+<div class="cap">WIN 5 min, 09:40–11:10. Às 10:06 a ★★ 176.823 rompeu — e o preço andou direto até a região da ★ 175.812.</div>
+<p><b>O que aconteceu:</b> a ★★ 176.823 segurou os primeiros testes, mas às 10:06 rompeu com força.
+Estatística da casa: apenas ~40% das walls ★★ rompem no primeiro ataque na janela das 10h — quando rompem,
+o hedge dos dealers <i>troca de direção</i> naquela faixa e o preço tende a buscar a próxima linha do mapa.
+Foi exatamente o que houve: queda direta de ~1.000 pts até a região da ★ 175.812, sem parada relevante nos mids.</p>
+<div class="card tip"><b>Como usar:</b> depois de um rompimento confirmado, o "alvo natural" é a próxima
+linha do mapa — e a linha rompida é o novo stop de referência (reconquista = o movimento falhou).</div>
+
+<h3>Situação 4 — Wall de suporte segura o pânico e paga o repique</h3>
+<img class="shot" data-sb="manual_04.png" alt="manual_04">
+<div class="cap">WIN 5 min, 10:15–13:00. A região da ★ 175.812 estancou a queda (mínima da manhã 175.650) e o repique voltou até a ★★ 176.823.</div>
+<p><b>O que aconteceu:</b> a queda esticada encontrou a ★ 175.812. O preço <i>furou no susto</i> (mínima
+175.650, ~160 pts abaixo da linha), mas não houve aceitação — os candles fecharam de volta acima e a
+primeira reação compradora do dia apareceu ali. O repique rendeu ~600 pontos, de volta à ★★ 176.823, onde
+morreu (lição nº 1: wall rompida virou resistência).</p>
+<div class="card note"><b>Wall é ZONA, não linha exata.</b> O hedge dos dealers não executa num único tick.
+Considere sempre uma faixa de tolerância (100–200 pts no WIN) em volta da linha — o que importa é onde os
+candles <i>fecham</i>, não a mínima do pavio.</div>
+
+<h3>Situação 5 — As bandas seguram o "tamanho do dia"</h3>
+<img class="shot" data-sb="manual_05.png" alt="manual_05">
+<div class="cap">WIN 15 min até o fim da tarde. Mesmo num dia vendedor de −1.800 pts, o índice fechou DENTRO da banda −1DP 174.228.</div>
+<p><b>O que aconteceu:</b> o mapa precificava um "dia de ±3.6 mil pontos" (1 desvio-padrão). Mesmo sendo um
+dia de tendência vendedora, a queda desacelerou nível a nível — efeito típico de regime <b>gamma
+positivo</b>, em que os dealers compram a queda para reequilibrar o hedge — e o fechamento respeitou a
+banda inferior. Quem vendeu o rompimento lá embaixo, perto da banda, vendeu o fim do movimento.</p>
+<div class="card tip"><b>Como usar:</b> quanto mais perto da banda, menor o prêmio de continuar no
+movimento e maior a chance de exaustão. Banda não é ponto de entrada contra — é ponto de <i>parar de
+apostar a favor</i>.</div>
+
+<h2 id="leitura"><span class="n">§5</span>Como ler o dia em 4 passos</h2>
+<div class="steps">
+<div class="step"><div><b>Regime primeiro.</b> Painel → tile "Regime de gamma". Positivo = dia de respeitar
+níveis e operar reversão nas walls. Negativo (preço abaixo do flip) = dia de tendência, opere a favor do
+rompimento e esqueça topo/fundo.</div></div>
+<div class="step"><div><b>Gap e área de valor.</b> Abriu dentro da área de valor (VAL–VAH)? Viés de range,
+gap tende a fechar. Abriu fora e não voltou em 30–60 min? Viés de tendência — siga o lado do gap.</div></div>
+<div class="step"><div><b>Primeiro toque nas walls.</b> A estatística de rejeição vale mais no 1º toque do
+dia (a superfície "fresca" do hedge). Rejeitou → jogue o jogo da reversão. Rompeu com candles fechando do
+outro lado → alvo na próxima linha.</div></div>
+<div class="step"><div><b>Confluência decide.</b> Wall ★★ + POC + banda na mesma faixa = zona forte (como
+os 177.8xx de 16/07). Linha isolada no meio do nada = zona fraca. Quanto mais camadas do mapa apontando
+para o mesmo preço, mais respeito o nível merece.</div></div>
+</div>
+
+<h2 id="profit"><span class="n">§6</span>Usando no Profit</h2>
+<div class="steps">
+<div class="step"><div>Abra o <b>Editor de Estratégias</b> do Profit (menu Ferramentas) e crie um
+<b>Novo Indicador</b> chamado <code>GAMMA LINES</code>. Isso é feito uma única vez.</div></div>
+<div class="step"><div>Todo dia às 08:15 você recebe o arquivo <code>GAMMA_LINES_IND_dd_mm.txt</code>.
+Abra, selecione tudo (Ctrl+A), copie e <b>cole por cima do código anterior</b> no editor. Salve e compile
+(F5). Leva 30 segundos.</div></div>
+<div class="step"><div>Aplique o indicador no gráfico do <b>WINFUT/INDFUT</b> (funciona no contrato cheio e
+no mini, 5 ou 15 minutos). As linhas aparecem com o nome na borda direita — WALL ★★ 177.840, GAMMA FLIP,
+POC etc.</div></div>
+<div class="step"><div>O código tem uma trava de data: só desenha na sessão para a qual foi gerado. Se as
+linhas não aparecerem, confira se você colou o arquivo do dia.</div></div>
+</div>
+<div class="card warn"><b>Semana de vencimento:</b> na 3ª sexta-feira do mês o mapa do dia seguinte muda
+muito (a posição vencida sai da conta). Nunca reaproveite o indicador de sexta na segunda.</div>
+
+<h2 id="painel"><span class="n">§7</span>O painel web</h2>
+<p class="lead">Tudo o que o robô calcula está em
+<a href="https://brunoaquino1985.github.io/gamma-lines/output/report.html" target="_blank">
+brunoaquino1985.github.io/gamma-lines</a> — atualizado a cada pregão e acessível do celular.</p>
+<div class="grid2">
+<div class="mock"><div class="mt">Probabilidade alta × baixa</div><div class="mv" style="color:var(--accent)">&uarr;59% <span style="color:var(--dim);font-size:1rem">×</span> &darr;41%</div>
+<div style="color:var(--dim)">chance de fechar acima × abaixo do preço atual (verde quando &gt;60%)</div></div>
+<div class="mock"><div class="mt">Regime de gamma</div><div class="mv" style="color:var(--cyan)">GAMMA POSITIVO</div>
+<div style="color:var(--dim)">o interruptor calmo/nervoso do dia · flip 169.069</div></div>
+</div>
+<table>
+<tr><th>Aba</th><th>O que tem</th><th>Quando olhar</th></tr>
+<tr><td class="k">Ao Vivo</td><td>Leituras do pregão a cada 5 min (9h–12h), régua do dia com o preço agora</td><td>Durante o pregão</td></tr>
+<tr><td class="k">Visão geral</td><td>Plano de voo, tiles do dia, checklist pré-pregão, revisão da véspera</td><td>08:15–09:00</td></tr>
+<tr><td class="k">A aula do dia</td><td>O resumo do professor: o cenário explicado em português</td><td>Antes de operar</td></tr>
+<tr><td class="k">Níveis do dia</td><td>Tabela completa com todos os níveis e distâncias</td><td>Referência rápida</td></tr>
+<tr><td class="k">Estatísticas das zonas</td><td>Taxa de rejeição de cada wall no histórico auditado</td><td>Para calibrar confiança</td></tr>
+<tr><td class="k">Fluxo estrangeiro</td><td>O dinheiro gringo entrando/saindo (5 sessões)</td><td>Contexto de viés</td></tr>
+<tr><td class="k">Volume profile</td><td>POC/VAH/VAL da véspera e composto de 5 dias</td><td>Confluências</td></tr>
+<tr><td class="k">Mercado global</td><td>Fechamentos e futuros lá fora + agenda do dia</td><td>08:30</td></tr>
+<tr><td class="k">Mapa no TradingView</td><td>Print real do gráfico com as linhas do dia</td><td>Conferência visual</td></tr>
+<tr><td class="k">Glossário</td><td>Todos os termos explicados (os termos sublinhados têm tooltip)</td><td>Sempre que bater dúvida</td></tr>
+</table>
+<div class="card note"><b>Alertas no TradingView:</b> além do painel, o robô cria alertas de cruzamento em
+todas as walls, no flip e nos extremos do mapa — seu celular apita quando o índice chega numa linha,
+mesmo que você não esteja olhando a tela.</div>
+
+<h2 id="stats"><span class="n">§8</span>As estatísticas (backtest auditado)</h2>
+<p>Todo dia, antes de calcular o mapa novo, o robô <b>audita o mapa da véspera</b> contra os negócios
+tick a tick reais da B3: cada toque em wall vira um registro — rejeitou ou rompeu, a que horas, quantos
+pontos rendeu a rejeição (MFE). É essa base, hoje com 22+ pregões, que alimenta os números do painel.</p>
+<table>
+<tr><th>Número no painel</th><th>Como interpretar</th></tr>
+<tr><td class="k">Rejeição 62% no 1º toque</td><td>De cada 10 primeiros toques nessa classe de wall, ~6 reverteram. Não é garantia — é frequência histórica.</td></tr>
+<tr><td class="k">MFE mediano ~400 pts</td><td>Quando rejeita, o movimento típico a favor rende isso — calibra alvo e payoff.</td></tr>
+<tr><td class="k">Gap ≤300 fecha 80%</td><td>Estatística condicional: vale para gaps pequenos E com reconquista da área de valor.</td></tr>
+<tr><td class="k">Janela das 10h: 78%</td><td>A melhor hora histórica para rejeição em wall. Almoço = volume seco, sinais valem menos.</td></tr>
+</table>
+<div class="card warn"><b>Honestidade estatística:</b> 22 pregões é uma amostra jovem. Os percentuais vão
+amadurecer com o tempo — trate-os como bússola, não como lei. Em dia de vencimento as taxas históricas
+pesam menos (o hedge está no máximo e muda de mãos).</div>
+
+<h2 id="regras"><span class="n">§9</span>Regras de ouro</h2>
+<ol class="rules">
+<li><b>O mapa mostra ONDE observar, nunca O QUE fazer.</b> A linha marca o ponto de decisão; a decisão é
+sua e vem da reação do preço (candles fechando, volume, contexto).</li>
+<li><b>Primeiro toque vale mais.</b> A cada novo teste, a wall gasta. Rejeição no 3º toque do dia é outra
+estatística — bem pior.</li>
+<li><b>Wall rompida troca de time.</b> Suporte rompido vira resistência (e vice-versa). Reconquista da
+linha é o sinal de que o rompimento falhou.</li>
+<li><b>Wall é zona, não tick.</b> Tolerância de 100–200 pts no WIN. Pavio que fura e volta é defesa, não
+falha.</li>
+<li><b>Regime manda no playbook.</b> Gamma positivo: reversão nas linhas. Preço abaixo do flip: tendência,
+esqueça topo/fundo.</li>
+<li><b>Confluência &gt; linha isolada.</b> Wall + POC + banda na mesma faixa é outra categoria de nível.</li>
+<li><b>Almoço mente.</b> Entre ~12h e 14h o volume seca e os sinais valem pouco. As melhores leituras
+moram na primeira hora e na janela das 10h.</li>
+<li><b>Vencimento é outro esporte.</b> Efeitos máximos, estatísticas menos confiáveis, mapa novo na
+segunda. Reduza tamanho.</li>
+<li><b>Gerencie o risco sempre.</b> Nenhum nível segura notícia. O mapa é probabilidade, não promessa.</li>
+</ol>
+
+<h2 id="gloss"><span class="n">§10</span>Glossário rápido</h2>
+<div class="gl">
+<div><b>Gamma</b> — velocidade com que o hedge dos dealers muda quando o preço anda. Onde há muito gamma, há muito fluxo mecânico.</div>
+<div><b>Dealer</b> — banco/formador de mercado que vende as opções e neutraliza o risco no futuro de índice.</div>
+<div><b>Wall</b> — strike com gamma concentrado; parede onde o hedge freia o preço.</div>
+<div><b>Gamma flip</b> — preço em que o gamma líquido dos dealers troca de sinal; fronteira calmo/nervoso.</div>
+<div><b>GEX</b> — gamma exposure; a medida (em R$) da exposição dos dealers usada para achar walls e flip.</div>
+<div><b>Banda ±1DP</b> — movimento de 1 desvio-padrão precificado pelas opções para o dia.</div>
+<div><b>POC</b> — preço com maior volume negociado na sessão anterior.</div>
+<div><b>VAH / VAL</b> — topo e fundo da área de valor (~70% do volume) da véspera.</div>
+<div><b>MFE</b> — máxima excursão favorável; quanto o preço andou a favor após uma rejeição.</div>
+<div><b>Charm</b> — mudança do hedge pela passagem do tempo; máximo perto do vencimento.</div>
+<div><b>Vanna</b> — mudança do hedge quando a volatilidade implícita muda.</div>
+<div><b>Gap</b> — diferença entre a abertura e o fechamento anterior (ajuste) do índice.</div>
+</div>
+
+<h2 id="faq"><span class="n">§11</span>Perguntas frequentes</h2>
+<dl class="faq">
+<dt>As linhas mudam durante o dia?</dt>
+<dd>Não. O mapa é calculado antes da abertura com a posição de opções do fechamento anterior e vale o
+pregão inteiro. O que muda durante o dia são as leituras (aba Ao Vivo).</dd>
+<dt>Por que o valor da wall não é um número redondo?</dt>
+<dd>O strike da opção é no índice à vista (ex.: 176.000) e a linha é convertida para pontos do futuro
+usando o fator de carregamento do dia — por isso 176.829.</dd>
+<dt>Funciona no contrato cheio (IND)?</dt>
+<dd>Sim. O indicador se ativa em WINFUT, INDFUT e nos contratos do mês (ex.: WINQ26/INDQ26).</dd>
+<dt>Serve para swing trade?</dt>
+<dd>O mapa é diário por construção. Para swing, use MAX/MIN GAMMA e o POC composto de 5 dias como
+referências maiores — e lembre do reset no vencimento.</dd>
+<dt>O que significa "P(alta) 59%"?</dt>
+<dd>É a probabilidade, extraída dos preços das opções (risk-neutral), de o índice fechar o vencimento
+acima do nível atual. Acima de 60% o painel pinta de verde; abaixo de 40%, vermelho.</dd>
+<dt>E se o dia abrir com notícia forte / mercado externo caindo?</dt>
+<dd>O mapa continua válido como território (as posições de opções não sumiram), mas o regime pode mudar
+rápido se o preço cruzar o flip. Cheque a aba Mercado global antes da abertura.</dd>
+</dl>
+
+<footer>
+<b>GAMMA LINES</b> · manual v1.0 · gerado em 16/07/2026 ·
+material <b>educacional</b> — nada aqui é recomendação de investimento. Day trade envolve risco elevado;
+decisões e resultados são de responsabilidade do operador. Dados: B3 (opções de IBOV, tick a tick de WIN,
+fluxo por investidor). Modelo: Black-76 + GEX por strike, auditado diariamente contra o mercado real.
+</footer>
+</main>
+</div>
+
+<script>
+document.querySelectorAll('img[data-sb]').forEach(function(im){
+  fetch('https://cbazccsoynzextabjnxq.supabase.co/rest/v1/gamma_files?name=eq.' + im.getAttribute('data-sb') + '&select=b64',
+        {headers:{apikey:'sb_publishable_JXjiEY5de-UMyFPMQIrO_A_-oOuJN5H'}})
+    .then(function(r){return r.json()})
+    .then(function(j){ if (j && j[0] && j[0].b64) im.src = 'data:image/png;base64,' + j[0].b64; });
+});
+</script>
+</body>
+</html>
