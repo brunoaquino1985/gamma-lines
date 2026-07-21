@@ -1243,7 +1243,7 @@ const GLOSS = {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
     const nodes = [];
     let n; while ((n = walker.nextNode())) {
-      if (n.parentElement.closest('.gl,a,script,style')) continue;
+      if (n.parentElement.closest('.gl,a,script,style,svg')) continue;
       rx.lastIndex = 0; if (rx.test(n.nodeValue)) nodes.push(n);
     }
     for (const nd of nodes){
