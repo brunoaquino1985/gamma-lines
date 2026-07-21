@@ -362,10 +362,117 @@ o "vento de fundo" dos hedges está a seu favor; contra, exija mais confirmaçã
                 f"({_p(hourly[bh].get('taxa_rejeicao'))}); horário de almoço tem volume fraco e "
                 f"sinal falso. Regime {regime.lower()} — {regime_desc}. O flip {_fmt(flip_fut)} "
                 f"é o botão do pânico: perdeu, vira dia de tendência.")
+        # ---- cenários ilustrados: SVGs esquemáticos com os números do dia ----
+        UP, DN, WL, PC, BD, TX, DM = ("#089981", "#f23645", "#32cd32",
+                                      "#ff00ff", "#00ced1", "#dbe7f4", "#7b8ba1")
+
+        def _ln(y, color, label, dash=""):
+            d = f" stroke-dasharray='{dash}'" if dash else ""
+            return (f"<line x1='16' y1='{y}' x2='420' y2='{y}' stroke='{color}' "
+                    f"stroke-width='1.6'{d}/><text x='424' y='{y + 4}' fill='{color}' "
+                    f"font-size='11' font-family='Segoe UI,sans-serif'>{label}</text>")
+
+        def _cd(x, top, bot, color, wt=None, wb=None):
+            wick = ""
+            if wt is not None:
+                wick += f"<line x1='{x + 5}' y1='{wt}' x2='{x + 5}' y2='{top}' stroke='{color}' stroke-width='1.4'/>"
+            if wb is not None:
+                wick += f"<line x1='{x + 5}' y1='{bot}' x2='{x + 5}' y2='{wb}' stroke='{color}' stroke-width='1.4'/>"
+            return f"{wick}<rect x='{x}' y='{top}' width='10' height='{max(bot - top, 3)}' fill='{color}' rx='1'/>"
+
+        def _txt(x, y, s, color, size=11, anchor="start", bold=""):
+            w = " font-weight='700'" if bold else ""
+            return (f"<text x='{x}' y='{y}' fill='{color}' font-size='{size}' "
+                    f"text-anchor='{anchor}'{w} font-family='Segoe UI,sans-serif'>{s}</text>")
+
+        def _svg(body):
+            return ("<svg viewBox='0 0 560 250' style='width:100%;height:auto;display:block;"
+                    "background:#0a1220;border:1px solid #1b2433;border-radius:10px;margin:10px 0 6px'>"
+                    + body + "</svg>")
+
+        def _card_cen(tag, titulo, svg, gat, alvo, inv, dica):
+            g = ("<div style='display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;"
+                 "font-size:.86rem;margin-top:8px'>"
+                 f"<div>🎯 <b>Gatilho:</b> {gat}</div><div>🏁 <b>Alvo:</b> {alvo}</div>"
+                 f"<div>🛑 <b>Invalida:</b> {inv}</div><div>💡 <b>Professor:</b> {dica}</div></div>")
+            return (f"<div class='rat'><div class='rd'><span style='color:var(--accent);"
+                    f"letter-spacing:.1em;font-weight:700'>{tag}</span> &nbsp;<b>{titulo}</b>"
+                    f"{svg}{g}<div style='font-size:.72rem;color:var(--dim);margin-top:4px'>"
+                    f"Ilustração esquemática — distâncias fora de escala; os valores são os do mapa de hoje.</div>"
+                    f"</div></div>")
+
+        cen_html = ""
+        try:
+            pb = res.get("prob") or {}
+            bu, bdn = pb.get("band_up_fut"), pb.get("band_down_fut")
+            poc_v, vah_v, val_v = vp1.get("poc"), vp1.get("vah"), vp1.get("val")
+            teto = r1["fut"] if r1 else vah_v
+            alvo_a = next((w["fut"] for w in acima_w[1:]), None) or bu
+            piso = s1["fut"] if s1 else val_v
+            alvo_b = next((w["fut"] for w in reversed(abaixo_w[:-1])), None) or bdn
+            if all(v is not None for v in (teto, poc_v, piso, alvo_a, alvo_b)):
+                # A — range/equilíbrio
+                a = (_ln(55, WL, f"teto {_fmt(teto)}") + _ln(125, PC, f"POC {_fmt(poc_v)}", "5,4")
+                     + _ln(195, BD, f"defesa {_fmt(piso)}", "5,4")
+                     + _cd(40, 118, 132, UP) + _cd(62, 110, 124, UP) + _cd(84, 92, 114, UP)
+                     + _cd(106, 66, 96, UP, wt=57) + _cd(128, 70, 100, DN, wt=56)
+                     + _cd(150, 96, 130, DN) + _cd(172, 126, 160, DN)
+                     + _cd(194, 156, 186, DN, wb=193) + _cd(216, 158, 184, UP, wb=194)
+                     + _cd(238, 132, 160, UP) + _cd(260, 118, 136, UP)
+                     + _txt(112, 44, "rejeitou ➜ venda a reação", DN, 11, "start", "b")
+                     + _txt(210, 216, "defendeu ➜ compra a reação", UP, 11, "start", "b")
+                     + _txt(300, 118, "o POC é o ímã do dia", DM, 10))
+                cen_html += _card_cen("CENÁRIO A", "Dia de equilíbrio (range) — o mais comum em regime positivo",
+                    _svg(a),
+                    f"toque no teto {_fmt(teto)} ou na defesa {_fmt(piso)} <b>com candle de rejeição</b> (pavio + fechamento voltando)",
+                    f"o lado oposto do range, passando pelo POC {_fmt(poc_v)}",
+                    "candle de 15 min FECHANDO fora do range (vira Cenário B ou C)",
+                    "não antecipar o toque: deixe a linha ser testada e entre na reação, nunca na esperança.")
+                # B — rompimento comprador
+                b = (_ln(40, BD, f"alvo {_fmt(alvo_a)}", "5,4") + _ln(140, WL, f"teto {_fmt(teto)}")
+                     + _ln(215, PC, f"POC {_fmt(poc_v)}", "5,4")
+                     + _cd(40, 196, 212, UP) + _cd(62, 178, 198, UP) + _cd(84, 158, 182, UP)
+                     + _cd(106, 128, 162, UP) + _cd(128, 108, 132, UP)
+                     + _txt(30, 95, "1) fecha ACIMA do teto", TX, 11, "start", "b")
+                     + _cd(172, 118, 138, DN, wb=144)
+                     + _txt(184, 160, "2) reteste segura (linha virou suporte)", DM, 10)
+                     + _cd(216, 88, 122, UP) + _cd(238, 62, 92, UP) + _cd(260, 44, 66, UP, wt=41)
+                     + _txt(276, 56, "3) corredor livre até o alvo", UP, 11, "start", "b"))
+                cen_html += _card_cen("CENÁRIO B", f"Rompimento comprador aceito acima de {_fmt(teto)}",
+                    _svg(b),
+                    f"candle de 15 min <b>fechando acima</b> de {_fmt(teto)} + reteste que segura",
+                    f"{_fmt(alvo_a)} (próxima linha do mapa)",
+                    f"voltar para dentro e fechar abaixo de {_fmt(teto)} = violino; range reassume",
+                    "rompimento sem reteste é convite ao violino — o reteste é a confirmação de quem tem pressa de verdade.")
+                # C — perda do suporte
+                c = (_ln(40, PC, f"POC {_fmt(poc_v)}", "5,4") + _ln(115, WL, f"defesa {_fmt(piso)}")
+                     + _ln(210, BD, f"alvo {_fmt(alvo_b)}", "5,4")
+                     + _cd(40, 48, 66, DN) + _cd(62, 62, 84, DN) + _cd(84, 80, 104, DN)
+                     + _cd(106, 100, 128, DN)
+                     + _txt(170, 108, "1) fecha ABAIXO da defesa", TX, 11, "start", "b")
+                     + _cd(150, 96, 120, UP, wt=90)
+                     + _txt(162, 82, "2) reteste rejeita por baixo", DM, 10)
+                     + _cd(194, 118, 148, DN) + _cd(216, 144, 178, DN) + _cd(238, 174, 202, DN, wb=208)
+                     + _txt(254, 200, "3) busca o alvo", DN, 11, "start", "b"))
+                cen_html += _card_cen("CENÁRIO C", f"Perda do suporte {_fmt(piso)} com aceitação",
+                    _svg(c),
+                    f"candle de 15 min <b>fechando abaixo</b> de {_fmt(piso)} + reteste rejeitado",
+                    f"{_fmt(alvo_b)} (próxima linha do mapa)",
+                    f"reconquistar {_fmt(piso)} = rompimento falhou; volta o range",
+                    "em regime gamma positivo a queda desacelera nível a nível — realize por partes, não espere o alvo cheio.")
+        except Exception:
+            cen_html = ""
+
         if itens:
             lis = "".join(f"<div class='rat'><div class='rd'>{i}</div></div>" for i in itens)
             plano_html = (f"<div class='card' style='border-color:rgba(0,229,160,.35)'>"
-                          f"<h2>✈ Plano de voo do dia</h2>{lis}</div>")
+                          f"<h2>✈ Plano de voo do dia</h2>{lis}"
+                          + (f"<h2 style='margin-top:18px'>🎬 Os 3 filmes possíveis do dia</h2>"
+                             f"<div class='rd' style='margin-bottom:4px'>Antes da abertura, decore os três "
+                             f"roteiros abaixo. O pregão vai escolher um deles — seu trabalho não é adivinhar "
+                             f"qual, é <b>reconhecer</b> qual está se desenrolando e agir no gatilho certo.</div>"
+                             + cen_html if cen_html else "")
+                          + "</div>")
     except Exception:
         plano_html = ""
 
