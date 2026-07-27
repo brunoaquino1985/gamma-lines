@@ -410,9 +410,14 @@ o "vento de fundo" dos hedges está a seu favor; contra, exija mais confirmaçã
             alvo_a = next((w["fut"] for w in acima_w[1:]), None) or bu
             piso = s1["fut"] if s1 else val_v
             alvo_b = next((w["fut"] for w in reversed(abaixo_w[:-1])), None) or bdn
+            # sem volume profile (ticks D-1 atrasados): pivô sintético no meio do range
+            pivo_lbl = "POC"
+            if poc_v is None and teto is not None and piso is not None:
+                poc_v = round((teto + piso) / 2)
+                pivo_lbl = "pivô"
             if all(v is not None for v in (teto, poc_v, piso, alvo_a, alvo_b)):
                 # A — range/equilíbrio
-                a = (_ln(55, WL, f"teto {_fmt(teto)}") + _ln(125, PC, f"POC {_fmt(poc_v)}", "5,4")
+                a = (_ln(55, WL, f"teto {_fmt(teto)}") + _ln(125, PC, f"{pivo_lbl} {_fmt(poc_v)}", "5,4")
                      + _ln(195, BD, f"defesa {_fmt(piso)}", "5,4")
                      + _cd(40, 118, 132, UP) + _cd(62, 110, 124, UP) + _cd(84, 92, 114, UP)
                      + _cd(106, 66, 96, UP, wt=57) + _cd(128, 70, 100, DN, wt=56)
@@ -421,16 +426,16 @@ o "vento de fundo" dos hedges está a seu favor; contra, exija mais confirmaçã
                      + _cd(238, 132, 160, UP) + _cd(260, 118, 136, UP)
                      + _txt(112, 44, "rejeitou ➜ venda a reação", DN, 11, "start", "b")
                      + _txt(210, 216, "defendeu ➜ compra a reação", UP, 11, "start", "b")
-                     + _txt(300, 118, "o POC é o ímã do dia", DM, 10))
+                     + _txt(300, 118, f"o {pivo_lbl} é o ímã do dia", DM, 10))
                 cen_html += _card_cen("CENÁRIO A", "Dia de equilíbrio (range) — o mais comum em regime positivo",
                     _svg(a),
                     f"toque no teto {_fmt(teto)} ou na defesa {_fmt(piso)} <b>com candle de rejeição</b> (pavio + fechamento voltando)",
-                    f"o lado oposto do range, passando pelo POC {_fmt(poc_v)}",
+                    f"o lado oposto do range, passando pelo {pivo_lbl} {_fmt(poc_v)}",
                     "candle de 15 min FECHANDO fora do range (vira Cenário B ou C)",
                     "não antecipar o toque: deixe a linha ser testada e entre na reação, nunca na esperança.")
                 # B — rompimento comprador
                 b = (_ln(40, BD, f"alvo {_fmt(alvo_a)}", "5,4") + _ln(140, WL, f"teto {_fmt(teto)}")
-                     + _ln(215, PC, f"POC {_fmt(poc_v)}", "5,4")
+                     + _ln(215, PC, f"{pivo_lbl} {_fmt(poc_v)}", "5,4")
                      + _cd(40, 196, 212, UP) + _cd(62, 178, 198, UP) + _cd(84, 158, 182, UP)
                      + _cd(106, 128, 162, UP) + _cd(128, 108, 132, UP)
                      + _txt(30, 95, "1) fecha ACIMA do teto", TX, 11, "start", "b")
@@ -445,7 +450,7 @@ o "vento de fundo" dos hedges está a seu favor; contra, exija mais confirmaçã
                     f"voltar para dentro e fechar abaixo de {_fmt(teto)} = violino; range reassume",
                     "rompimento sem reteste é convite ao violino — o reteste é a confirmação de quem tem pressa de verdade.")
                 # C — perda do suporte
-                c = (_ln(40, PC, f"POC {_fmt(poc_v)}", "5,4") + _ln(115, WL, f"defesa {_fmt(piso)}")
+                c = (_ln(40, PC, f"{pivo_lbl} {_fmt(poc_v)}", "5,4") + _ln(115, WL, f"defesa {_fmt(piso)}")
                      + _ln(210, BD, f"alvo {_fmt(alvo_b)}", "5,4")
                      + _cd(40, 48, 66, DN) + _cd(62, 62, 84, DN) + _cd(84, 80, 104, DN)
                      + _cd(106, 100, 128, DN)
