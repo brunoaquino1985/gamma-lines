@@ -1108,6 +1108,17 @@ cautela com compra no Ibovespa; petróleo e minério puxam Petrobras e Vale, os 
     })();
     </script>
   </div>
+  <div class="card" id="smccard"><h2>Zonas SMC/Wyckoff <span style="font-size:.7em;opacity:.7">(v2 experimental)</span></h2>
+    <img id="smcimg" class="tvimg" style="display:none" alt="Zonas SMC/Wyckoff do dia">
+    <script>
+    (function(){
+      var im = document.getElementById('smcimg');
+      im.onload = function(){ im.style.display='block'; };
+      im.onerror = function(){ var c = document.getElementById('smccard'); if (c) c.style.display='none'; };
+      im.src = 'smc.png?cb=' + Date.now();
+    })();
+    </script>
+  </div>
 </section>
 
 <section class="view" id="v-gloss">
