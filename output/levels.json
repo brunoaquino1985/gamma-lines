@@ -1,95 +1,95 @@
 {
-  "session": "2026-07-27",
-  "ref": "2026-07-24",
+  "session": "2026-07-28",
+  "ref": "2026-07-27",
   "fut": "INDQ26",
-  "fut_settle": 175012.0,
-  "ibov_close": 173833.01395646387,
-  "bova11": 170.95,
-  "fator": 1.0067822907553763,
+  "fut_settle": 176554.0,
+  "ibov_close": 175334.46,
+  "bova11": 172.75,
+  "fator": 1.0069555066357179,
   "walls": [
-    {
-      "strike": 170000,
-      "width": 2,
-      "fut": 171152.989
-    },
-    {
-      "strike": 171000,
-      "width": 1,
-      "fut": 172159.772
-    },
     {
       "strike": 172000,
       "width": 1,
-      "fut": 173166.554
+      "fut": 173196.347
     },
     {
       "strike": 173000,
-      "width": 1,
-      "fut": 174173.336
+      "width": 2,
+      "fut": 174203.303
     },
     {
       "strike": 174000,
       "width": 1,
-      "fut": 175180.119
+      "fut": 175210.258
     },
     {
       "strike": 175000,
       "width": 3,
-      "fut": 176186.901
+      "fut": 176217.214
     },
     {
       "strike": 176000,
       "width": 2,
-      "fut": 177193.683
+      "fut": 177224.169
     },
     {
       "strike": 177000,
       "width": 1,
-      "fut": 178200.465
+      "fut": 178231.125
+    },
+    {
+      "strike": 178000,
+      "width": 1,
+      "fut": 179238.08
+    },
+    {
+      "strike": 179000,
+      "width": 1,
+      "fut": 180245.036
     }
   ],
   "midwalls": [
-    171656.381,
-    172663.163,
-    173669.945,
-    174676.727,
-    175683.51,
-    176690.292,
-    177697.074
+    173699.825,
+    174706.78,
+    175713.736,
+    176720.691,
+    177727.647,
+    178734.602,
+    179741.558
   ],
-  "gamma_flip": 170966.083,
-  "max_gamma": 186737.804,
-  "min_gamma": 164686.292,
+  "gamma_flip": 171786.233,
+  "max_gamma": 183792.714,
+  "min_gamma": 165607.652,
   "series": {
-    "bova": 637,
+    "bova": 672,
     "ibov": 88
   },
   "prob": {
     "expiry": "2026-07-31",
-    "iv_atm": 0.1966,
-    "p_up_expiry": 0.5413,
-    "sigma_day": 0.01238,
-    "band_up": 177179.324,
-    "band_down": 172844.676,
+    "iv_atm": 0.2101,
+    "p_up_expiry": 0.4874,
+    "sigma_day": 0.01324,
+    "band_up": 178890.753,
+    "band_down": 174217.247,
     "pct": {
-      "p10": 169557.8,
-      "p25": 172544.8,
-      "p50": 175531.8,
-      "p75": 178694.6,
-      "p90": 181857.3
+      "p10": 170984.4,
+      "p25": 173810.6,
+      "p50": 176460.2,
+      "p75": 179109.7,
+      "p90": 181935.9
     }
   },
   "flows": {
-    "vanna_1pct_mi": 33951.6,
-    "charm_day_mi": -13996.2
+    "vanna_1pct_mi": 24660.7,
+    "charm_day_mi": -12285.5
   },
   "flow": {
-    "last_session": "2026-07-23",
-    "estrangeiro_dia_mi": -979.8,
-    "estrangeiro_5d_mi": 1283.1,
-    "estrangeiro_21d_mi": 4226.6,
-    "institucional_dia_mi": 579.6,
-    "pessoa_fisica_dia_mi": 267.1,
+    "last_session": "2026-07-24",
+    "estrangeiro_dia_mi": -1232.8,
+    "estrangeiro_5d_mi": -2311.9,
+    "estrangeiro_21d_mi": 3404.6,
+    "institucional_dia_mi": 674.1,
+    "pessoa_fisica_dia_mi": 381.2,
     "lag_note": "defasagem de 2 pregões (dado público mais recente da B3)"
   },
   "bt": {
