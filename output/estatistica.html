@@ -1,0 +1,98 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GAMMA LINES — Estatística de Acertos v2 (13/07 a 07/08)</title>
+<style>
+:root{--bg:#0d1420;--card:#111a2b;--bd:#1b2636;--tx:#dbe7f4;--dim:#7b8ba1;--acc:#32cd32;--poc:#ff00ff;--warn:#ffd75e;--dn:#f23645;--up:#089981;--bd2:#00ced1}
+body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;margin:0;padding:18px;line-height:1.55}
+.wrap{max-width:980px;margin:0 auto}
+h1{font-size:1.35rem;color:#fff} h2{font-size:1.05rem;color:var(--acc);margin-top:28px;border-bottom:1px solid var(--bd);padding-bottom:6px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;margin:14px 0}
+table{width:100%;border-collapse:collapse;font-size:.9rem;margin:10px 0}
+th{color:var(--dim);text-align:left;font-weight:600;border-bottom:1px solid var(--bd);padding:6px 8px}
+td{padding:6px 8px;border-bottom:1px solid #16202f}
+.g{color:var(--up);font-weight:700}.r{color:var(--dn);font-weight:700}.y{color:var(--warn);font-weight:700}.m{color:var(--poc);font-weight:700}.c{color:var(--bd2)}
+.big{font-size:1.5rem;font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.kpi{background:#0a1220;border:1px solid var(--bd);border-radius:10px;padding:12px 14px;text-align:center}
+.kpi .l{color:var(--dim);font-size:.78rem}
+.note{color:var(--dim);font-size:.8rem}
+.hl{background:#13233a;border-left:3px solid var(--acc);padding:10px 14px;border-radius:0 8px 8px 0;margin:10px 0}
+</style></head><body><div class="wrap">
+<h1>📊 GAMMA LINES — Estatística de Acertos v2</h1>
+<div class="note">Desde o início do projeto: <b>camada intraday</b> = 11 pregões auditados barra a barra M15 (21/07, 27–31/07, 03–07/08) → 118 eventos de toque + 13 aproximações. <b>Camada diária</b> = 20 pregões (13/07–07/08) com OHLC diário × mapa do dia (mapas históricos recuperados do git, um a um). Metodologia no fim. Estudo educacional — não é recomendação.</div>
+
+<div class="card"><div class="grid">
+<div class="kpi"><div class="big g">60%</div><div class="l">rejeição nas WALLS<br>(75 toques decididos)</div></div>
+<div class="kpi"><div class="big" style="color:var(--poc)">73%</div><div class="l">rejeição no POC</div></div>
+<div class="kpi"><div class="big c">82%</div><div class="l">rejeição no VAL<br>(o melhor nível)</div></div>
+<div class="kpi"><div class="big y">80%</div><div class="l">das MÍNIMAS do dia<br>feitas a ≤300 pts de uma linha (20d)</div></div>
+</div></div>
+
+<h2>1. Taxa de acerto por tipo de nível (intraday, 11 pregões)</h2>
+<div class="card"><table>
+<tr><th>Nível</th><th>Toques</th><th>Rejeitou</th><th>Rompeu</th><th>Taxa</th><th>Leitura</th></tr>
+<tr><td class="g">WALL (todas)</td><td>78</td><td>45</td><td>30</td><td class="g">60%</td><td>o esqueleto do mapa: 6 em 10 seguram</td></tr>
+<tr><td class="m">POC</td><td>11</td><td>8</td><td>3</td><td class="m">73%</td><td>ímã e muro — melhor que wall isolada</td></tr>
+<tr><td class="c">VAL</td><td>13</td><td>9</td><td>2</td><td class="c">82%</td><td>o campeão: defesa compradora mais confiável do mapa</td></tr>
+<tr><td>VAH</td><td>6</td><td>4</td><td>2</td><td>67%</td><td>sólido</td></tr>
+<tr><td class="c">BANDA −1σ</td><td>4</td><td>2</td><td>2</td><td>50%</td><td>piso estatístico: meio a meio no toque…</td></tr>
+<tr><td class="r">BANDA +1σ</td><td>3</td><td>0</td><td>3</td><td class="r">0%</td><td>⚠ tocou = dia de tendência de alta em curso (29, 30/07)</td></tr>
+<tr><td class="y">FLIP</td><td>3</td><td>1</td><td>2</td><td class="y">33%</td><td>botão do pânico: os 2 rompimentos (06 e 07/08) viraram tendência — sexta caiu mais 800 pts após perder o flip</td></tr>
+</table>
+<div class="hl">💡 <b>Hierarquia de confiança:</b> VAL 82% &gt; POC 73% &gt; VAH 67% &gt; WALL 60%. Confluência (wall + POC/VAL juntos) é onde o mapa é mais forte. Banda+ tocada e flip perdido não são níveis de reação — são <b>alarmes de regime</b>.</div></div>
+
+<h2>2. Walls por força e direção</h2>
+<div class="card"><table>
+<tr><th>Corte</th><th>n</th><th>Rejeição</th><th>Obs.</th></tr>
+<tr><td>* simples</td><td>57</td><td class="g">63%</td><td>consistente e estável</td></tr>
+<tr><td>** dupla</td><td>10</td><td class="g">60%</td><td>rejeita "seco", sem deixar o preço invadir</td></tr>
+<tr><td>*** tripla</td><td>11</td><td class="y">45%</td><td>com a amostra maior subiu de 20%→45% (pipeline 33d: 55%). Tripla é forte — mas é onde o mercado ataca em dia de tendência</td></tr>
+<tr><td>Toque comprador (subindo)</td><td>35</td><td class="g">65%</td><td>walls seguram melhor por cima…</td></tr>
+<tr><td>Toque vendedor (caindo)</td><td>43</td><td class="y">56%</td><td>…do que por baixo. Suporte é mais frágil que resistência neste regime</td></tr>
+</table></div>
+
+<h2>3. Quanto PASSA e quanto FALTA (a régua do Bruno)</h2>
+<div class="card"><table>
+<tr><th>Métrica</th><th>Valor</th></tr>
+<tr><td>Pavio mediano além da wall nas rejeições</td><td class="y">72 pts</td></tr>
+<tr><td>p75 / p90 / máximo do pavio nas rejeições</td><td class="y">270 / 420 / 576 pts</td></tr>
+<tr><td class="r">Penetração mediana quando ROMPE de verdade</td><td class="r">684 pts</td></tr>
+<tr><td>Aproximação sem toque — distância mínima mediana (13 casos)</td><td class="y">324 pts (mínimo: 101)</td></tr>
+</table>
+<div class="hl">🎯 <b>Régua prática consolidada (n=75):</b><br>
+• <b>Zona de atuação:</b> a linha "funciona" desde ~150–300 pts antes do toque — reversões sem toque exato são comuns (13 casos).<br>
+• <b>Ruído esperado:</b> invasão de até ~270 pts (p75) é pavio normal de rejeição — não é falha.<br>
+• <b>Divisor de águas: ~420–450 pts</b> (p90). Além disso, o evento muda de natureza: rompimentos reais penetram mediana de 684.<br>
+• Em ticks de WIN (5 pts): ruído ≈ 54 ticks, stop da rejeição ≈ 85–90 ticks além da linha.</div></div>
+
+<h2>4. Volume — o mito continua morto</h2>
+<div class="card"><p>Com n maior o resultado se manteve: volume relativo mediano no toque = <b>1,64×</b> nas rejeições vs <b>1,88×</b> nos rompimentos. Diferença pequena demais para operar. Todo toque atrai volume; <b>o que discrimina é o fechamento da barra e as 1–2 seguintes</b>, não o volume do impacto.</p></div>
+
+<h2>5. Primeiro teste, reteste e relógio</h2>
+<div class="card">
+<p><b>1º teste do dia: <span class="g">69%</span> · Reteste: <span class="y">51%</span></b> (n=36/39). Confirmado com folga: cada reteste consome a defesa. Wall no 3º+ teste é rompimento esperando data.</p>
+<p><b>Relógio:</b> 09h = 73% de rejeição (16/22, o horário de ouro) · 13h = 86% (6/7, pós-almoço seco) · tarde 15h–16h = ~40–43% (charm dominando). <b>Evite operar rejeição depois das 15h</b> — é o horário em que o mapa menos segura.</p></div>
+
+<h2>6. Camada diária — 20 pregões (13/07 a 07/08)</h2>
+<div class="card"><table>
+<tr><th>Estatística</th><th>Resultado</th><th>Leitura</th></tr>
+<tr><td>MÍNIMA do dia feita a ≤300 pts de uma linha do mapa</td><td class="g">16/20 (80%)</td><td>o fundo do dia quase sempre é uma linha nossa</td></tr>
+<tr><td>MÍNIMA a ≤150 pts</td><td class="g">12/20 (60%)</td><td></td></tr>
+<tr><td>MÁXIMA do dia a ≤300 pts de uma linha</td><td class="y">13/20 (65%)</td><td>topos respeitam menos que fundos…</td></tr>
+<tr><td>MÁXIMA a ≤150 pts</td><td class="y">9/20 (45%)</td><td>…assimetria típica de regime gamma+ (dealers defendem o lado de baixo)</td></tr>
+<tr><td>Fechamento dentro das bandas ±1σ</td><td class="c">14/20 (70%)</td><td>a teoria prevê ~68% — a IV das opções está precificando o dia com precisão notável</td></tr>
+<tr><td>POC tocado pelo range do dia</td><td class="m">11/17 (65%)</td><td>ímã confirmado (pipeline 33d: 71%)</td></tr>
+<tr><td>Gaps ≥100 pts fechados no mesmo dia</td><td class="g">17/19 (89%)</td><td>gap de abertura no WIN fecha — estatística fortíssima</td></tr>
+<tr><td>Gap mediano de abertura</td><td>466 pts</td><td>quase todo dia abre com gap operável</td></tr>
+</table>
+<div class="hl">💎 O número mais bonito do estudo: <b>70% dos fechamentos dentro das bandas ±1σ</b> vs 68% teórico. As opções sabem o tamanho do dia. E <b>80% das mínimas nascem numa linha do mapa</b> — comprar fundo "no nada" é desnecessário: o mapa diz onde o fundo tem permissão de existir.</div></div>
+
+<h2>7. Estudo de caso — sexta 07/08 (o dia mais didático da amostra)</h2>
+<div class="card"><p>Abertura 176.420, <b>54 pts acima da tripla 176.366</b> — primeiro toque rejeitou (máxima do dia 176.825, sem nem alcançar a OB de venda 177.320–177.890). Perdeu a dupla 175.364 às 10:30 e desceu nível a nível: banda −1σ 173.894, wall 174.362, wall 173.360… No <b>flip 173.050</b>, primeiro toque REJEITOU (13:00, pavio a 172.755, +295 pts de reação) — e o segundo toque rompeu, entregando queda até 172.275. Fechou 172.608: <b>−1,85%, range de 4.550 pts, mínima feita a 83 pts do mapa</b>. Todos os conceitos do estudo apareceram num único pregão: rejeição no 1º toque, quebra no reteste, suportes mais frágeis que resistências, flip como botão do pânico, mínima nascendo numa linha.</p>
+<p class="r"><b>⚠ Estado atual: o mercado fechou ABAIXO do flip (172.608 &lt; 173.050) — regime gamma NEGATIVO na abertura de segunda.</b> Dealers passam a vender queda e comprar alta: movimentos amplificados, bandas menos confiáveis, o mapa de segunda precisa ser lido com essa lente.</p></div>
+
+<h2>Metodologia</h2>
+<div class="card note">
+Intraday: toque = high/low a ±100 pts do nível; rompimento = fechamento M15 ≥150 pts além (janela 4 barras); rejeição = reversão ≥300 pts sem fechamento além; penetração = máxima invasão na janela; aproximação = distância mínima ≤500 pts sem toque; volume relativo = vol da barra ÷ média do dia; toques consecutivos = 1 evento. 11 pregões × 38 barras M15 (21/07 sem volume no feed). Camada diária: OHLC D1 × mapa do dia (walls, flip, bandas, POC/VAH/VAL); mapas históricos recuperados commit a commit do repositório. Amostras: n=118 toques (margem ~±9 p.p.), 20 dias. Comparar sempre com o backtest de 33 pregões do pipeline (janela 16/06–05/08). Estudo educacional — não é recomendação de compra ou venda.
+</div>
+</div></body></html>
