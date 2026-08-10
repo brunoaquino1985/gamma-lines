@@ -73,9 +73,9 @@ def generate_ntsl(res, session_date):
         # volume profile da sessão anterior (POC cheio, VAH/VAL tracejadas)
         lines.append((vp["d1"]["poc"], "clPoc", 2, 0,
                       f"POC {fmt_pts(vp['d1']['poc'])}", 10))
-        lines.append((vp["d1"]["vah"], "clVA", 1, 2,
+        lines.append((vp["d1"]["vah"], "clVA", 3, 2,
                       f"VAH {fmt_pts(vp['d1']['vah'])}", 10))
-        lines.append((vp["d1"]["val"], "clVA", 1, 2,
+        lines.append((vp["d1"]["val"], "clVA", 3, 2,
                       f"VAL {fmt_pts(vp['d1']['val'])}", 10))
 
     sty = {0: "psSolid", 1: "psDot", 2: "psDash"}
