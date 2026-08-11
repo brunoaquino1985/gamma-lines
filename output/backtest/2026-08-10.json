@@ -1,0 +1,56 @@
+{
+ "v": 2,
+ "session": "2026-08-10",
+ "open": 173275.0,
+ "high": 173700.0,
+ "low": 171670.0,
+ "close": 172250.0,
+ "regime": "neg",
+ "fluxo": "vendedor",
+ "vol_h": {
+  "9": 2326012,
+  "10": 3608733,
+  "11": 2869028,
+  "12": 1487205,
+  "13": 1197050,
+  "14": 1226903,
+  "15": 933926,
+  "16": 1037253,
+  "17": 425585,
+  "18": 147502
+ },
+ "walls": [
+  {
+   "outcome": "rompeu",
+   "side": "acima",
+   "mfe": 271.5,
+   "hora": 1050,
+   "width": 1,
+   "level": 172268.505
+  },
+  {
+   "outcome": "rejeitou",
+   "side": "acima",
+   "mfe": 429.9,
+   "hora": 902,
+   "width": 1,
+   "level": 173270.066
+  }
+ ],
+ "bands": {
+  "inside": true,
+  "broke_up": false,
+  "broke_down": false
+ },
+ "flip": {
+  "crossed_down": false,
+  "extra_drop": null
+ },
+ "poc": {
+  "touched": true
+ },
+ "va": {
+  "open_inside": true,
+  "close_inside": false
+ }
+}

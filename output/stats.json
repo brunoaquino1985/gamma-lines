@@ -1,10 +1,10 @@
 {
-  "n_days": 35,
+  "n_days": 36,
   "walls": {
     "1": {
-      "toques": 60,
-      "rejeitou": 31,
-      "rompeu": 28,
+      "toques": 62,
+      "rejeitou": 32,
+      "rompeu": 29,
       "neutro": 1,
       "taxa_rejeicao": 0.525
     },
@@ -24,18 +24,18 @@
     }
   },
   "bands": {
-    "days": 35,
-    "inside": 18,
-    "taxa_dentro": 0.514
+    "days": 36,
+    "inside": 19,
+    "taxa_dentro": 0.528
   },
   "poc": {
-    "days": 33,
-    "touched": 23,
-    "taxa_ima": 0.697
+    "days": 34,
+    "touched": 24,
+    "taxa_ima": 0.706
   },
   "va": {
-    "open_inside": 16,
-    "taxa_rotacao": 0.312,
+    "open_inside": 17,
+    "taxa_rotacao": 0.294,
     "open_outside": 17,
     "taxa_tendencia": 0.765
   },
@@ -52,11 +52,11 @@
       "taxa_rejeicao": 0.511
     },
     "neg": {
-      "toques": 10,
-      "rejeitou": 6,
-      "rompeu": 4,
+      "toques": 12,
+      "rejeitou": 7,
+      "rompeu": 5,
       "neutro": 0,
-      "taxa_rejeicao": 0.6
+      "taxa_rejeicao": 0.583
     },
     "comprador": {
       "toques": 38,
@@ -66,11 +66,11 @@
       "taxa_rejeicao": 0.649
     },
     "vendedor": {
-      "toques": 63,
-      "rejeitou": 27,
-      "rompeu": 34,
+      "toques": 65,
+      "rejeitou": 28,
+      "rompeu": 35,
       "neutro": 2,
-      "taxa_rejeicao": 0.443
+      "taxa_rejeicao": 0.444
     }
   },
   "gaps": {
@@ -80,9 +80,9 @@
       "taxa_fechou": 0.909
     },
     "300_700": {
-      "n": 14,
-      "fechou": 10,
-      "taxa_fechou": 0.714
+      "n": 15,
+      "fechou": 11,
+      "taxa_fechou": 0.733
     },
     "700_1500": {
       "n": 8,
@@ -97,20 +97,20 @@
   },
   "hourly": {
     "9": {
-      "toques": 62,
-      "rejeitou": 35,
+      "toques": 63,
+      "rejeitou": 36,
       "rompeu": 27,
       "neutro": 0,
-      "taxa_rejeicao": 0.565,
-      "vol_pct": 18.7
+      "taxa_rejeicao": 0.571,
+      "vol_pct": 18.6
     },
     "10": {
-      "toques": 20,
+      "toques": 21,
       "rejeitou": 11,
-      "rompeu": 9,
+      "rompeu": 10,
       "neutro": 0,
-      "taxa_rejeicao": 0.55,
-      "vol_pct": 24.7
+      "taxa_rejeicao": 0.524,
+      "vol_pct": 24.6
     },
     "11": {
       "toques": 6,
@@ -118,7 +118,7 @@
       "rompeu": 4,
       "neutro": 0,
       "taxa_rejeicao": 0.333,
-      "vol_pct": 15.4
+      "vol_pct": 15.5
     },
     "12": {
       "toques": 4,
@@ -142,7 +142,7 @@
       "rompeu": 0,
       "neutro": 0,
       "taxa_rejeicao": null,
-      "vol_pct": 7.0
+      "vol_pct": 7.1
     },
     "15": {
       "toques": 2,
@@ -158,7 +158,7 @@
       "rompeu": 1,
       "neutro": 0,
       "taxa_rejeicao": 0.0,
-      "vol_pct": 6.3
+      "vol_pct": 6.4
     },
     "17": {
       "toques": 3,
@@ -178,5 +178,5 @@
     }
   },
   "desde": "2026-06-16",
-  "ate": "2026-08-07"
+  "ate": "2026-08-10"
 }
