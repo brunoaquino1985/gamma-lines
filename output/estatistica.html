@@ -91,6 +91,24 @@ td{padding:6px 8px;border-bottom:1px solid #16202f}
 <div class="card"><p>Abertura 176.420, <b>54 pts acima da tripla 176.366</b> — primeiro toque rejeitou (máxima do dia 176.825, sem nem alcançar a OB de venda 177.320–177.890). Perdeu a dupla 175.364 às 10:30 e desceu nível a nível: banda −1σ 173.894, wall 174.362, wall 173.360… No <b>flip 173.050</b>, primeiro toque REJEITOU (13:00, pavio a 172.755, +295 pts de reação) — e o segundo toque rompeu, entregando queda até 172.275. Fechou 172.608: <b>−1,85%, range de 4.550 pts, mínima feita a 83 pts do mapa</b>. Todos os conceitos do estudo apareceram num único pregão: rejeição no 1º toque, quebra no reteste, suportes mais frágeis que resistências, flip como botão do pânico, mínima nascendo numa linha.</p>
 <p class="r"><b>⚠ Estado atual: o mercado fechou ABAIXO do flip (172.608 &lt; 173.050) — regime gamma NEGATIVO na abertura de segunda.</b> Dealers passam a vender queda e comprar alta: movimentos amplificados, bandas menos confiáveis, o mapa de segunda precisa ser lido com essa lente.</p></div>
 
+<h2>8. Como a bolsa reage a rebaixamentos — 20 anos de histórico</h2>
+<div class="card">
+<p><b>Rebaixamento soberano (agência de rating) ≠ rebaixamento de recomendação (banco).</b> A história trata os dois de formas muito diferentes — e o resultado surpreende quem espera pânico.</p>
+<table>
+<tr><th>Evento</th><th>Data</th><th>Reação do pregão seguinte</th></tr>
+<tr><td>S&amp;P tira o grau de investimento (BB+)</td><td>09/09/2015 (após o fechamento)</td><td class="y">−0,22% — praticamente estável</td></tr>
+<tr><td>Fitch tira o grau de investimento</td><td>16/12/2015</td><td class="g">+0,32% — subiu no próprio dia</td></tr>
+<tr><td>Moody's tira o grau (corte surpresa de 2 degraus)</td><td>24/02/2016</td><td class="g">absorvido sem colapso — um mês depois do fundo histórico, em pleno início do rali de 2016</td></tr>
+<tr><td>S&amp;P corta BB → BB−</td><td>11/01/2018 (após o fechamento)</td><td class="g">dia seguinte em alta, em bull market (direção verificada; decimal aproximado)</td></tr>
+<tr><td class="r">JPMorgan corta ações BR de overweight → neutro (alvo 190k→185k)</td><td>11/08/2026</td><td class="r">no PRÓPRIO dia: −2,50% (167.874), dólar +0,98%, financeiro −3,27% — amplificado por gamma−, charm recorde −36bi e saída estrangeira de −5,6bi/5d já em curso</td></tr>
+</table>
+<div class="hl">📜 <b>As três lições do histórico:</b><br>
+• <b>Rebaixamento soberano é evento atrasado</b> — a agência confirma o que o preço já fez. O estrago acontece nos meses anteriores (2015 caiu 13,3% no ano); no dia seguinte ao anúncio a reação histórica é neutra a positiva ("vende no boato, compra no fato"). Em nenhum dos 4 episódios de agência o dia seguinte foi de queda forte.<br>
+• <b>Corte de recomendação de banco tem meia-vida curta</b> — bate forte no próprio dia e no seguinte vira cara-ou-coroa com leve viés de repique técnico quando a queda passou de 2%. O que dá continuidade não é o rebaixamento, é o fluxo real que ele valida (no caso de 2026: o estrangeiro já sacava antes do JPMorgan falar).<br>
+• <b>O regime gamma manda na amplitude</b> — o mesmo evento em gamma+ vira ruído comprimido; em gamma− (como em 11/08/2026) vira −2,5%. Cheque sempre o flip antes de dimensionar o risco do evento.</div>
+<div class="note">Fontes: InfoMoney (10 pregões mais importantes de 2015; JPMorgan corta Brasil a neutro), TMC (fechamento 11/08/2026), Agência Brasil (Moody's 2016). Episódios de 2016/2018: direção confirmada em fontes históricas, variação exata aproximada.</div>
+</div>
+
 <h2>Metodologia</h2>
 <div class="card note">
 Intraday: toque = high/low a ±100 pts do nível; rompimento = fechamento M15 ≥150 pts além (janela 4 barras); rejeição = reversão ≥300 pts sem fechamento além; penetração = máxima invasão na janela; aproximação = distância mínima ≤500 pts sem toque; volume relativo = vol da barra ÷ média do dia; toques consecutivos = 1 evento. 11 pregões × 38 barras M15 (21/07 sem volume no feed). Camada diária: OHLC D1 × mapa do dia (walls, flip, bandas, POC/VAH/VAL); mapas históricos recuperados commit a commit do repositório. Amostras: n=118 toques (margem ~±9 p.p.), 20 dias. Comparar sempre com o backtest de 33 pregões do pipeline (janela 16/06–05/08). Estudo educacional — não é recomendação de compra ou venda.
