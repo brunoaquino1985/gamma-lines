@@ -1,122 +1,122 @@
 {
-  "session": "2026-08-17",
-  "ref": "2026-08-14",
+  "session": "2026-08-18",
+  "ref": "2026-08-17",
   "fut": "INDV26",
-  "fut_settle": 169904.0,
-  "ibov_close": 166934.2,
-  "bova11": 163.9,
-  "fator": 1.017790243101773,
+  "fut_settle": 169863.0,
+  "ibov_close": 166783.57,
+  "bova11": 163.8,
+  "fator": 1.0184636292411775,
   "walls": [
     {
       "strike": 163000,
       "width": 1,
-      "fut": 165899.81
+      "fut": 166009.572
     },
     {
       "strike": 164000,
       "width": 1,
-      "fut": 166917.6
+      "fut": 167028.035
     },
     {
       "strike": 165000,
       "width": 2,
-      "fut": 167935.39
+      "fut": 168046.499
     },
     {
       "strike": 166000,
-      "width": 1,
-      "fut": 168953.18
+      "width": 2,
+      "fut": 169064.962
     },
     {
       "strike": 167000,
       "width": 1,
-      "fut": 169970.971
+      "fut": 170083.426
     },
     {
       "strike": 168000,
       "width": 1,
-      "fut": 170988.761
+      "fut": 171101.89
     },
     {
       "strike": 169000,
-      "width": 2,
-      "fut": 172006.551
+      "width": 1,
+      "fut": 172120.353
     },
     {
       "strike": 170000,
       "width": 3,
-      "fut": 173024.341
+      "fut": 173138.817
     }
   ],
   "midwalls": [
-    166408.705,
-    167426.495,
-    168444.285,
-    169462.075,
-    170479.866,
-    171497.656,
-    172515.446
+    166518.803,
+    167537.267,
+    168555.731,
+    169574.194,
+    170592.658,
+    171611.122,
+    172629.585
   ],
-  "gamma_flip": 167248.652,
-  "max_gamma": 178908.912,
-  "min_gamma": 158350.528,
+  "gamma_flip": 167630.475,
+  "max_gamma": 181583.547,
+  "min_gamma": 158652.042,
   "series": {
-    "bova": 796,
-    "ibov": 125
+    "bova": 756,
+    "ibov": 131
   },
   "prob": {
     "expiry": "2026-08-21",
-    "iv_atm": 0.2616,
-    "p_up_expiry": 0.5326,
-    "sigma_day": 0.01648,
-    "band_up": 172703.449,
-    "band_down": 167104.551,
+    "iv_atm": 0.3105,
+    "p_up_expiry": 0.5325,
+    "sigma_day": 0.01956,
+    "band_up": 173185.783,
+    "band_down": 166540.217,
     "pct": {
-      "p10": 162952.5,
-      "p25": 166535.7,
-      "p50": 170289.6,
-      "p75": 174384.7,
-      "p90": 178479.9
+      "p10": 163470.7,
+      "p25": 166879.9,
+      "p50": 170289.1,
+      "p75": 173868.8,
+      "p90": 177448.4
     }
   },
   "flows": {
-    "vanna_1pct_mi": 19907.3,
-    "charm_day_mi": -6815.8
+    "vanna_1pct_mi": 18061.4,
+    "charm_day_mi": -5590.7
   },
   "flow": {
-    "last_session": "2026-08-13",
-    "estrangeiro_dia_mi": -2070.9,
-    "estrangeiro_5d_mi": -12336.8,
-    "estrangeiro_21d_mi": -15366.0,
-    "institucional_dia_mi": 1687.6,
-    "pessoa_fisica_dia_mi": 103.3,
+    "last_session": "2026-08-14",
+    "estrangeiro_dia_mi": -2515.4,
+    "estrangeiro_5d_mi": -12590.8,
+    "estrangeiro_21d_mi": -17939.6,
+    "institucional_dia_mi": 1718.1,
+    "pessoa_fisica_dia_mi": 298.0,
     "lag_note": "defasagem de 2 pregões (dado público mais recente da B3)"
   },
   "vp": {
     "ticker": "WINV26",
     "d1": {
-      "poc": 168740.0,
-      "vah": 169725.0,
-      "val": 168335.0,
-      "volume": 16582461
+      "poc": 169800.0,
+      "vah": 170080.0,
+      "val": 169585.0,
+      "volume": 15393276
     },
     "comp": {
       "days": 5,
-      "poc": 171100.0,
-      "vah": 171630.0,
-      "val": 169555.0,
-      "volume": 48449003
+      "poc": 169975.0,
+      "vah": 171325.0,
+      "val": 169430.0,
+      "volume": 63653455
     }
   },
   "bt": {
-    "n_days": 39,
+    "n_days": 40,
     "walls": {
       "1": {
-        "toques": 67,
-        "rejeitou": 35,
+        "toques": 69,
+        "rejeitou": 37,
         "rompeu": 31,
         "neutro": 1,
-        "taxa_rejeicao": 0.53
+        "taxa_rejeicao": 0.544
       },
       "2": {
         "toques": 34,
@@ -134,20 +134,20 @@
       }
     },
     "bands": {
-      "days": 39,
-      "inside": 20,
-      "taxa_dentro": 0.513
+      "days": 40,
+      "inside": 21,
+      "taxa_dentro": 0.525
     },
     "poc": {
-      "days": 37,
+      "days": 38,
       "touched": 26,
-      "taxa_ima": 0.703
+      "taxa_ima": 0.684
     },
     "va": {
       "open_inside": 17,
       "taxa_rotacao": 0.294,
-      "open_outside": 20,
-      "taxa_tendencia": 0.75
+      "open_outside": 21,
+      "taxa_tendencia": 0.762
     },
     "flip": {
       "crosses": 6,
@@ -155,11 +155,11 @@
     },
     "cond": {
       "pos": {
-        "toques": 91,
-        "rejeitou": 45,
+        "toques": 93,
+        "rejeitou": 47,
         "rompeu": 43,
         "neutro": 3,
-        "taxa_rejeicao": 0.511
+        "taxa_rejeicao": 0.522
       },
       "neg": {
         "toques": 22,
@@ -176,11 +176,11 @@
         "taxa_rejeicao": 0.649
       },
       "vendedor": {
-        "toques": 75,
-        "rejeitou": 34,
+        "toques": 77,
+        "rejeitou": 36,
         "rompeu": 39,
         "neutro": 2,
-        "taxa_rejeicao": 0.466
+        "taxa_rejeicao": 0.48
       }
     },
     "gaps": {
@@ -195,9 +195,9 @@
         "taxa_fechou": 0.765
       },
       "700_1500": {
-        "n": 8,
-        "fechou": 6,
-        "taxa_fechou": 0.75
+        "n": 9,
+        "fechou": 7,
+        "taxa_fechou": 0.778
       },
       "acima_1500": {
         "n": 2,
@@ -207,12 +207,12 @@
     },
     "hourly": {
       "9": {
-        "toques": 68,
-        "rejeitou": 41,
+        "toques": 70,
+        "rejeitou": 43,
         "rompeu": 27,
         "neutro": 0,
-        "taxa_rejeicao": 0.603,
-        "vol_pct": 18.4
+        "taxa_rejeicao": 0.614,
+        "vol_pct": 18.3
       },
       "10": {
         "toques": 23,
@@ -220,7 +220,7 @@
         "rompeu": 12,
         "neutro": 0,
         "taxa_rejeicao": 0.478,
-        "vol_pct": 24.5
+        "vol_pct": 24.6
       },
       "11": {
         "toques": 7,
@@ -228,7 +228,7 @@
         "rompeu": 5,
         "neutro": 0,
         "taxa_rejeicao": 0.286,
-        "vol_pct": 15.4
+        "vol_pct": 15.5
       },
       "12": {
         "toques": 5,
@@ -288,6 +288,6 @@
       }
     },
     "desde": "2026-06-16",
-    "ate": "2026-08-14"
+    "ate": "2026-08-17"
   }
 }
