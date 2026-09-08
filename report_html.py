@@ -6,6 +6,8 @@ import json
 
 
 def _fmt(x, dec=0):
+    if x is None:
+        return "n/d"
     s = f"{x:,.{dec}f}"
     return s.replace(",", "X").replace(".", ",").replace("X", ".")
 
@@ -24,7 +26,7 @@ def build_rationale(spot_fut, walls, mids, flip, maxg, ming, band_up, band_down)
     stars = {3: "★★★", 2: "★★", 1: "★"}
     acima = [w for w in walls if w[2] > spot_fut]
     abaixo = [w for w in walls if w[2] <= spot_fut]
-    pos = spot_fut >= flip
+    pos = (flip is None) or (spot_fut >= flip)
     out = []
 
     def mid_below(level):
@@ -201,7 +203,7 @@ def build_report(res, meta, session_str, flow=None, vp=None, bt=None,
     prob = res.get("prob") or {}
     spot_fut = res["ibov_close"] * res["factor"]
     flip_fut = res["flip"][1]
-    pos = spot_fut >= flip_fut
+    pos = (flip_fut is None) or (spot_fut >= flip_fut)
     regime = "GAMMA POSITIVO" if pos else "GAMMA NEGATIVO"
     regime_desc = ("regime calmo: as paredes tendem a segurar o preço"
                    if pos else
@@ -582,7 +584,8 @@ o "vento de fundo" dos hedges está a seu favor; contra, exija mais confirmaçã
         rows.append((m, "mid wall", "primeiro alvo entre paredes"))
     rows.append((data["maxg"], "MAX GAMMA", "teto estatístico do mapa"))
     rows.append((data["ming"], "MIN GAMMA", "piso estatístico do mapa"))
-    rows.append((data["flip"], "GAMMA FLIP", "divisor de regime — a linha mais importante"))
+    if data["flip"] is not None:
+        rows.append((data["flip"], "GAMMA FLIP", "divisor de regime — a linha mais importante"))
     if prob.get("band_up_fut"):
         rows.append((prob["band_up_fut"], "banda +1σ", "limite superior esperado do dia"))
         rows.append((prob["band_down_fut"], "banda −1σ", "limite inferior esperado do dia"))
