@@ -60,7 +60,8 @@ def generate_ntsl(res, session_date):
         lines.append((fut, "clMidWall", 1, 0, "mid", 8))
     lines.append((maxg, "clMaxGamma", 3, 0, f"MAX GAMMA {fmt_pts(maxg)}", 10))
     lines.append((ming, "clMinGamma", 3, 0, f"MIN GAMMA {fmt_pts(ming)}", 10))
-    lines.append((flip, "clFlip", 2, 0, f"GAMMA FLIP {fmt_pts(flip)}", 10))
+    if flip is not None:
+        lines.append((flip, "clFlip", 2, 0, f"GAMMA FLIP {fmt_pts(flip)}", 10))
     prob = res.get("prob")
     if prob:
         # bandas de 1 desvio-padrão do dia (IV ATM do vencimento curto)
