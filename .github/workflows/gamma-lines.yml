@@ -2,10 +2,10 @@ name: gamma-lines-daily
 
 on:
   schedule:
-    # 08:45 UTC = 05:45 BRT, seg-sex (tentativa principal)
-    - cron: "45 8 * * 1-5"
-    # 10:30 UTC = 07:30 BRT, retentativa (caso a B3 atrase os arquivos)
-    - cron: "30 10 * * 1-5"
+    # 04:00 UTC = 01:00 BRT, seg-sex (adiantado: GitHub atrasa crons ~4-6h)
+    - cron: "0 4 * * 1-5"
+    # 07:00 UTC = 04:00 BRT, retentativa (com atraso ainda chega antes da abertura)
+    - cron: "0 7 * * 1-5"
   workflow_dispatch:
     inputs:
       force:
