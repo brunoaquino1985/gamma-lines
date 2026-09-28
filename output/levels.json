@@ -1,122 +1,122 @@
 {
-  "session": "2026-09-25",
-  "ref": "2026-09-24",
+  "session": "2026-09-28",
+  "ref": "2026-09-25",
   "fut": "INDV26",
-  "fut_settle": 185054.0,
-  "ibov_close": 183965.91,
-  "bova11": 180.87,
-  "fator": 1.0059146284221898,
+  "fut_settle": 184587.0,
+  "ibov_close": 183476.86,
+  "bova11": 180.82,
+  "fator": 1.0060505722629,
   "walls": [
     {
       "strike": 180000,
       "width": 3,
-      "fut": 181064.633
+      "fut": 181089.103
     },
     {
       "strike": 181000,
-      "width": 1,
-      "fut": 182070.548
+      "width": 2,
+      "fut": 182095.154
     },
     {
       "strike": 182000,
       "width": 1,
-      "fut": 183076.462
+      "fut": 183101.204
     },
     {
       "strike": 183000,
       "width": 1,
-      "fut": 184082.377
+      "fut": 184107.255
     },
     {
       "strike": 184000,
       "width": 1,
-      "fut": 185088.292
+      "fut": 185113.305
     },
     {
       "strike": 185000,
       "width": 2,
-      "fut": 186094.206
+      "fut": 186119.356
     },
     {
       "strike": 186000,
-      "width": 2,
-      "fut": 187100.121
+      "width": 1,
+      "fut": 187125.406
     },
     {
       "strike": 187000,
       "width": 1,
-      "fut": 188106.036
+      "fut": 188131.457
     }
   ],
   "midwalls": [
-    181567.59,
-    182573.505,
-    183579.42,
-    184585.334,
-    185591.249,
-    186597.164,
-    187603.078
+    181592.128,
+    182598.179,
+    183604.229,
+    184610.28,
+    185616.331,
+    186622.381,
+    187628.432
   ],
-  "gamma_flip": null,
-  "max_gamma": 201893.914,
-  "min_gamma": 162847.52,
+  "gamma_flip": 164932.086,
+  "max_gamma": 202861.113,
+  "min_gamma": 162436.56,
   "series": {
-    "bova": 807,
-    "ibov": 158
+    "bova": 710,
+    "ibov": 163
   },
   "prob": {
     "expiry": "2026-10-02",
-    "iv_atm": 0.2294,
-    "p_up_expiry": 0.5634,
-    "sigma_day": 0.01445,
-    "band_up": 187728.736,
-    "band_down": 182379.264,
+    "iv_atm": 0.2259,
+    "p_up_expiry": 0.5315,
+    "sigma_day": 0.01423,
+    "band_up": 187213.627,
+    "band_down": 181960.373,
     "pct": {
-      "p10": 178098.2,
-      "p25": 182006.3,
-      "p50": 186100.5,
-      "p75": 190008.7,
-      "p90": 194102.9
+      "p10": 177563.4,
+      "p25": 181262.7,
+      "p50": 184961.9,
+      "p75": 188661.2,
+      "p90": 192175.4
     }
   },
   "flows": {
-    "vanna_1pct_mi": 67832.0,
-    "charm_day_mi": -36063.8
+    "vanna_1pct_mi": 79613.2,
+    "charm_day_mi": -41429.1
   },
   "flow": {
-    "last_session": "2026-09-23",
-    "estrangeiro_dia_mi": -688.6,
-    "estrangeiro_5d_mi": 2680.2,
-    "estrangeiro_21d_mi": 12223.8,
-    "institucional_dia_mi": 232.4,
-    "pessoa_fisica_dia_mi": 431.7,
+    "last_session": "2026-09-24",
+    "estrangeiro_dia_mi": 91.1,
+    "estrangeiro_5d_mi": 3460.9,
+    "estrangeiro_21d_mi": 10945.9,
+    "institucional_dia_mi": -12.6,
+    "pessoa_fisica_dia_mi": 451.0,
     "lag_note": "defasagem de 2 pregões (dado público mais recente da B3)"
   },
   "vp": {
     "ticker": "WINV26",
     "d1": {
-      "poc": 186575.0,
-      "vah": 187290.0,
-      "val": 185655.0,
-      "volume": 19580827
+      "poc": 184500.0,
+      "vah": 184910.0,
+      "val": 183775.0,
+      "volume": 16727601
     },
     "comp": {
       "days": 5,
-      "poc": 186575.0,
-      "vah": 188205.0,
-      "val": 186040.0,
-      "volume": 83012649
+      "poc": 187900.0,
+      "vah": 189480.0,
+      "val": 185910.0,
+      "volume": 83704799
     }
   },
   "bt": {
-    "n_days": 68,
+    "n_days": 69,
     "walls": {
       "1": {
-        "toques": 121,
-        "rejeitou": 64,
-        "rompeu": 56,
+        "toques": 124,
+        "rejeitou": 66,
+        "rompeu": 57,
         "neutro": 1,
-        "taxa_rejeicao": 0.533
+        "taxa_rejeicao": 0.537
       },
       "2": {
         "toques": 65,
@@ -134,20 +134,20 @@
       }
     },
     "bands": {
-      "days": 68,
-      "inside": 40,
-      "taxa_dentro": 0.588
+      "days": 69,
+      "inside": 41,
+      "taxa_dentro": 0.594
     },
     "poc": {
-      "days": 66,
+      "days": 67,
       "touched": 42,
-      "taxa_ima": 0.636
+      "taxa_ima": 0.627
     },
     "va": {
       "open_inside": 26,
       "taxa_rotacao": 0.423,
-      "open_outside": 40,
-      "taxa_tendencia": 0.75
+      "open_outside": 41,
+      "taxa_tendencia": 0.756
     },
     "flip": {
       "crosses": 7,
@@ -169,11 +169,11 @@
         "taxa_rejeicao": 0.64
       },
       "comprador": {
-        "toques": 108,
-        "rejeitou": 60,
-        "rompeu": 47,
+        "toques": 111,
+        "rejeitou": 62,
+        "rompeu": 48,
         "neutro": 1,
-        "taxa_rejeicao": 0.561
+        "taxa_rejeicao": 0.564
       },
       "vendedor": {
         "toques": 104,
@@ -185,9 +185,9 @@
     },
     "gaps": {
       "ate_300": {
-        "n": 15,
-        "fechou": 14,
-        "taxa_fechou": 0.933
+        "n": 16,
+        "fechou": 15,
+        "taxa_fechou": 0.938
       },
       "300_700": {
         "n": 27,
@@ -207,12 +207,12 @@
     },
     "hourly": {
       "9": {
-        "toques": 120,
-        "rejeitou": 71,
-        "rompeu": 49,
+        "toques": 122,
+        "rejeitou": 72,
+        "rompeu": 50,
         "neutro": 0,
-        "taxa_rejeicao": 0.592,
-        "vol_pct": 17.4
+        "taxa_rejeicao": 0.59,
+        "vol_pct": 17.3
       },
       "10": {
         "toques": 44,
@@ -223,11 +223,11 @@
         "vol_pct": 23.9
       },
       "11": {
-        "toques": 17,
-        "rejeitou": 4,
+        "toques": 18,
+        "rejeitou": 5,
         "rompeu": 13,
         "neutro": 0,
-        "taxa_rejeicao": 0.235,
+        "taxa_rejeicao": 0.278,
         "vol_pct": 15.6
       },
       "12": {
@@ -236,7 +236,7 @@
         "rompeu": 7,
         "neutro": 0,
         "taxa_rejeicao": 0.533,
-        "vol_pct": 9.9
+        "vol_pct": 10.0
       },
       "13": {
         "toques": 5,
@@ -244,7 +244,7 @@
         "rompeu": 4,
         "neutro": 0,
         "taxa_rejeicao": 0.2,
-        "vol_pct": 7.7
+        "vol_pct": 7.8
       },
       "14": {
         "toques": 0,
@@ -288,6 +288,6 @@
       }
     },
     "desde": "2026-06-16",
-    "ate": "2026-09-24"
+    "ate": "2026-09-25"
   }
 }
