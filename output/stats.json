@@ -1,5 +1,5 @@
 {
-  "n_days": 74,
+  "n_days": 75,
   "walls": {
     "1": {
       "toques": 136,
@@ -24,20 +24,20 @@
     }
   },
   "bands": {
-    "days": 74,
+    "days": 75,
     "inside": 44,
-    "taxa_dentro": 0.595
+    "taxa_dentro": 0.587
   },
   "poc": {
-    "days": 72,
+    "days": 73,
     "touched": 45,
-    "taxa_ima": 0.625
+    "taxa_ima": 0.616
   },
   "va": {
     "open_inside": 29,
     "taxa_rotacao": 0.414,
-    "open_outside": 43,
-    "taxa_tendencia": 0.744
+    "open_outside": 44,
+    "taxa_tendencia": 0.75
   },
   "flip": {
     "crosses": 7,
@@ -90,9 +90,9 @@
       "taxa_fechou": 0.842
     },
     "acima_1500": {
-      "n": 7,
+      "n": 8,
       "fechou": 2,
-      "taxa_fechou": 0.286
+      "taxa_fechou": 0.25
     }
   },
   "hourly": {
@@ -102,7 +102,7 @@
       "rompeu": 56,
       "neutro": 0,
       "taxa_rejeicao": 0.582,
-      "vol_pct": 17.2
+      "vol_pct": 17.1
     },
     "10": {
       "toques": 45,
@@ -134,7 +134,7 @@
       "rompeu": 4,
       "neutro": 0,
       "taxa_rejeicao": 0.333,
-      "vol_pct": 7.8
+      "vol_pct": 7.9
     },
     "14": {
       "toques": 0,
@@ -158,7 +158,7 @@
       "rompeu": 2,
       "neutro": 0,
       "taxa_rejeicao": 0.0,
-      "vol_pct": 6.6
+      "vol_pct": 6.7
     },
     "17": {
       "toques": 3,
@@ -178,5 +178,5 @@
     }
   },
   "desde": "2026-06-16",
-  "ate": "2026-10-02"
+  "ate": "2026-10-05"
 }
