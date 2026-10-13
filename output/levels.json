@@ -1,5 +1,5 @@
 {
-  "session": "2026-10-12",
+  "session": "2026-10-13",
   "ref": "2026-10-09",
   "fut": "INDV26",
   "fut_settle": 209133.0,
@@ -84,12 +84,12 @@
     "charm_day_mi": -8117.6
   },
   "flow": {
-    "last_session": "2026-10-07",
-    "estrangeiro_dia_mi": -627.9,
-    "estrangeiro_5d_mi": 13075.2,
-    "estrangeiro_21d_mi": 16197.5,
-    "institucional_dia_mi": 676.2,
-    "pessoa_fisica_dia_mi": 155.1,
+    "last_session": "2026-10-09",
+    "estrangeiro_dia_mi": 1645.5,
+    "estrangeiro_5d_mi": 14452.6,
+    "estrangeiro_21d_mi": 17635.6,
+    "institucional_dia_mi": -52.7,
+    "pessoa_fisica_dia_mi": 28.5,
     "lag_note": "defasagem de 2 pregões (dado público mais recente da B3)"
   },
   "vp": {
