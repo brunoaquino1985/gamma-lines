@@ -1,111 +1,111 @@
 {
-  "session": "2026-10-15",
-  "ref": "2026-10-14",
+  "session": "2026-10-16",
+  "ref": "2026-10-15",
   "fut": "INDZ26",
-  "fut_settle": 210905.0,
-  "ibov_close": 206505.98,
-  "bova11": 203.65,
-  "fator": 1.0213021434052418,
+  "fut_settle": 208485.0,
+  "ibov_close": 204324.26,
+  "bova11": 201.39,
+  "fator": 1.0203634164636153,
   "walls": [
+    {
+      "strike": 201000,
+      "width": 2,
+      "fut": 205093.047
+    },
+    {
+      "strike": 202000,
+      "width": 1,
+      "fut": 206113.41
+    },
     {
       "strike": 203000,
       "width": 1,
-      "fut": 207324.335
+      "fut": 207133.774
     },
     {
       "strike": 204000,
       "width": 1,
-      "fut": 208345.637
+      "fut": 208154.137
     },
     {
       "strike": 205000,
-      "width": 2,
-      "fut": 209366.939
+      "width": 3,
+      "fut": 209174.5
     },
     {
       "strike": 206000,
       "width": 1,
-      "fut": 210388.242
+      "fut": 210194.864
     },
     {
       "strike": 207000,
       "width": 1,
-      "fut": 211409.544
+      "fut": 211215.227
     },
     {
       "strike": 208000,
-      "width": 1,
-      "fut": 212430.846
-    },
-    {
-      "strike": 209000,
       "width": 2,
-      "fut": 213452.148
-    },
-    {
-      "strike": 210000,
-      "width": 3,
-      "fut": 214473.45
+      "fut": 212235.591
     }
   ],
   "midwalls": [
-    207834.986,
-    208856.288,
-    209877.59,
-    210898.893,
-    211920.195,
-    212941.497,
-    213962.799
+    205603.228,
+    206623.592,
+    207643.955,
+    208664.319,
+    209684.682,
+    210705.045,
+    211725.409
   ],
-  "gamma_flip": 191411.338,
-  "max_gamma": 222926.585,
-  "min_gamma": 185596.4,
+  "gamma_flip": 184518.652,
+  "max_gamma": 221411.07,
+  "min_gamma": 183466.8,
   "series": {
-    "bova": 915,
-    "ibov": 174
+    "bova": 885,
+    "ibov": 186
   },
   "prob": {
-    "expiry": "2026-10-16",
-    "iv_atm": 0.405,
-    "p_up_expiry": 0.547,
-    "sigma_day": 0.02551,
-    "band_up": 216285.228,
-    "band_down": 205524.772,
+    "expiry": "2026-10-23",
+    "iv_atm": 0.3523,
+    "p_up_expiry": 0.5755,
+    "sigma_day": 0.02219,
+    "band_up": 213111.355,
+    "band_down": 203858.645,
     "pct": {
-      "p10": 202254.1,
-      "p25": 207310.5,
-      "p50": 211734.8,
-      "p75": 215316.4,
-      "p90": 218055.2
+      "p10": 195260.0,
+      "p25": 203195.7,
+      "p50": 210504.9,
+      "p75": 216561.1,
+      "p90": 221573.1
     }
   },
   "flows": {
-    "vanna_1pct_mi": 41954.9,
-    "charm_day_mi": -15855.2
+    "vanna_1pct_mi": 41110.5,
+    "charm_day_mi": -17636.0
   },
   "flow": {
-    "last_session": "2026-10-13",
-    "estrangeiro_dia_mi": 2075.8,
-    "estrangeiro_5d_mi": 5216.2,
-    "estrangeiro_21d_mi": 19607.9,
-    "institucional_dia_mi": -2206.6,
-    "pessoa_fisica_dia_mi": 381.3,
+    "last_session": "2026-10-14",
+    "estrangeiro_dia_mi": 708.2,
+    "estrangeiro_5d_mi": 4204.4,
+    "estrangeiro_21d_mi": 28915.4,
+    "institucional_dia_mi": -802.3,
+    "pessoa_fisica_dia_mi": 162.9,
     "lag_note": "defasagem de 2 pregões (dado público mais recente da B3)"
   },
   "vp": {
-    "ticker": "WINV26",
+    "ticker": "WINZ26",
     "d1": {
-      "poc": 206700.0,
-      "vah": 207085.0,
-      "val": 204590.0,
-      "volume": 2394859
+      "poc": 208000.0,
+      "vah": 209775.0,
+      "val": 207570.0,
+      "volume": 20833568
     },
     "comp": {
       "days": 4,
-      "poc": 207100.0,
-      "vah": 208135.0,
-      "val": 206035.0,
-      "volume": 48508882
+      "poc": 208000.0,
+      "vah": 210190.0,
+      "val": 207730.0,
+      "volume": 41624878
     }
   },
   "bt": {
