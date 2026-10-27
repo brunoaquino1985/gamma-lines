@@ -1,0 +1,39 @@
+{
+ "v": 2,
+ "session": "2026-10-26",
+ "open": 177215.0,
+ "high": 180490.0,
+ "low": 166790.0,
+ "close": 178360.0,
+ "regime": "pos",
+ "fluxo": "vendedor",
+ "vol_h": {
+  "9": 537710,
+  "10": 1350576,
+  "11": 1287150,
+  "12": 1373613,
+  "13": 1750827,
+  "14": 1722026,
+  "15": 1622129,
+  "16": 1782815,
+  "17": 903551,
+  "18": 108928
+ },
+ "walls": [],
+ "bands": {
+  "inside": false,
+  "broke_up": false,
+  "broke_down": true
+ },
+ "flip": {
+  "crossed_down": false,
+  "extra_drop": null
+ },
+ "poc": {
+  "touched": false
+ },
+ "va": {
+  "open_inside": false,
+  "close_inside": false
+ }
+}
