@@ -1,19 +1,19 @@
 {
-  "n_days": 87,
+  "n_days": 88,
   "walls": {
     "1": {
-      "toques": 164,
-      "rejeitou": 90,
-      "rompeu": 72,
+      "toques": 167,
+      "rejeitou": 92,
+      "rompeu": 73,
       "neutro": 2,
-      "taxa_rejeicao": 0.556
+      "taxa_rejeicao": 0.558
     },
     "2": {
-      "toques": 78,
-      "rejeitou": 41,
+      "toques": 80,
+      "rejeitou": 43,
       "rompeu": 35,
       "neutro": 2,
-      "taxa_rejeicao": 0.539
+      "taxa_rejeicao": 0.551
     },
     "3": {
       "toques": 35,
@@ -24,9 +24,9 @@
     }
   },
   "bands": {
-    "days": 87,
+    "days": 88,
     "inside": 55,
-    "taxa_dentro": 0.632
+    "taxa_dentro": 0.625
   },
   "poc": {
     "days": 85,
@@ -66,18 +66,18 @@
       "taxa_rejeicao": 0.591
     },
     "vendedor": {
-      "toques": 113,
-      "rejeitou": 52,
-      "rompeu": 59,
+      "toques": 118,
+      "rejeitou": 56,
+      "rompeu": 60,
       "neutro": 2,
-      "taxa_rejeicao": 0.468
+      "taxa_rejeicao": 0.483
     }
   },
   "gaps": {
     "ate_300": {
-      "n": 20,
-      "fechou": 18,
-      "taxa_fechou": 0.9
+      "n": 21,
+      "fechou": 19,
+      "taxa_fechou": 0.905
     },
     "300_700": {
       "n": 30,
@@ -97,20 +97,20 @@
   },
   "hourly": {
     "9": {
-      "toques": 156,
-      "rejeitou": 92,
+      "toques": 158,
+      "rejeitou": 94,
       "rompeu": 64,
       "neutro": 0,
-      "taxa_rejeicao": 0.59,
-      "vol_pct": 16.9
+      "taxa_rejeicao": 0.595,
+      "vol_pct": 16.8
     },
     "10": {
-      "toques": 55,
-      "rejeitou": 29,
-      "rompeu": 26,
+      "toques": 58,
+      "rejeitou": 31,
+      "rompeu": 27,
       "neutro": 0,
-      "taxa_rejeicao": 0.527,
-      "vol_pct": 23.2
+      "taxa_rejeicao": 0.534,
+      "vol_pct": 23.1
     },
     "11": {
       "toques": 22,
@@ -150,7 +150,7 @@
       "rompeu": 2,
       "neutro": 0,
       "taxa_rejeicao": 0.75,
-      "vol_pct": 7.4
+      "vol_pct": 7.5
     },
     "16": {
       "toques": 3,
@@ -178,5 +178,5 @@
     }
   },
   "desde": "2026-06-16",
-  "ate": "2026-10-26"
+  "ate": "2026-10-28"
 }
