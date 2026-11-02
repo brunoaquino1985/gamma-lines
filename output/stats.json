@@ -1,19 +1,19 @@
 {
-  "n_days": 89,
+  "n_days": 90,
   "walls": {
     "1": {
-      "toques": 169,
+      "toques": 171,
       "rejeitou": 93,
-      "rompeu": 74,
+      "rompeu": 76,
       "neutro": 2,
-      "taxa_rejeicao": 0.557
+      "taxa_rejeicao": 0.55
     },
     "2": {
-      "toques": 80,
+      "toques": 81,
       "rejeitou": 43,
-      "rompeu": 35,
+      "rompeu": 36,
       "neutro": 2,
-      "taxa_rejeicao": 0.551
+      "taxa_rejeicao": 0.544
     },
     "3": {
       "toques": 36,
@@ -24,18 +24,18 @@
     }
   },
   "bands": {
-    "days": 89,
-    "inside": 56,
-    "taxa_dentro": 0.629
+    "days": 90,
+    "inside": 57,
+    "taxa_dentro": 0.633
   },
   "poc": {
-    "days": 86,
+    "days": 87,
     "touched": 52,
-    "taxa_ima": 0.605
+    "taxa_ima": 0.598
   },
   "va": {
-    "open_inside": 33,
-    "taxa_rotacao": 0.364,
+    "open_inside": 34,
+    "taxa_rotacao": 0.353,
     "open_outside": 53,
     "taxa_tendencia": 0.792
   },
@@ -66,18 +66,18 @@
       "taxa_rejeicao": 0.591
     },
     "vendedor": {
-      "toques": 121,
+      "toques": 124,
       "rejeitou": 58,
-      "rompeu": 61,
+      "rompeu": 64,
       "neutro": 2,
-      "taxa_rejeicao": 0.487
+      "taxa_rejeicao": 0.475
     }
   },
   "gaps": {
     "ate_300": {
-      "n": 21,
-      "fechou": 19,
-      "taxa_fechou": 0.905
+      "n": 22,
+      "fechou": 20,
+      "taxa_fechou": 0.909
     },
     "300_700": {
       "n": 30,
@@ -97,11 +97,11 @@
   },
   "hourly": {
     "9": {
-      "toques": 158,
+      "toques": 161,
       "rejeitou": 94,
-      "rompeu": 64,
+      "rompeu": 67,
       "neutro": 0,
-      "taxa_rejeicao": 0.595,
+      "taxa_rejeicao": 0.584,
       "vol_pct": 16.7
     },
     "10": {
@@ -110,7 +110,7 @@
       "rompeu": 27,
       "neutro": 0,
       "taxa_rejeicao": 0.534,
-      "vol_pct": 23.0
+      "vol_pct": 22.9
     },
     "11": {
       "toques": 22,
@@ -126,7 +126,7 @@
       "rompeu": 8,
       "neutro": 0,
       "taxa_rejeicao": 0.556,
-      "vol_pct": 9.9
+      "vol_pct": 10.0
     },
     "13": {
       "toques": 7,
@@ -178,5 +178,5 @@
     }
   },
   "desde": "2026-06-16",
-  "ate": "2026-10-29"
+  "ate": "2026-10-30"
 }
