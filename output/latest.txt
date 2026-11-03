@@ -18,7 +18,7 @@ BEGIN
   clPoc := clFuchsia;
   clVA := clSilver;
 
-  if ((Date = ELDate(2026, 11, 02)) and ((GetAsset() = "WINFUT") or (GetAsset() = "INDFUT") or (GetAsset() = "WINZ26") or (GetAsset() = "INDZ26"))) then
+  if ((Date = ELDate(2026, 11, 03)) and ((GetAsset() = "WINFUT") or (GetAsset() = "INDFUT") or (GetAsset() = "WINZ26") or (GetAsset() = "INDZ26"))) then
     begin
       HorizontalLineCustom(166190.810, clWall, 2, psSolid, "WALL ** 166.191", 10, tpTopRight);
       HorizontalLineCustom(167204.169, clWall, 3, psSolid, "WALL *** 167.204", 10, tpTopRight);
