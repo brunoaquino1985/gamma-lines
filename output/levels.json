@@ -1,65 +1,65 @@
 {
-  "session": "2026-11-20",
+  "session": "2026-11-23",
   "ref": "2026-11-19",
   "fut": "INDZ26",
   "fut_settle": 167666.0,
-  "ibov_close": 166376.43,
+  "ibov_close": 166017.7632659563,
   "bova11": 163.6,
-  "fator": 1.0077509176029322,
+  "fator": 1.0099280745723773,
   "walls": [
     {
       "strike": 163000,
       "width": 1,
-      "fut": 164263.4
+      "fut": 164618.276
     },
     {
       "strike": 164000,
       "width": 1,
-      "fut": 165271.15
+      "fut": 165628.204
     },
     {
       "strike": 165000,
       "width": 2,
-      "fut": 166278.901
+      "fut": 166638.132
     },
     {
       "strike": 166000,
       "width": 1,
-      "fut": 167286.652
+      "fut": 167648.06
     },
     {
       "strike": 167000,
       "width": 1,
-      "fut": 168294.403
+      "fut": 168657.988
     },
     {
       "strike": 168000,
       "width": 1,
-      "fut": 169302.154
+      "fut": 169667.917
     },
     {
       "strike": 169000,
       "width": 2,
-      "fut": 170309.905
+      "fut": 170677.845
     },
     {
       "strike": 170000,
       "width": 3,
-      "fut": 171317.656
+      "fut": 171687.773
     }
   ],
   "midwalls": [
-    164767.275,
-    165775.026,
-    166782.777,
-    167790.528,
-    168798.279,
-    169806.03,
-    170813.781
+    165123.24,
+    166133.168,
+    167143.096,
+    168153.024,
+    169162.952,
+    170172.881,
+    171182.809
   ],
-  "gamma_flip": 174733.042,
-  "max_gamma": 185103.264,
-  "min_gamma": 160624.028,
+  "gamma_flip": 174824.609,
+  "max_gamma": 185270.93,
+  "min_gamma": 160791.694,
   "series": {
     "bova": 663,
     "ibov": 81
@@ -80,16 +80,16 @@
     }
   },
   "flows": {
-    "vanna_1pct_mi": 16915.5,
-    "charm_day_mi": -6023.0
+    "vanna_1pct_mi": 16766.6,
+    "charm_day_mi": -5996.8
   },
   "flow": {
-    "last_session": "2026-11-17",
-    "estrangeiro_dia_mi": 322.5,
-    "estrangeiro_5d_mi": 17.7,
-    "estrangeiro_21d_mi": -17841.9,
-    "institucional_dia_mi": -633.5,
-    "pessoa_fisica_dia_mi": 110.3,
+    "last_session": "2026-11-19",
+    "estrangeiro_dia_mi": -840.6,
+    "estrangeiro_5d_mi": -452.9,
+    "estrangeiro_21d_mi": -17673.7,
+    "institucional_dia_mi": -269.9,
+    "pessoa_fisica_dia_mi": 408.0,
     "lag_note": "defasagem de 2 pregões (dado público mais recente da B3)"
   },
   "vp": {
